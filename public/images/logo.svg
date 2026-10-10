@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Three connected care pathways</title>
+  <rect x="2" y="2" width="60" height="60" rx="10" fill="#1c393d"/>
+  <path d="M13 24 32 13l19 11M16 27h32M18 29v21M32 29v21M46 29v21M14 51h36" fill="none" stroke="#f7f8f4" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="M32 34v9" stroke="#a5c0ab" stroke-linecap="round" stroke-width="3"/>
+</svg>

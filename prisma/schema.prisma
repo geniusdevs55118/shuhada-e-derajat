@@ -1,0 +1,703 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  super_admin
+  hospital_director
+  additional_director
+  medical_superintendent
+  health_desk_officer
+  sehat_card_desk
+  pharmacy_rep
+  diagnostics_rep
+  admin_finance_rep
+  nursing_rep
+  it_mis_rep
+  working_group_member
+}
+
+enum HospitalCode {
+  DHQ
+  MMMTH
+  WC
+}
+
+enum VerificationStatus {
+  VERIFIED_ELIGIBLE
+  PROVISIONALLY_VERIFIED
+  ADDITIONAL_DOCUMENTATION_REQUIRED
+  NOT_ELIGIBLE
+}
+
+enum AuthorizationDecision {
+  APPROVED_FOR_REGISTRATION
+  APPROVED_FOR_HEALTH_CARD
+  RETURNED_FOR_COMPLETION
+}
+
+enum CardStatus {
+  ACTIVE
+  UNDER_VERIFICATION
+  TEMPORARILY_SUSPENDED
+  CLOSED
+}
+
+enum VisitVerification {
+  VERIFIED
+  VERIFICATION_CONFIRMED_DIGITALLY
+  EMERGENCY_VERIFICATION_IN_PROCESS
+}
+
+enum ProcedureStatus {
+  PLANNED
+  COMPLETED
+  DEFERRED
+  REFERRED
+}
+
+enum InvestigationsStatus {
+  COMPLETED
+  PARTIALLY_COMPLETED
+  PENDING
+}
+
+enum GrievancePriority {
+  ROUTINE
+  URGENT
+  IMMEDIATE_PATIENT_SAFETY
+}
+
+enum GrievanceOutcome {
+  FULLY_RESOLVED
+  PARTIALLY_RESOLVED
+  FURTHER_ACTION_REQUIRED
+  REFERRED_TO_COMPETENT_AUTHORITY
+  CLOSED_AFTER_EXPLANATION_FACILITATION
+}
+
+enum GrievanceClosure {
+  RESOLVED_CLOSED
+  CLOSED_WITH_CORRECTIVE_ACTION
+  REFERRED_FOR_FURTHER_REVIEW
+  PENDING_FOLLOW_UP
+}
+
+enum ActionCompleted {
+  YES
+  NO
+  IN_PROGRESS
+}
+
+enum FacilitationProvided {
+  YES
+  PARTIALLY
+  NO
+}
+
+model Hospital {
+  id       Int          @id @default(autoincrement())
+  code     HospitalCode @unique
+  name     String
+  healthDeskLocation String?
+  healthDeskContact  String?
+  orientationCompleted Boolean @default(false)
+  users    User[]
+  families Family[]
+  visits   Visit[]
+  reports  MonthlyReport[]
+  grievances Grievance[]
+  auditLogs AuditLog[]
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role
+  hospitalId   Int?
+  hospital     Hospital? @relation(fields: [hospitalId], references: [id])
+  designation  String?
+  isActive     Boolean   @default(true)
+  mustChangePassword Boolean @default(false)
+  notifications Notification[]
+
+  @@index([hospitalId])
+}
+
+model Family {
+  id                 Int       @id @default(autoincrement())
+  registrationNo     String    @unique
+  dateOfRegistration DateTime
+  healthCardNo       String?   @unique
+  qrDigitalId        String?   @unique
+
+  // A. Particulars of Shaheed
+  shaheedName                 String
+  shaheedFatherName           String?
+  shaheedCnic                 String?
+  shaheedServiceNo            String?
+  shaheedRank                 String?
+  shaheedDepartment           String?
+  shaheedUnit                 String?
+  shaheedDateOfShahadat       DateTime?
+  shaheedPlaceOfShahadat      String?
+  shaheedPermanentDistrict    String?
+  shaheedPermanentAddress     String?
+  shahadatCertificateNo       String?
+  shahadatIssuingAuthority    String?
+
+  // B. Primary Family Contact
+  contactName           String
+  contactRelationship   String
+  contactCnic           String
+  contactMobile         String
+  contactAltContact     String?
+  contactPresentAddress String?
+  contactDistrict       String?
+  specialDependencyDisability String?
+
+  // D. Documents Submitted (Annexure-A checkbox group)
+  documentsSubmitted Json
+  documentsOther     String?
+
+  // E. Official Verification
+  verificationStatus    VerificationStatus?
+  verificationRefNo     String?
+  verificationAuthority String?
+  verificationRemarks   String?
+  verifiedBy            String?
+  verifiedByDesignation String?
+  verifiedSignatureDate String?
+
+  // F. Family Health Card Registration
+  cardRegistrationId          String?
+  cardQrVerificationId        String?
+  cardDateOfIssue             DateTime?
+  cardPhysicalIssued          Boolean @default(false)
+  cardDigitalRecordCreated    Boolean @default(false)
+  cardBeneficiariesLinked     Boolean @default(false)
+  cardSystemUpdated           Boolean @default(false)
+
+  // G. Hospital Access
+  hospitalAccessDHQ   Boolean @default(false)
+  hospitalAccessMMMTH Boolean @default(false)
+  hospitalAccessWC    Boolean @default(false)
+  hospitalId          Int?
+  hospital            Hospital? @relation(fields: [hospitalId], references: [id])
+
+  // H. Declaration by Applicant
+  applicantName              String?
+  applicantRelationship      String?
+  applicantCnic              String?
+  applicantSignature         String?
+  declarationDate            DateTime?
+
+  // I. Authorization
+  authorizationDecision  AuthorizationDecision?
+  authorizedOfficer      String?
+  authorizedDesignation  String?
+  authorizedSignature    String?
+  authorizationDate      DateTime?
+
+  members FamilyMember[]
+  documents Document[]
+
+  @@index([contactCnic])
+  @@index([shaheedCnic])
+  @@index([hospitalId])
+  @@index([verificationStatus])
+}
+
+model FamilyMember {
+  id                        Int     @id @default(autoincrement())
+  familyId                  Int
+  family                    Family  @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  serialNo                  Int
+  name                      String
+  relationship              String
+  cnicBForm                 String?
+  dobAge                    String?
+  mobile                    String?
+  status                    String?
+  specialDependencyDisability String?
+  beneficiaryId             String?
+  cardStatus                String?
+
+  @@index([familyId])
+  @@index([cnicBForm])
+}
+
+model HealthCard {
+  id                      Int        @id @default(autoincrement())
+  familyRegistrationNo    String
+  cardNo                  String     @unique
+  qrDigitalVerificationId String?    @unique
+  dateOfRegistration      DateTime?
+  dateOfCardIssue         DateTime?
+  reviewRevalidationDate  DateTime?
+  status                  CardStatus @default(UNDER_VERIFICATION)
+
+  // D. Special Healthcare / Facilitation Information
+  specialFlags Json
+
+  // E. Health Card Control Record
+  controlFlags Json
+  issuedBy           String?
+  issuedByDesignation String?
+  issuedSignatureDate String?
+
+  // F. Three-Hospital Access
+  accessDHQ   Boolean @default(false)
+  accessMMMTH Boolean @default(false)
+  accessWC    Boolean @default(false)
+
+  // L. Periodic Review / Revalidation
+  reviewFlags    Json
+  nextReviewDate DateTime?
+  reviewedBy     String?
+  reviewDesignation String?
+  reviewSignature String?
+
+  // M. Authorisation
+  authorisedOfficer String?
+  authorisedDesignation String?
+  authorisedSignature String?
+  authorisedStamp String?
+  authorisedDate DateTime?
+
+  updateHistory     CardUpdateHistory[]
+  lostDamaged       LostDamagedCard[]
+  statusChanges     BeneficiaryStatusChange[]
+  misuseFlags       MisuseFlag[]
+
+  @@index([familyRegistrationNo])
+  @@index([status])
+}
+
+model CardUpdateHistory {
+  id               Int        @id @default(autoincrement())
+  healthCardId     Int
+  healthCard       HealthCard @relation(fields: [healthCardId], references: [id], onDelete: Cascade)
+  date             DateTime
+  natureOfUpdate   String
+  beneficiaryAffected String?
+  reason           String?
+  verifiedBy       String?
+
+  @@index([healthCardId])
+}
+
+model LostDamagedCard {
+  id               Int        @id @default(autoincrement())
+  healthCardId     Int
+  healthCard       HealthCard @relation(fields: [healthCardId], references: [id], onDelete: Cascade)
+  dateReported     DateTime
+  previousCardNo   String?
+  replacementCardNo String?
+  replacementDate  DateTime?
+  reasonRemarks    String?
+  authorisedBy     String?
+
+  @@index([healthCardId])
+}
+
+model BeneficiaryStatusChange {
+  id                 Int        @id @default(autoincrement())
+  healthCardId       Int
+  healthCard         HealthCard @relation(fields: [healthCardId], references: [id], onDelete: Cascade)
+  beneficiaryName    String
+  previousStatus     String?
+  newStatus          String?
+  effectiveDate      DateTime?
+  reason             String?
+  supportingDocument String?
+  verifiedBy         String?
+
+  @@index([healthCardId])
+}
+
+model MisuseFlag {
+  id           Int        @id @default(autoincrement())
+  healthCardId Int
+  healthCard   HealthCard @relation(fields: [healthCardId], references: [id], onDelete: Cascade)
+  flagType     String // one of: Suspected Impersonation, Unauthorised Use of Card, Duplicate Beneficiary Registration, Altered / Fraudulent Documentation, Duplicate Healthcare Claim, Other Suspected Misuse
+  remarks      String?
+  createdAt    DateTime   @default(now())
+
+  @@index([healthCardId])
+}
+
+model Visit {
+  id                 Int       @id @default(autoincrement())
+  visitNo            String    @unique
+  dateTime           DateTime
+  familyRegistrationNo String
+  healthCardNo       String?
+  hospitalId         Int
+  hospital           Hospital  @relation(fields: [hospitalId], references: [id])
+
+  // A. Beneficiary Particulars
+  beneficiaryName        String
+  beneficiaryFatherHusbandGuardian String?
+  beneficiaryCnicBForm   String?
+  beneficiaryRelationship String?
+  beneficiaryMobile      String?
+  shaheedName            String?
+  verification           VisitVerification
+  verificationPending    Boolean @default(false)
+
+  // B. Hospital / Health Desk
+  facilitationOfficer String?
+
+  // C. Nature of Healthcare Required (checkbox group)
+  natureOfHealthcare Json
+  natureOther        String?
+
+  // D. Clinical Facilitation
+  department          String?
+  consultant          String?
+  opdMrNo             String?
+  diagnosis           String?
+  treatmentPlan       String?
+  followUpDate        DateTime?
+
+  // E. Diagnostic Facilitation
+  diagnostics Json
+  investigationsStatus InvestigationsStatus?
+
+  // F. Medicines / Pharmacy
+  medicinesFlags Json
+  medicinesRemarks String?
+
+  // G. Admission / Procedure / Surgery
+  ward               String?
+  admissionDate      DateTime?
+  procedureName      String?
+  consultantUnit     String?
+  procedureDate      DateTime?
+  procedureStatus    ProcedureStatus?
+
+  // H. Sehat Card Plus Facilitation
+  sehatFlags Json
+  sehatCaseRef String?
+
+  // I. Emergency Facilitation
+  emergencyFlags Json
+
+  // J. Ambulance / Referral Facilitation
+  ambulanceFromTo     String?
+  ambulanceDateTime   DateTime?
+  ambulanceStatus     String?
+  referralFacility    String?
+  referralReason      String?
+  referringConsultant String?
+  ambulanceFlags      Json
+
+  // K. Health Desk Action & Outcome
+  healthDeskActions Json
+  issueEncountered  String?
+  actionTaken       String?
+  finalStatus       String?
+
+  // L. Beneficiary / Family Feedback
+  feedbackFlags Json
+  feedbackComments String?
+  feedbackSignature String?
+
+  // M. Certification by Health Desk
+  certOfficer       String?
+  certDesignation   String?
+  certSignatureDate String?
+  escalatedTo       String?
+  actionDecision    String?
+  authorisedOfficerSignature String?
+
+  sehatClaims SehatClaim[]
+
+  @@index([hospitalId])
+  @@index([familyRegistrationNo])
+  @@index([beneficiaryCnicBForm])
+  @@index([healthCardNo])
+  @@index([dateTime])
+}
+
+model SehatClaim {
+  id        Int     @id @default(autoincrement())
+  visitId   Int
+  visit     Visit   @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  service   String
+  claimRef  String?
+  serviceDate DateTime?
+  status   String?
+  familyRegistrationNo String?
+
+  @@unique([visitId, service])
+  @@index([visitId])
+}
+
+model Grievance {
+  id            Int       @id @default(autoincrement())
+  grievanceNo   String    @unique
+  dateTime      DateTime
+  priority      GrievancePriority
+  hospitalId    Int
+  hospital      Hospital  @relation(fields: [hospitalId], references: [id])
+
+  // A. Beneficiary Details
+  beneficiaryName        String
+  familyRegistrationNo   String?
+  healthCardNo           String?
+  cnicBForm              String?
+  relationshipWithShaheed String?
+  shaheedName            String?
+  contactNo              String?
+
+  // B. Hospital / Service Point
+  department        String?
+  healthDesk        String?
+  incidentDateTime  DateTime?
+
+  // C. Nature of Grievance / Difficulty (checkbox group)
+  natureFlags Json
+  natureOther String?
+
+  // D. Brief Description
+  issueDescription String?
+  immediateHealthcareNeed Boolean?
+  delayMayAffectCare      Boolean?
+
+  // E. Rapid Escalation Screen
+  redFlags   Json
+  isRedAlert Boolean @default(false)
+  amberFlags Json
+  greenFlags Json
+
+  // F. Immediate Action by Health Desk
+  complaintReceivedBy String?
+  receivedByDesignation String?
+  timeReceived String?
+  immediateActionTaken String?
+  resolvedAtHealthDesk String?
+
+  // G. Escalation
+  escalatedTo String?
+  escalationDesignation String?
+  escalatedDateTime String?
+  escalationReason String?
+  escalationModes Json
+
+  // I. Action / Resolution
+  actionTaken String?
+  responsibleDeptOfficer String?
+  resolutionDateTime String?
+  outcome GrievanceOutcome?
+  remarks String?
+
+  // J. Beneficiary Confirmation
+  issueExplainedAppropriately Boolean?
+  facilitationProvided FacilitationProvided?
+  furtherAssistanceRequired Boolean?
+  beneficiaryComments String?
+  beneficiaryNameSignature String?
+  beneficiarySignatureDate String?
+
+  // K. Root Cause & Corrective Action
+  rootCause String?
+  correctiveAction String?
+  preventiveActionRequired String?
+  responsibleOfficerDept String?
+  targetCompletionDate DateTime?
+  actionCompleted ActionCompleted?
+
+  // L. Working Group Review
+  requiresWorkingGroupReview Boolean?
+  reviewedBy String?
+  observations String?
+  furtherDirections String?
+  reviewSignatureDate String?
+
+  // M. Closure
+  closureStatus GrievanceClosure?
+  closedBy String?
+  closedByDesignation String?
+  closureSignature String?
+  closureDate String?
+
+  @@index([hospitalId])
+  @@index([cnicBForm])
+  @@index([healthCardNo])
+  @@index([familyRegistrationNo])
+  @@index([priority])
+}
+
+model MonthlyReport {
+  id               Int       @id @default(autoincrement())
+  month            Int
+  year             Int
+  reportNo         String    @unique
+  dateOfSubmission DateTime?
+  hospitalId       Int?
+  hospital         Hospital? @relation(fields: [hospitalId], references: [id])
+  isConsolidated   Boolean   @default(false)
+  healthDeskFocalPerson String?
+  contactNo        String?
+
+  // D. Sehat Card Plus Facilitation (manual text fields)
+  sehatMajorIssues String?
+  sehatCorrectiveAction String?
+
+  // E. Emergency & Priority Facilitation (manual text fields)
+  emergencyDelayReason String?
+  emergencyCorrectiveAction String?
+
+  // G. Health Desk Performance (manual text fields)
+  majorOperationalIssues String?
+
+  // H. Beneficiary Experience & Dignity (manual text fields)
+  dignityComplaintsActionTaken String?
+
+  // I. Grievance Redressal (manual text fields)
+  majorGrievanceNature String?
+  grievanceCorrectiveAction String?
+
+  // J. Service Gaps / Bottlenecks
+  serviceGapFlags Json
+  rootCauseExplanation String?
+  correctiveActionRequired String?
+
+  // K. Serious / Exceptional Case Reporting
+  exceptionalCaseReported Boolean?
+  exceptionalCaseReferenceNo String?
+  exceptionalCaseDescription String?
+  exceptionalCaseImmediateAction String?
+  exceptionalCaseFurtherAction String?
+
+  // L. Monthly Working Group Review
+  achievements String?
+  challenges String?
+  correctiveMeasures String?
+  recommendationsForHospitalDirector String?
+
+  // N. Certification & Review
+  focalPersonSignature String?
+  hospitalRepresentativeSignature String?
+  chairmanComments String?
+  directorDirectionsSignature String?
+
+  statsSnapshot Json?
+  actionTracker ActionTracker[]
+
+  @@index([hospitalId])
+  @@index([year, month])
+}
+
+model ActionTracker {
+  id                Int       @id @default(autoincrement())
+  monthlyReportId   Int
+  monthlyReport     MonthlyReport @relation(fields: [monthlyReportId], references: [id], onDelete: Cascade)
+  issue             String
+  responsibleOfficerDepartment String?
+  targetDate        DateTime?
+  status            String?
+
+  @@index([monthlyReportId])
+}
+
+model AuditLog {
+  id         Int       @id @default(autoincrement())
+  who        String
+  role       String
+  action     String
+  entity     String
+  entityId   String?
+  hospitalId Int?
+  hospital   Hospital? @relation(fields: [hospitalId], references: [id])
+  createdAt  DateTime  @default(now())
+
+  @@index([hospitalId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+model Document {
+  id             Int      @id @default(autoincrement())
+  familyId       Int
+  family         Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  publicId       String   @unique
+  secureUrl      String   @db.Text
+  resourceType   String
+  docType        String
+  originalFilename String
+  isSensitive    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  createdBy      String?
+
+  @@index([familyId])
+  @@index([docType])
+}
+
+model Notification {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  message     String   @db.Text
+  href        String?
+  hospitalId  Int?
+  entity      String?
+  entityId    String?
+  createdAt   DateTime @default(now())
+  readAt      DateTime?
+
+  @@index([userId, readAt, createdAt])
+  @@index([entity, entityId])
+}
+
+model WorkingGroupMember {
+  id          Int      @id @default(autoincrement())
+  name        String
+  designation String?
+  roleTitle   String
+  hospital    String?
+  email       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([isActive])
+}
+
+model TorItem {
+  id          Int      @id @default(autoincrement())
+  number      Int      @unique
+  title       String
+  owner       String?
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MeetingMinute {
+  id          Int      @id @default(autoincrement())
+  meetingDate DateTime
+  title       String
+  attendees   String?  @db.Text
+  decisions   String   @db.Text
+  createdAt   DateTime @default(now())
+  createdBy   String?
+
+  @@index([meetingDate])
+}
+
+model Setting {
+  key       String   @id
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
