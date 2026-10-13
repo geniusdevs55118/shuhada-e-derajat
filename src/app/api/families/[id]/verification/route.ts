@@ -11,6 +11,14 @@ const VERIFICATION_STATUS_MAP: Record<string, VerificationStatus> = {
   "Not Eligible": "NOT_ELIGIBLE",
 };
 
+const VERIFIED_BY_DESIGNATION: Record<string, string> = {
+  health_desk_officer: "Focal Person Health Desk / Family Facilitation",
+  medical_superintendent: "Medical Superintendent",
+  hospital_director: "Hospital Director",
+  additional_director: "Additional Hospital Director",
+  super_admin: "Super Admin",
+};
+
 export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   let session;
   try {
@@ -40,7 +48,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       verificationAuthority: values.verificationAuthority,
       verificationRemarks: values.verificationRemarks || null,
       verifiedBy: session.email ?? "unknown",
-      verifiedByDesignation: session.role === "health_desk_officer" ? "Focal Person Health Desk / Family Facilitation" : "Focal Person Health Desk / Family Facilitation",
+      verifiedByDesignation: VERIFIED_BY_DESIGNATION[session.role] ?? "Focal Person Health Desk / Family Facilitation",
       verifiedSignatureDate,
       // Editing Section E clears Section I authorization
       authorizationDecision: null,
@@ -48,6 +56,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       authorizedDesignation: null,
       authorizedSignature: null,
       authorizationDate: null,
+      authorizationRemarks: null,
     },
   });
 

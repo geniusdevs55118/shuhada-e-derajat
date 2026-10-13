@@ -101,7 +101,7 @@ export function PublicHeader() {
                 aria-label={mobileOpen ? "Close menu" : "Open menu"}
                 aria-expanded={mobileOpen}
               >
-                <MenuToggleIcon open={mobileOpen} />
+                <MenuToggleIcon />
               </SheetTrigger>
               <SheetContent side="right" showCloseButton={false} className="w-80 max-w-[88vw] p-0">
                 <nav className="flex flex-col gap-1 px-4 pb-5 pt-28" aria-label="Mobile navigation">

@@ -57,8 +57,8 @@ describe.skipIf(!dbUp)("Phase 14: Health Card Generation", () => {
   });
 
   afterAll(async () => {
+    await prisma.healthCard.deleteMany({ where: { familyRegistrationNo: { startsWith: "CARDTEST-" } } });
     await prisma.family.deleteMany({ where: { registrationNo: { startsWith: "CARDTEST-" } } });
-    await prisma.healthCard.deleteMany({ where: { cardNo: "DSFHC-TEST" } });
     await prisma.auditLog.deleteMany({ where: { entity: "card" } });
     await prisma.$disconnect();
   });

@@ -125,6 +125,7 @@ const detailFixture: FamilyDetailData = {
   authorizedDesignation: null,
   authorizedSignature: null,
   authorizationDate: null,
+  authorizationRemarks: null,
   role: "health_desk_officer",
   hospitalId: 1,
   members: [
@@ -132,9 +133,14 @@ const detailFixture: FamilyDetailData = {
   ],
 };
 
+const verifiedFixture: FamilyDetailData = {
+  ...detailFixture,
+  verificationStatus: "VERIFIED_ELIGIBLE",
+};
+
 describe("FamilyDetail", () => {
   it("detail page shows sections in PDF order", () => {
-    render(<FamilyDetail family={detailFixture} canEdit={false} />);
+    render(<FamilyDetail family={detailFixture} canEdit={false} canRecordVerification={false} canAuthorize={false} history={[]} />);
     const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(headings).toEqual([
       "A. Particulars of Shaheed",
@@ -150,17 +156,46 @@ describe("FamilyDetail", () => {
   });
 
   it("shows full CNIC on detail (override of list masking)", () => {
-    render(<FamilyDetail family={detailFixture} canEdit={false} />);
+    render(<FamilyDetail family={detailFixture} canEdit={false} canRecordVerification={false} canAuthorize={false} history={[]} />);
     expect(screen.getAllByText("12345-1234567-1").length).toBeGreaterThan(0);
   });
 
   it("hides Edit button when canEdit is false", () => {
-    render(<FamilyDetail family={detailFixture} canEdit={false} />);
+    render(<FamilyDetail family={detailFixture} canEdit={false} canRecordVerification={false} canAuthorize={false} history={[]} />);
     expect(screen.queryByRole("link", { name: "Edit" })).not.toBeInTheDocument();
   });
 
   it("shows Edit button when canEdit is true", () => {
-    render(<FamilyDetail family={detailFixture} canEdit={true} />);
+    render(<FamilyDetail family={detailFixture} canEdit={true} canRecordVerification={false} canAuthorize={false} history={[]} />);
     expect(screen.getByRole("link", { name: "Edit" })).toBeInTheDocument();
+  });
+
+  it("shows Authorise for an authorising director even though they cannot edit", () => {
+    render(<FamilyDetail family={verifiedFixture} canEdit={false} canRecordVerification={false} canAuthorize={true} history={[]} />);
+    expect(screen.getByRole("button", { name: "Authorise" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Edit" })).not.toBeInTheDocument();
+  });
+
+  it("hides Authorise when the user lacks the authorize permission", () => {
+    render(<FamilyDetail family={verifiedFixture} canEdit={true} canRecordVerification={true} canAuthorize={false} history={[]} />);
+    expect(screen.queryByRole("button", { name: "Authorise" })).not.toBeInTheDocument();
+  });
+
+  it("renders the real audit trail instead of a fabricated one", () => {
+    render(
+      <FamilyDetail
+        family={verifiedFixture}
+        canEdit={false}
+        canRecordVerification={false}
+        canAuthorize={false}
+        history={[
+          { id: 11, who: "desk.dhq@demo.dsfhi.local", role: "health_desk_officer", action: "verification_recorded", entity: "family", entityId: "1", hospitalId: 1, createdAt: "2026-01-02T10:00:00.000Z" },
+          { id: 10, who: "director@demo.dsfhi.local", role: "hospital_director", action: "authorization_recorded", entity: "family", entityId: "1", hospitalId: 1, createdAt: "2026-01-01T10:00:00.000Z" },
+        ]}
+      />,
+    );
+    expect(screen.getByText("desk.dhq@demo.dsfhi.local")).toBeInTheDocument();
+    expect(screen.getByText("director@demo.dsfhi.local")).toBeInTheDocument();
+    expect(screen.queryByText("System")).not.toBeInTheDocument();
   });
 });

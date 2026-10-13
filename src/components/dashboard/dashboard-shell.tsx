@@ -74,7 +74,7 @@ export function DashboardShell({
                   aria-label={open ? "Close sidebar" : "Open sidebar"}
                   aria-expanded={open}
                 >
-                  <MenuToggleIcon open={open} />
+                  <MenuToggleIcon />
                 </SheetTrigger>
               )}
               <SheetContent side="left" showCloseButton={true} className="w-72 p-0">

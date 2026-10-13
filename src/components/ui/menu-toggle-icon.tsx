@@ -1,4 +1,4 @@
-export function MenuToggleIcon({ open }: { open: boolean }) {
+export function MenuToggleIcon() {
   return (
     <span aria-hidden="true" className="relative block size-5">
       <span

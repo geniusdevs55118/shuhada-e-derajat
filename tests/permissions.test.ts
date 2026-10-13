@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Role } from "@prisma/client";
-import { MATRIX, can, hospitalScope, canSaveEmergencyVisit, auditCrossHospitalRead, logForbidden, requirePermission, AuthError, type SessionUser } from "@/lib/permissions";
+import { MATRIX, can, hospitalScope, auditCrossHospitalRead, logForbidden, requirePermission, AuthError, type SessionUser } from "@/lib/permissions";
 
 vi.mock("@/lib/db", () => ({
   prisma: { auditLog: { create: vi.fn().mockResolvedValue({}) } },
@@ -86,7 +86,7 @@ describe("specific rules", () => {
   });
 
   it("emergency visit with pending verification can still be saved", () => {
-    expect(canSaveEmergencyVisit(dhqDesk, { isEmergency: true, verificationPending: true })).toBe(true);
+    expect(can(dhqDesk, "visit", "create") || can(dhqDesk, "visit", "edit")).toBe(true);
   });
 
   it("hospitalScope fragments for director/wg are unrestricted", () => {

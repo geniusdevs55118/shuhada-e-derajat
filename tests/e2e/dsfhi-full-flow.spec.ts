@@ -147,8 +147,10 @@ test("8. QR verify is public and leaks no CNIC", async ({ page }) => {
   logout(page);
 
   await page.goto(`/verify/${qr}`);
-  await expect(page.getByText(/E2E Member One/i)).toBeVisible();
+  // The public view deliberately shows only each beneficiary's first name.
+  await expect(page.getByRole("cell", { name: "E2E", exact: true }).first()).toBeVisible();
   const body = await page.textContent("body");
+  expect(body).not.toMatch(/E2E Member One/);
   expect(body).not.toMatch(/\d{5}-\d{7}-/);
   expect(body).not.toMatch(/diagnosis/i);
 });

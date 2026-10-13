@@ -50,16 +50,26 @@ export async function GET(req: NextRequest) {
   ]);
 
   const regNos = cards.map((c) => c.familyRegistrationNo);
+  const cardNos = cards.map((c) => c.cardNo);
   const families = await prisma.family.findMany({
-    where: { registrationNo: { in: regNos } },
-    select: { registrationNo: true, shaheedName: true, contactCnic: true },
+    where: {
+      OR: [
+        { registrationNo: { in: regNos } },
+        { healthCardNo: { in: cardNos } },
+      ],
+    },
+    select: { registrationNo: true, healthCardNo: true, shaheedName: true, contactCnic: true },
   });
-  const famMap = new Map(families.map((f) => [f.registrationNo, f]));
-  const data = cards.map((c) => ({
-    ...c,
-    shaheedName: famMap.get(c.familyRegistrationNo)?.shaheedName ?? null,
-    contactCnic: famMap.get(c.familyRegistrationNo)?.contactCnic ?? null,
-  }));
+  const famByReg = new Map(families.map((f) => [f.registrationNo, f]));
+  const famByCard = new Map(families.filter((f) => f.healthCardNo).map((f) => [f.healthCardNo!, f]));
+  const data = cards.map((c) => {
+    const f = famByReg.get(c.familyRegistrationNo) ?? famByCard.get(c.cardNo);
+    return {
+      ...c,
+      shaheedName: f?.shaheedName ?? null,
+      contactCnic: f?.contactCnic ?? null,
+    };
+  });
 
   return NextResponse.json({
     total,
@@ -110,6 +120,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result, { status: 201 });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "Failed to generate card";
-    return NextResponse.json({ error: msg }, { status: 400 });
+    // Only genuine rule violations are the caller's fault. Anything else is a
+    // server/DB problem and must not be reported as a bad request.
+    const isRuleViolation =
+      /family not found|already has a health card|health card already exists|must be authorized|not verified or eligible/i.test(msg);
+    return NextResponse.json({ error: msg }, { status: isRuleViolation ? 400 : 500 });
   }
 }

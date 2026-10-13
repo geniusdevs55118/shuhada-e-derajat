@@ -4,7 +4,7 @@ import { requirePermission, AuthError, hospitalScope, logForbidden } from "@/lib
 import { visitSchema } from "@/lib/visit-schemas";
 import { getCurrentUser, getCookieName } from "@/lib/auth";
 
-function toDate(value?: string | null): Date | null {
+function toDate(value?: string | Date | null): Date | null {
   if (!value) return null;
   const d = new Date(value);
   return isNaN(d.getTime()) ? null : d;
@@ -81,6 +81,22 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
       ...(values.ward !== undefined ? { ward: values.ward || null } : {}),
       ...(values.procedureStatus !== undefined ? { procedureStatus: values.procedureStatus ?? null } : {}),
       ...(values.sehatCaseRef !== undefined ? { sehatCaseRef: values.sehatCaseRef || null } : {}),
+      ...(values.verificationPending !== undefined ? { verificationPending: values.verificationPending } : {}),
+      ...(values.beneficiaryFatherHusbandGuardian !== undefined ? { beneficiaryFatherHusbandGuardian: values.beneficiaryFatherHusbandGuardian || null } : {}),
+      ...(values.beneficiaryRelationship !== undefined ? { beneficiaryRelationship: values.beneficiaryRelationship || null } : {}),
+      ...(values.beneficiaryMobile !== undefined ? { beneficiaryMobile: values.beneficiaryMobile || null } : {}),
+      ...(values.shaheedName !== undefined ? { shaheedName: values.shaheedName || null } : {}),
+      ...(values.facilitationOfficer !== undefined ? { facilitationOfficer: values.facilitationOfficer || null } : {}),
+      ...(values.opdMrNo !== undefined ? { opdMrNo: values.opdMrNo || null } : {}),
+      ...(values.investigationsStatus !== undefined ? { investigationsStatus: values.investigationsStatus ?? null } : {}),
+      ...(values.medicinesRemarks !== undefined ? { medicinesRemarks: values.medicinesRemarks || null } : {}),
+      ...(values.admissionDate !== undefined ? { admissionDate: toDate(values.admissionDate) } : {}),
+      ...(values.procedureName !== undefined ? { procedureName: values.procedureName || null } : {}),
+      ...(values.consultantUnit !== undefined ? { consultantUnit: values.consultantUnit || null } : {}),
+      ...(values.procedureDate !== undefined ? { procedureDate: toDate(values.procedureDate) } : {}),
+      ...(values.feedbackComments !== undefined ? { feedbackComments: values.feedbackComments || null } : {}),
+      ...(values.escalatedTo !== undefined ? { escalatedTo: values.escalatedTo || null } : {}),
+      ...(values.actionDecision !== undefined ? { actionDecision: values.actionDecision || null } : {}),
     },
   });
 

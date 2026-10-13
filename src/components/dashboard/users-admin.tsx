@@ -33,6 +33,7 @@ export function UsersAdmin() {
   const [editTarget, setEditTarget] = useState<UserRow | null>(null);
   const [statusTarget, setStatusTarget] = useState<UserRow | null>(null);
   const [resetTarget, setResetTarget] = useState<UserRow | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -123,6 +124,7 @@ export function UsersAdmin() {
                         <Button variant="outline" size="sm" onClick={() => setEditTarget(u)}>Edit</Button>
                         <Button variant="outline" size="sm" onClick={() => setStatusTarget(u)}>{u.isActive ? "Deactivate" : "Activate"}</Button>
                         <Button variant="outline" size="sm" onClick={() => setResetTarget(u)}>Reset Password</Button>
+                        <Button variant="outline" size="sm" className="text-red-700 hover:bg-red-50" onClick={() => setDeleteTarget(u)}>Delete</Button>
                       </div>
                     </td>
                   </tr>
@@ -142,9 +144,10 @@ export function UsersAdmin() {
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Button variant="outline" size="sm" onClick={() => setEditTarget(u)}>Edit</Button>
                   <Button variant="outline" size="sm" onClick={() => setStatusTarget(u)}>{u.isActive ? "Deactivate" : "Activate"}</Button>
-                  <Button variant="outline" size="sm" onClick={() => setResetTarget(u)}>Reset Password</Button>
+<Button variant="outline" size="sm" onClick={() => setResetTarget(u)}>Reset Password</Button>
+                    <Button variant="outline" size="sm" className="text-red-700 hover:bg-red-50" onClick={() => setDeleteTarget(u)}>Delete</Button>
+                  </div>
                 </div>
-              </div>
             ))}
           </div>
         </>
@@ -154,6 +157,7 @@ export function UsersAdmin() {
       {editTarget && <EditDialog target={editTarget} onClose={() => setEditTarget(null)} onSaved={load} />}
       {statusTarget && <StatusDialog target={statusTarget} onClose={() => setStatusTarget(null)} onSaved={load} />}
       {resetTarget && <ResetDialog target={resetTarget} onClose={() => setResetTarget(null)} onSaved={load} />}
+      {deleteTarget && <DeleteDialog target={deleteTarget} onClose={() => setDeleteTarget(null)} onSaved={load} />}
     </div>
   );
 }
@@ -301,6 +305,44 @@ function StatusDialog({ target, onClose, onSaved }: { target: UserRow; onClose: 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button className="bg-blue-600 hover:bg-blue-700" onClick={confirm} disabled={isSubmitting}>{isSubmitting ? "Saving..." : "Confirm"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteDialog({ target, onClose, onSaved }: { target: UserRow; onClose: () => void; onSaved: () => void }) {
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const confirm = async () => {
+    setServerError(null);
+    setIsSubmitting(true);
+    const res = await fetch(`/api/users/${target.id}`, { method: "DELETE" });
+    const body = await res.json().catch(() => null);
+    setIsSubmitting(false);
+    if (!res.ok) {
+      setServerError(body?.error ?? "Could not delete user");
+      return;
+    }
+    onClose();
+    onSaved();
+  };
+
+  return (
+    <Dialog open onOpenChange={(v) => !v && onClose()}>
+      <DialogContent>
+        <DialogTitle>Delete User</DialogTitle>
+        <p className="mt-2 text-sm text-gray-600">
+          Are you sure you want to permanently delete {target.name} ({target.username})? This cannot be undone. To keep
+          the record but block sign-in, use Deactivate instead.
+        </p>
+        {serverError && <p role="alert" className="mt-2 text-sm text-red-600">{serverError}</p>}
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button className="bg-red-600 hover:bg-red-700" onClick={confirm} disabled={isSubmitting}>
+            {isSubmitting ? "Deleting..." : "Delete User"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

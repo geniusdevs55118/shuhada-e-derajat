@@ -26,21 +26,27 @@ describe.skipIf(!dbUp)("Phase 20: Sehat Card Plus claims", () => {
 
   beforeAll(async () => {
     await runSeed(DEMO_PASSWORD);
-    const v = await prisma.visit.findFirst();
-    if (!v) {
-      const f = await prisma.family.findFirst();
-      const hospital = await prisma.hospital.findFirst();
-      const created = await prisma.visit.create({
-        data: { visitNo: `VIS-2026-TESTSEHAT`, dateTime: new Date(), familyRegistrationNo: f!.registrationNo, hospitalId: hospital!.id, beneficiaryName: "Sehat Test", verification: "VERIFIED", natureOfHealthcare: [], diagnostics: {}, medicinesFlags: {}, sehatFlags: {}, emergencyFlags: {}, ambulanceFlags: {}, healthDeskActions: {}, feedbackFlags: {} },
-      });
-      visitId = created.id;
-    } else {
-      visitId = v.id;
-    }
+    // Always create a dedicated visit. Picking an arbitrary existing one makes the
+    // suite depend on whatever rows other test files happened to leave behind.
+    const f = await prisma.family.findFirstOrThrow({ where: { registrationNo: { startsWith: "DEMO-FAM-" } } });
+    const hospital = await prisma.hospital.findFirstOrThrow();
+    const created = await prisma.visit.create({
+      data: {
+        visitNo: `VIS-TESTSEHAT-${Date.now()}`,
+        dateTime: new Date(),
+        familyRegistrationNo: f.registrationNo,
+        hospitalId: hospital.id,
+        beneficiaryName: "Sehat Test",
+        verification: "VERIFIED",
+        natureOfHealthcare: [], diagnostics: {}, medicinesFlags: {}, sehatFlags: {}, emergencyFlags: {}, ambulanceFlags: {}, healthDeskActions: {}, feedbackFlags: {},
+      },
+    });
+    visitId = created.id;
   });
 
   afterAll(async () => {
-    await prisma.sehatClaim.deleteMany({ where: { service: { in: ["TEST_SERVICE_DUP", "TEST_SERVICE_OK"] } } });
+    await prisma.sehatClaim.deleteMany({ where: { visitId } });
+    await prisma.visit.delete({ where: { id: visitId } }).catch(() => {});
     await prisma.$disconnect();
   });
 

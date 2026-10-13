@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { hospitalScope, logForbidden } from "@/lib/permissions";
+import { hospitalScope, logForbidden, can } from "@/lib/permissions";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Forbidden } from "@/components/dashboard/forbidden";
+import { VisitEditor } from "@/components/visits/visit-editor";
 
 export const instant = false;
 
@@ -29,6 +30,7 @@ export default async function VisitDetailPage({ params }: { params: Promise<{ id
   const isEmergency = flags.emergencyCase === true || visit.verification === "EMERGENCY_VERIFICATION_IN_PROCESS";
   const natures = Array.isArray(visit.natureOfHealthcare) ? (visit.natureOfHealthcare as string[]) : [];
   const picked = (o: unknown) => Object.keys((o ?? {}) as Record<string, boolean>).filter((k) => ((o as Record<string, boolean>) ?? {})[k]);
+  const canEdit = can(session, "visit", "edit");
 
   return (
     <div className="space-y-6">
@@ -74,7 +76,10 @@ export default async function VisitDetailPage({ params }: { params: Promise<{ id
       </Section>
       <Section title="G. Admission / Procedure">
         <Row k="Ward" v={visit.ward} />
+        <Row k="Admission Date" v={visit.admissionDate ? new Date(visit.admissionDate).toLocaleDateString() : null} />
         <Row k="Procedure" v={visit.procedureName} />
+        <Row k="Consultant Unit" v={visit.consultantUnit} />
+        <Row k="Procedure Date" v={visit.procedureDate ? new Date(visit.procedureDate).toLocaleDateString() : null} />
         <Row k="Status" v={visit.procedureStatus} />
       </Section>
       <Section title="H. Sehat Card Plus">
@@ -86,16 +91,60 @@ export default async function VisitDetailPage({ params }: { params: Promise<{ id
         <Row k="Triage Completed" v={flags.triageCompleted === true ? "Yes" : "No"} />
         <Row k="Immediate Treatment" v={flags.immediateTreatmentInitiated === true ? "Yes" : "No"} />
       </Section>
+      <Section title="J. Ambulance & Referral">
+        <Row k="From / To" v={visit.ambulanceFromTo} />
+        <Row k="Date & Time" v={visit.ambulanceDateTime ? new Date(visit.ambulanceDateTime).toLocaleString() : null} />
+        <Row k="Status" v={visit.ambulanceStatus} />
+        <Row k="Referral Facility" v={visit.referralFacility} />
+        <Row k="Referral Reason" v={visit.referralReason} />
+        <Row k="Referring Consultant" v={visit.referringConsultant} />
+      </Section>
       <Section title="K. Health Desk Action & Outcome">
         <p className="text-sm text-gray-700">{picked(visit.healthDeskActions).join(", ") || "-"}</p>
         <Row k="Issue" v={visit.issueEncountered} />
         <Row k="Action Taken" v={visit.actionTaken} />
+        <Row k="Escalated To" v={visit.escalatedTo} />
+        <Row k="Follow-up Date" v={visit.followUpDate ? new Date(visit.followUpDate).toLocaleDateString() : null} />
         <Row k="Final Status" v={visit.finalStatus} />
       </Section>
       <Section title="L. Feedback">
         <p className="text-sm text-gray-700">{picked(visit.feedbackFlags).join(", ") || "-"}</p>
         <Row k="Comments" v={visit.feedbackComments} />
       </Section>
+
+      {canEdit && (
+        <VisitEditor
+          id={visit.id}
+          initial={{
+            beneficiaryFatherHusbandGuardian: visit.beneficiaryFatherHusbandGuardian,
+            department: visit.department,
+            consultant: visit.consultant,
+            opdMrNo: visit.opdMrNo,
+            diagnosis: visit.diagnosis,
+            treatmentPlan: visit.treatmentPlan,
+            followUpDate: visit.followUpDate,
+            investigationsStatus: visit.investigationsStatus,
+            ward: visit.ward,
+            admissionDate: visit.admissionDate,
+            procedureName: visit.procedureName,
+            consultantUnit: visit.consultantUnit,
+            procedureDate: visit.procedureDate,
+            procedureStatus: visit.procedureStatus,
+            ambulanceFromTo: visit.ambulanceFromTo,
+            ambulanceDateTime: visit.ambulanceDateTime,
+            ambulanceStatus: visit.ambulanceStatus,
+            referralFacility: visit.referralFacility,
+            referralReason: visit.referralReason,
+            referringConsultant: visit.referringConsultant,
+            feedbackComments: visit.feedbackComments,
+            finalStatus: visit.finalStatus,
+            actionTaken: visit.actionTaken,
+            issueEncountered: visit.issueEncountered,
+            escalatedTo: visit.escalatedTo,
+            verificationPending: visit.verificationPending,
+          }}
+        />
+      )}
     </div>
   );
 }

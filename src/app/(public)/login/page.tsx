@@ -9,6 +9,8 @@ const DEMO_ACCOUNTS = [
   { role: "Additional Hospital Director", username: "addl.director" },
   { role: "Medical Superintendent", username: "ms.dhq" },
   { role: "Health Desk Focal Person", username: "desk.dhq" },
+  { role: "Health Desk Focal Person (MMMTH)", username: "desk.mmmth" },
+  { role: "Health Desk Focal Person (W&C)", username: "desk.wc" },
   { role: "Administration / Finance", username: "wg.admin" },
   { role: "Sehat Card Plus", username: "wg.sehat" },
   { role: "Pharmacy", username: "wg.pharmacy" },

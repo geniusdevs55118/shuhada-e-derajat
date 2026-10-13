@@ -111,8 +111,11 @@ export default function ScanPage() {
     <div className="mx-auto max-w-4xl space-y-5">
       <div className="dashboard-page-heading">
         <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-blue-200">Card verification</p>
-        <h1 className="text-xl font-bold text-white sm:text-2xl">Scan a Health Card</h1>
+<h1 className="text-xl font-bold text-white sm:text-2xl">Scan a Health Card</h1>
         <p className="mt-1 text-sm text-blue-100/80">Scan the QR code or enter its token to view the current card record.</p>
+        <Link className="mt-2 inline-block text-sm font-semibold text-blue-100 underline" href="/dashboard/verify">
+          Open the staff verification screen
+        </Link>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <section className="rounded-xl border bg-white p-4 shadow-sm">
@@ -145,7 +148,23 @@ export default function ScanPage() {
         </section>
       </div>
       {result?.found && <section className="overflow-hidden rounded-xl border bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b p-4"><h2 className="font-semibold text-blue-950">Beneficiaries</h2><Link className="text-sm text-blue-700 underline" href={`/dashboard/health-cards?search=${encodeURIComponent(result.cardNo ?? "")}`}>Open card register</Link></div>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b p-4">
+          <div>
+            <h2 className="font-semibold text-blue-950">Verified Beneficiaries</h2>
+            <p className="text-xs text-gray-500">Ready for hospital facilitation & appointment token issuance</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              className="rounded-md bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-800"
+              href={`/dashboard/facilitation-booking?card=${encodeURIComponent(result.cardNo ?? result.familyRegistrationId ?? "")}`}
+            >
+              🎫 Facilitate & Book Appointment Slip
+            </Link>
+            <Link className="text-xs text-blue-700 underline" href={`/dashboard/health-cards?search=${encodeURIComponent(result.cardNo ?? "")}`}>
+              Card register
+            </Link>
+          </div>
+        </div>
         <div className="divide-y">{(result.beneficiaries ?? []).map((person) => <div key={person.beneficiaryId ?? `${person.name}-${person.relationship}`} className="grid grid-cols-2 gap-2 p-3 text-sm sm:grid-cols-4"><span className="font-medium">{person.name}</span><span>{person.relationship}</span><span className="text-gray-500">{person.beneficiaryId ?? ""}</span><span>{person.eligibility}</span></div>)}</div>
         <p className="border-t bg-blue-50 p-3 text-xs text-blue-900">{result.emergencyNote}</p>
       </section>}

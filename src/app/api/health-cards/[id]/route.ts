@@ -22,7 +22,12 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
   if (!card) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const family = await prisma.family.findFirst({
-    where: { registrationNo: card.familyRegistrationNo },
+    where: {
+      OR: [
+        { registrationNo: card.familyRegistrationNo },
+        { healthCardNo: card.cardNo },
+      ],
+    },
     include: { members: { orderBy: { serialNo: "asc" } } },
   });
 

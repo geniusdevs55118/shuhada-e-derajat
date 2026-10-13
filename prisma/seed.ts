@@ -31,6 +31,8 @@ const DEMO_USERS: {
   { username: "director", role: "hospital_director", name: "Demo Hospital Director", designation: "Hospital Director" },
   { username: "ms.dhq", role: "medical_superintendent", hospitalCode: "DHQ", name: "Demo Medical Superintendent", designation: "Medical Superintendent" },
   { username: "desk.dhq", role: "health_desk_officer", hospitalCode: "DHQ", name: "Demo Health Desk Officer", designation: "Health Desk Focal Person" },
+  { username: "desk.mmmth", role: "health_desk_officer", hospitalCode: "MMMTH", name: "Demo MMMTH Health Desk Officer", designation: "Health Desk Focal Person" },
+  { username: "desk.wc", role: "health_desk_officer", hospitalCode: "WC", name: "Demo W&C Health Desk Officer", designation: "Health Desk Focal Person" },
   { username: "wg.admin", role: "admin_finance_rep", name: "Demo Administration Officer", designation: "Administration / Finance Representative" },
   { username: "wg.sehat", role: "sehat_card_desk", name: "Demo Sehat Card Officer", designation: "Sehat Card Plus Representative" },
   { username: "wg.pharmacy", role: "pharmacy_rep", name: "Demo Pharmacy Officer", designation: "Pharmacy Representative" },
@@ -190,6 +192,8 @@ async function populateDemoData(db: Db, passwordHash: string) {
         hospitalId: user.hospitalCode ? hospitals[user.hospitalCode] : null,
         designation: user.designation,
         isActive: true,
+        // Demo accounts sign straight in; never strand them on the change-password page.
+        mustChangePassword: false,
       },
       create: {
         name: user.name,
@@ -199,7 +203,7 @@ async function populateDemoData(db: Db, passwordHash: string) {
         hospitalId: user.hospitalCode ? hospitals[user.hospitalCode] : null,
         designation: user.designation,
         isActive: true,
-        mustChangePassword: true,
+        mustChangePassword: false,
       },
     });
   }

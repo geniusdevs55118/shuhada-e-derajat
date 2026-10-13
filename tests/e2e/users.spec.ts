@@ -36,4 +36,14 @@ test("it_mis_rep creates, deactivates a desk user who then cannot log in", async
   await page.getByLabel(/^password$/i).fill("password123");
   await page.getByRole("button", { name: /sign in/i }).click();
   await expect(page.getByText(/invalid username or password/i)).toBeVisible();
+
+  // Leave the database as we found it.
+  await login(page, "wg.it");
+  await page.goto("/dashboard/users");
+  await page.getByPlaceholder(/search by name or username/i).fill(username);
+  await page.getByRole("button", { name: /filter/i }).click();
+  const row = page.getByRole("row", { name: new RegExp(username) });
+  await row.getByRole("button", { name: /delete/i }).click();
+  await page.getByRole("button", { name: /^delete user$/i }).click();
+  await expect(page.getByRole("cell", { name: username, exact: true })).toHaveCount(0);
 });

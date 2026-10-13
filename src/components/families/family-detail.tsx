@@ -66,6 +66,7 @@ export type FamilyDetailData = {
   authorizedDesignation: string | null;
   authorizedSignature: string | null;
   authorizationDate: string | Date | null;
+  authorizationRemarks: string | null;
   role: string;
   hospitalId: number | null;
   members: {
@@ -120,12 +121,22 @@ function RowNR({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-export function FamilyDetail({ family, canEdit }: { family: FamilyDetailData; canEdit: boolean }) {
+export function FamilyDetail({
+  family,
+  canEdit,
+  canRecordVerification,
+  canAuthorize,
+  history,
+}: {
+  family: FamilyDetailData;
+  canEdit: boolean;
+  canRecordVerification: boolean;
+  canAuthorize: boolean;
+  history: AuditLogEntry[];
+}) {
   const docs = Array.isArray(family.documentsSubmitted) ? (family.documentsSubmitted as string[]) : [];
 
-  // Permissions
-  const canRecordVerification = canEdit && family.role === "health_desk_officer";
-  const canAuthorize = canEdit && (family.role === "additional_director" || family.role === "hospital_director");
+  const historyEntries = history;
 
   // Verification dialog state
   const [verificationOpen, setVerificationOpen] = useState(false);
@@ -190,40 +201,7 @@ export function FamilyDetail({ family, canEdit }: { family: FamilyDetailData; ca
     }
   };
 
-  // History data (in a real app, this would be fetched from an API)
-  // For now, we'll simulate it based on family data
-  const history = [
-    ...(family.verificationStatus ? [{
-      id: 1,
-      who: family.verifiedBy || "Unknown",
-      role: "health_desk_officer",
-      action: "verification_recorded",
-      entity: "family",
-      entityId: String(family.id),
-      hospitalId: family.hospitalId,
-      createdAt: family.verifiedSignatureDate || new Date().toISOString(),
-    }] : []),
-    ...(family.authorizationDecision ? [{
-      id: 2,
-      who: family.authorizedOfficer || "Unknown",
-      role: family.authorizedDesignation?.includes("Director") ? "additional_director" : "hospital_director",
-      action: "authorization_recorded",
-      entity: "family",
-      entityId: String(family.id),
-      hospitalId: family.hospitalId,
-      createdAt: family.authorizationDate || new Date().toISOString(),
-    }] : []),
-    ...(family.verificationStatus || family.authorizationDecision ? [{
-      id: 3,
-      who: "System",
-      role: "system",
-      action: "edit",
-      entity: "family",
-      entityId: String(family.id),
-      hospitalId: family.hospitalId,
-      createdAt: new Date().toISOString(),
-    }] : []),
-  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  // History comes from the AuditLog table via the server component.
 
   const openVerificationDialog = () => setVerificationOpen(true);
   const closeVerificationDialog = () => {
@@ -296,6 +274,9 @@ export function FamilyDetail({ family, canEdit }: { family: FamilyDetailData; ca
               <Button variant="outline">Edit</Button>
             </Link>
           )}
+          <Link href={`/api/families/${family.id}/pdf`} target="_blank">
+            <Button variant="outline">Download PDF</Button>
+          </Link>
         </div>
       </div>
 
@@ -439,6 +420,7 @@ export function FamilyDetail({ family, canEdit }: { family: FamilyDetailData; ca
         <RowNR label="Designation" value={family.authorizedDesignation} />
         <RowNR label="Signature / Stamp" value={family.authorizedSignature} />
         <RowNR label="Date" value={family.authorizationDate ? new Date(family.authorizationDate).toLocaleDateString() : null} />
+        <RowNR label="Remarks" value={family.authorizationRemarks} />
         {canAuthorize && family.verificationStatus && (
           <div className="mt-4 md:col-span-2">
             <Button
@@ -454,11 +436,11 @@ export function FamilyDetail({ family, canEdit }: { family: FamilyDetailData; ca
       <section className="rounded-xl border bg-white p-5 shadow-sm">
         <h3 className="text-lg font-semibold text-foreground">History Timeline</h3>
         <div className="mt-4">
-          {history.length === 0 ? (
+          {historyEntries.length === 0 ? (
             <p className="text-gray-500">No history recorded yet.</p>
           ) : (
             <dl className="space-y-4">
-              {history.map((entry) => (
+              {historyEntries.map((entry) => (
                 <div key={entry.id} className="flex gap-4 border-l-2 border-blue-200 pl-4">
                   <div className="flex-shrink-0 w-8 h-8 border bg-background flex items-center justify-center text-muted-foreground text-[10px] font-semibold">
                     {entry.action === "verification_recorded" ? "VER" : entry.action === "authorization_recorded" ? "AUTH" : entry.action === "edit" ? "EDIT" : "LOG"}
@@ -470,12 +452,6 @@ export function FamilyDetail({ family, canEdit }: { family: FamilyDetailData; ca
                       <span className="text-gray-500">{new Date(entry.createdAt).toLocaleString()}</span>
                     </div>
                     <div className="mt-1 text-sm text-gray-700 capitalize">{entry.action.replace(/_/g, " ")}</div>
-                    {entry.action === "verification_recorded" && family.verificationRemarks && (
-                      <div className="mt-1 text-sm text-gray-600">Remarks: {family.verificationRemarks}</div>
-                    )}
-                    {entry.action === "authorization_recorded" && family.authorizationDecision && (
-                      <div className="mt-1 text-sm text-gray-600">Decision: {family.authorizationDecision}</div>
-                    )}
                   </div>
                 </div>
               ))}

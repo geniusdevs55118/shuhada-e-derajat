@@ -67,31 +67,33 @@ test("family lifecycle with role-based visibility", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "A. Particulars of Shaheed" })).toBeVisible();
   await expect(page.getByText(contactCnic).first()).toBeVisible();
 
+  const updatedShaheed = `${shaheed} Updated`;
   await page.getByRole("link", { name: "Edit" }).click();
-  await page.getByLabel(/full name/i).fill(`${shaheed} Updated`);
+  await page.getByLabel(/full name/i).fill(updatedShaheed);
   for (let i = 0; i < 8; i++) {
     const nextBtn = page.getByRole("button", { name: "Next", exact: true });
     if (!(await nextBtn.isVisible().catch(() => false))) break;
     await nextBtn.click();
     await page.waitForTimeout(400);
   }
-  await page.locator("form button").last().click();
+  const saveBtn = page.getByRole("button", { name: /save changes/i });
+  if (await saveBtn.isVisible().catch(() => false)) await saveBtn.click();
   await page.waitForURL(/\/dashboard\/families\/\d+$/);
-  await expect(page.getByText(`${shaheed} Updated`)).toBeVisible();
+  await expect(page.getByText(updatedShaheed, { exact: true })).toBeVisible();
 
   await logout(page);
 
   await login(page, "desk.mmmth");
   await page.goto("/dashboard/families");
-  await page.getByPlaceholder(/search by/i).fill(shaheed);
+  await page.getByPlaceholder(/search by/i).fill(updatedShaheed);
   await page.getByRole("button", { name: /search/i }).click();
-  await expect(page.getByRole("cell", { name: shaheed, exact: true })).toBeVisible();
+  await expect(page.getByRole("cell", { name: updatedShaheed, exact: true })).toBeVisible();
   await logout(page);
 
   await login(page, "director");
   await page.goto("/dashboard/families");
   await expect(page.getByRole("link", { name: "Register New Family" })).toHaveCount(0);
-  await page.getByPlaceholder(/search by/i).fill(shaheed);
+  await page.getByPlaceholder(/search by/i).fill(updatedShaheed);
   await page.getByRole("button", { name: /search/i }).click();
   await page.getByRole("link", { name: /DSF-/ }).first().click();
   await expect(page.getByRole("link", { name: "Edit" })).toHaveCount(0);

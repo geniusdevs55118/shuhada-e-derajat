@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { can } from "@/lib/permissions";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export const instant = false;
 
@@ -18,12 +19,22 @@ export default async function AuditLogPage({ searchParams }: { searchParams: Pro
   if (params.entity) where.entity = params.entity;
   if (params.from || params.to) where.createdAt = { ...(params.from ? { gte: new Date(params.from) } : {}), ...(params.to ? { lte: new Date(params.to) } : {}) };
 
-  const page = Math.max(1, Number(params.page ?? 1) || 1);
+const page = Math.max(1, Number(params.page ?? 1) || 1);
   const pageSize = 25;
-  const [total, logs] = await Promise.all([
-    prisma.auditLog.count({ where }),
-    prisma.auditLog.findMany({ where, orderBy: { createdAt: "desc" }, skip: (page - 1) * pageSize, take: pageSize }),
-  ]);
+  const total = await prisma.auditLog.count({ where });
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  if (page > totalPages) redirect(`/dashboard/audit-log?${qs(1)}`);
+  const logs = await prisma.auditLog.findMany({ where, orderBy: { createdAt: "desc" }, skip: (page - 1) * pageSize, take: pageSize });
+
+  function qs(p: number) {
+    const sp = new URLSearchParams();
+    for (const key of ["who", "action", "entity", "from", "to"] as const) {
+      const value = params[key];
+      if (value) sp.set(key, value);
+    }
+    sp.set("page", String(p));
+    return sp.toString();
+  }
 
   return (
     <div className="space-y-4">
@@ -74,7 +85,20 @@ export default async function AuditLogPage({ searchParams }: { searchParams: Pro
           </div>
         ))}
       </div>
-      <p className="text-xs text-gray-500">Total records: {total}</p>
+<div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-gray-500">Total records: {total}</p>
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2">
+            {page > 1 && (
+              <Link className="rounded border px-3 py-1 text-sm" href={qs(page - 1)}>Previous</Link>
+            )}
+            <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
+            {page < totalPages && (
+              <Link className="rounded border px-3 py-1 text-sm" href={qs(page + 1)}>Next</Link>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

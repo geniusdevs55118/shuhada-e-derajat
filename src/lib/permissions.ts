@@ -64,15 +64,15 @@ const DIRECTORS: Role[] = ["hospital_director", "additional_director"];
 
 // visit/grievance/monthly_report READ allowed for everyone, but all-hospital for these roles
 const ALL_HOSPITAL_READERS = [...DIRECTORS, ...WG_ROLES];
+// Roles that see every hospital's rows, not just their own.
+const NETWORK_WIDE: Role[] = ["super_admin", ...ALL_HOSPITAL_READERS];
 
 const HEALTH_DESK: Role[] = ["health_desk_officer"];
-const HEALTH_DESK_AND_DIRECTORS: Role[] = [...HEALTH_DESK, ...DIRECTORS];
-const CLINICAL_STAFF: Role[] = ["health_desk_officer", "pharmacy_rep", "diagnostics_rep", "nursing_rep", ...DIRECTORS];
-const REPORT_ROLES: Role[] = ["health_desk_officer", "medical_superintendent", ...DIRECTORS, ...WG_ROLES];
+const SUPERVISORS: Role[] = ["super_admin", ...DIRECTORS, "medical_superintendent", ...WG_ROLES];
 
 export const MATRIX: Record<Resource, Partial<Record<Action, Role[]>>> = {
   family: {
-    read: HEALTH_DESK_AND_DIRECTORS,
+    read: ALL_ROLES,
     create: HEALTH_DESK,
     edit: HEALTH_DESK,
     approve: DIRECTORS,
@@ -80,7 +80,7 @@ export const MATRIX: Record<Resource, Partial<Record<Action, Role[]>>> = {
     authorize: DIRECTORS,
   },
   card: {
-    read: HEALTH_DESK_AND_DIRECTORS,
+    read: ALL_ROLES,
     create: HEALTH_DESK,
     edit: HEALTH_DESK,
     approve: DIRECTORS,
@@ -92,29 +92,29 @@ export const MATRIX: Record<Resource, Partial<Record<Action, Role[]>>> = {
     authorize_misuse_flag: DIRECTORS,
   },
   visit: {
-    read: CLINICAL_STAFF,
+    read: ALL_ROLES,
     create: HEALTH_DESK,
     edit: HEALTH_DESK,
   },
   sehat_claim: {
-    read: ["health_desk_officer", "sehat_card_desk", ...DIRECTORS],
+    read: ALL_ROLES,
     edit_sehat_section: ["sehat_card_desk", "health_desk_officer"],
   },
   grievance: {
-    read: ["health_desk_officer", "medical_superintendent", ...DIRECTORS, "additional_director"],
+    read: ALL_ROLES,
     create: HEALTH_DESK,
     working_group_review: ["additional_director"],
     closure: ["medical_superintendent", "additional_director"],
   },
   monthly_report: {
-    read: REPORT_ROLES,
+    read: ALL_ROLES,
     create: HEALTH_DESK,
     edit: HEALTH_DESK,
     comments: ["additional_director"],
     sign: ["hospital_director"],
   },
   action_tracker: {
-    read: ["super_admin", "hospital_director", "additional_director", "medical_superintendent", ...WG_ROLES],
+    read: SUPERVISORS,
     create: ["additional_director"],
     edit: ["additional_director"],
   },
@@ -136,10 +136,10 @@ export const MATRIX: Record<Resource, Partial<Record<Action, Role[]>>> = {
 const ALL_HOSPITAL_ROLES: Record<Resource, Role[]> = {
   family: ALL_ROLES, // shared across hospitals
   card: ALL_ROLES, // shared across hospitals
-  visit: ALL_HOSPITAL_READERS,
-  sehat_claim: ALL_HOSPITAL_READERS,
-  grievance: ALL_HOSPITAL_READERS,
-  monthly_report: ALL_HOSPITAL_READERS,
+  visit: NETWORK_WIDE,
+  sehat_claim: NETWORK_WIDE,
+  grievance: NETWORK_WIDE,
+  monthly_report: NETWORK_WIDE,
   action_tracker: ["super_admin", "hospital_director", "additional_director", ...WG_ROLES],
   user: ["super_admin", "it_mis_rep"],
   audit_log: ["super_admin", "hospital_director", "additional_director", "it_mis_rep"],
@@ -196,14 +196,6 @@ export function hospitalScope(user: SessionUser, resource: Resource): Record<str
     return user.hospitalId ? { monthlyReport: { hospitalId: user.hospitalId } } : { id: -1 };
   }
   return user.hospitalId ? { hospitalId: user.hospitalId } : { hospitalId: -1 };
-}
-
-// Emergency rule: an emergency visit with pending verification must still be
-// savable. Permissions never depend on verification fields, and this helper
-// makes the intent explicit for route handlers.
-export function canSaveEmergencyVisit(user: SessionUser, opts: { isEmergency: boolean; verificationPending: boolean }): boolean {
-  if (opts.isEmergency) return can(user, "visit", "create") || can(user, "visit", "edit");
-  return can(user, "visit", "create") || can(user, "visit", "edit");
 }
 
 // Audit when a user reads a record from ANOTHER hospital that their role allows.

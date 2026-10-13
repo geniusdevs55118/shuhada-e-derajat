@@ -27,8 +27,8 @@ describe.skipIf(!dbUp)("Phase 18: Visits API", () => {
 
   beforeAll(async () => {
     await runSeed(DEMO_PASSWORD);
-    const f = await prisma.family.findFirst();
-    familyRegNo = f!.registrationNo;
+    const f = await prisma.family.findFirstOrThrow({ where: { registrationNo: { startsWith: "DEMO-FAM-" } } });
+    familyRegNo = f.registrationNo;
   });
 
   afterAll(async () => {

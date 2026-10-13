@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Forbidden } from "@/components/dashboard/forbidden";
 import { GrievanceClosure } from "@/components/grievances/grievance-closure";
+import { GrievanceResolution, GrievanceWorkingGroupReview } from "@/components/grievances/grievance-resolution";
 
 export const instant = false;
 
@@ -28,6 +29,8 @@ export default async function GrievanceDetailPage({ params }: { params: Promise<
 
   const hospital = await prisma.hospital.findUnique({ where: { id: grievance.hospitalId } });
   const canClose = can(session, "grievance", "closure");
+  const canResolve = can(session, "grievance", "create") && !grievance.closureStatus;
+  const canReview = can(session, "grievance", "working_group_review");
 
   return (
     <div className="space-y-6">
@@ -73,8 +76,18 @@ export default async function GrievanceDetailPage({ params }: { params: Promise<
       <Section title="H. Clinical Safeguard">
         <p className="text-sm text-gray-700">Emergency care and immediate clinical assessment shall not be delayed while this grievance is processed.</p>
       </Section>
+      <Section title="F. Immediate Action">
+        <Row k="Immediate Action Taken" v={grievance.immediateActionTaken} />
+        <Row k="Resolved at Health Desk" v={grievance.resolvedAtHealthDesk} />
+      </Section>
+      <Section title="G. Escalation">
+        <Row k="Escalated To" v={grievance.escalatedTo} />
+        <Row k="Designation" v={grievance.escalationDesignation} />
+        <Row k="Reason" v={grievance.escalationReason} />
+      </Section>
       <Section title="I. Action / Resolution">
         <Row k="Action Taken" v={grievance.actionTaken} />
+        <Row k="Responsible Dept / Officer" v={grievance.responsibleDeptOfficer} />
         <Row k="Outcome" v={grievance.outcome} />
         <Row k="Remarks" v={grievance.remarks} />
       </Section>
@@ -83,14 +96,18 @@ export default async function GrievanceDetailPage({ params }: { params: Promise<
         <Row k="Facilitation Provided" v={grievance.facilitationProvided} />
         <Row k="Comments" v={grievance.beneficiaryComments} />
       </Section>
-      <Section title="K. Root Cause & Corrective Action">
+      <Section title="K. Root Cause &amp; Corrective Action">
         <Row k="Root Cause" v={grievance.rootCause} />
         <Row k="Corrective Action" v={grievance.correctiveAction} />
+        <Row k="Preventive Action" v={grievance.preventiveActionRequired} />
+        <Row k="Responsible Officer / Dept" v={grievance.responsibleOfficerDept} />
+        <Row k="Target Completion" v={grievance.targetCompletionDate ? new Date(grievance.targetCompletionDate).toLocaleDateString() : null} />
         <Row k="Status" v={grievance.actionCompleted} />
       </Section>
       <Section title="L. Working Group Review">
         <Row k="Review Required" v={grievance.requiresWorkingGroupReview === true ? "Yes" : grievance.requiresWorkingGroupReview === false ? "No" : null} />
         <Row k="Reviewed By" v={grievance.reviewedBy} />
+        <Row k="Observations" v={grievance.observations} />
         <Row k="Directions" v={grievance.furtherDirections} />
       </Section>
       <Section title="M. Closure">
@@ -98,6 +115,44 @@ export default async function GrievanceDetailPage({ params }: { params: Promise<
         <Row k="Closed By" v={grievance.closedBy} />
         <Row k="Date" v={grievance.closureDate} />
       </Section>
+
+      {canResolve && (
+        <GrievanceResolution
+          id={grievance.id}
+          initial={{
+            immediateActionTaken: grievance.immediateActionTaken,
+            escalatedTo: grievance.escalatedTo,
+            escalationDesignation: grievance.escalationDesignation,
+            escalationReason: grievance.escalationReason,
+            actionTaken: grievance.actionTaken,
+            responsibleDeptOfficer: grievance.responsibleDeptOfficer,
+            outcome: grievance.outcome,
+            remarks: grievance.remarks,
+            issueExplainedAppropriately: grievance.issueExplainedAppropriately,
+            facilitationProvided: grievance.facilitationProvided,
+            beneficiaryComments: grievance.beneficiaryComments,
+            rootCause: grievance.rootCause,
+            correctiveAction: grievance.correctiveAction,
+            preventiveActionRequired: grievance.preventiveActionRequired,
+            responsibleOfficerDept: grievance.responsibleOfficerDept,
+            targetCompletionDate: grievance.targetCompletionDate
+              ? new Date(grievance.targetCompletionDate).toISOString().slice(0, 10)
+              : null,
+            actionCompleted: grievance.actionCompleted,
+          }}
+        />
+      )}
+      {canReview && (
+        <GrievanceWorkingGroupReview
+          id={grievance.id}
+          initial={{
+            requiresWorkingGroupReview: grievance.requiresWorkingGroupReview,
+            reviewedBy: grievance.reviewedBy,
+            observations: grievance.observations,
+            furtherDirections: grievance.furtherDirections,
+          }}
+        />
+      )}
 
       {canClose && !grievance.closureStatus && <GrievanceClosure id={grievance.id} />}
     </div>

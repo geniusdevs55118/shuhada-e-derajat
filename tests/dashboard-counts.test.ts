@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { PrismaClient } from "@prisma/client";
 import { runSeed } from "../prisma/seed";
-import { getDashboardData } from "@/lib/dashboard";
+import { getDashboardData, monthRange } from "@/lib/dashboard";
 import { canConnect } from "./helpers/db";
 
 const prisma = new PrismaClient();
@@ -61,7 +61,13 @@ describe.skipIf(!dbUp)("dashboard counts (hospital-scoped)", () => {
     const deskData = await getDashboardData({ id: desk.id, role: "health_desk_officer", hospitalId: dhq.id });
     const directorData = await getDashboardData({ id: director.id, role: "hospital_director", hospitalId: null });
 
-    expect(directorData.counts.visitsThisMonth).toBe(deskData.counts.visitsThisMonth + 1);
+    // A director sees every hospital's visits; the desk officer sees only their own.
+    // Derived from the data so it stays correct regardless of other records in the database.
+    const otherHospitalVisits = await prisma.visit.count({
+      where: { hospitalId: { not: dhq.id }, dateTime: monthRange() },
+    });
+    expect(directorData.counts.visitsThisMonth).toBe(deskData.counts.visitsThisMonth + otherHospitalVisits);
+    expect(directorData.counts.visitsThisMonth).toBeGreaterThan(deskData.counts.visitsThisMonth);
     expect(directorData.counts.redGrievances).toBeGreaterThanOrEqual(deskData.counts.redGrievances);
     expect(directorData.perHospital).toHaveLength(3);
     expect(deskData.perHospital).toHaveLength(0);

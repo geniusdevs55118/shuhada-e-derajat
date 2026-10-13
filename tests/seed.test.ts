@@ -7,6 +7,11 @@ import { canConnect } from "./helpers/db";
 
 const dbUp = await canConnect();
 
+const SEEDED_USERNAMES = [
+  "super.admin", "director", "addl.director", "ms.dhq", "desk.dhq", "desk.mmmth", "desk.wc",
+  "wg.admin", "wg.sehat", "wg.pharmacy", "wg.diagnostics", "wg.nursing", "wg.it", "wg.member",
+];
+
 describe.skipIf(!dbUp)("seed (requires reachable DATABASE_URL)", () => {
   afterAll(async () => {
     await prisma.$disconnect();
@@ -16,15 +21,17 @@ describe.skipIf(!dbUp)("seed (requires reachable DATABASE_URL)", () => {
     await runSeed("demo-password-123");
     await runSeed("demo-password-123");
 
-    const users = await prisma.user.findMany({ where: { email: { endsWith: "@demo.dsfhi.local" } } });
-    expect(users).toHaveLength(12);
+    const users = await prisma.user.findMany({
+      where: { email: { in: SEEDED_USERNAMES.map((name) => `${name}@demo.dsfhi.local`) } },
+    });
+    expect(users).toHaveLength(SEEDED_USERNAMES.length);
 
     const countByRole = (r: string) => users.filter((u) => u.role === r).length;
     expect(countByRole("super_admin")).toBe(1);
     expect(countByRole("hospital_director")).toBe(1);
     expect(countByRole("additional_director")).toBe(1);
     expect(countByRole("medical_superintendent")).toBe(1);
-    expect(countByRole("health_desk_officer")).toBe(1);
+    expect(countByRole("health_desk_officer")).toBe(3);
     expect(countByRole("admin_finance_rep")).toBe(1);
     expect(countByRole("sehat_card_desk")).toBe(1);
     expect(countByRole("pharmacy_rep")).toBe(1);

@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   const where: Record<string, unknown> = { ...hospitalScope(session, "monthly_report") };
-  const reports = await prisma.monthlyReport.findMany({ where, orderBy: [{ year: "desc" }, { month: "desc" }], take: 50, include: { hospital: { select: { code: true, name: true } } } });
+  const reports = await prisma.monthlyReport.findMany({ where, orderBy: [{ year: "desc" }, { month: "desc" }], take: 50, include: { hospital: { select: { code: true, name: true } }, indicators: { orderBy: { sortOrder: "asc" } } } });
   return NextResponse.json({ data: reports });
 }
 
@@ -78,8 +78,48 @@ export async function POST(req: NextRequest) {
       chairmanComments: body.chairmanComments || null,
       directorDirectionsSignature: body.directorDirectionsSignature || null,
       statsSnapshot: body.statsSnapshot ?? undefined,
+      indicators: {
+        create: normaliseIndicators(body.indicators),
+      },
     },
   });
 
   return NextResponse.json({ id: report.id, reportNo: report.reportNo }, { status: 201 });
+}
+
+const KPI_INDICATORS = [
+  "Card issuance",
+  "Emergency care",
+  "OPD facilitation",
+  "Diagnostics",
+  "Pharmacy",
+  "Admissions",
+  "Surgical procedures",
+  "Sehat Card Plus",
+  "Ambulance",
+  "Referrals",
+];
+
+const KPI_STATUSES = ["On Track", "Needs Attention"];
+
+type IndicatorInput = { indicator?: unknown; target?: unknown; achievement?: unknown; status?: unknown; remarks?: unknown };
+
+function normaliseIndicators(input: unknown) {
+  const rows: IndicatorInput[] = Array.isArray(input) ? (input as IndicatorInput[]) : [];
+
+  // The KPI table always covers the full standard list, even if left blank.
+  const byName = new Map(rows.map((row) => [String(row.indicator ?? "").trim(), row]));
+
+  return KPI_INDICATORS.map((indicator, index) => {
+    const row = byName.get(indicator) ?? byName.get(indicator.toLowerCase()) ?? {};
+    const status = KPI_STATUSES.includes(String(row.status)) ? String(row.status) : "On Track";
+    return {
+      indicator,
+      target: row.target ? String(row.target) : null,
+      achievement: row.achievement ? String(row.achievement) : null,
+      status,
+      remarks: row.remarks ? String(row.remarks) : null,
+      sortOrder: index,
+    };
+  });
 }

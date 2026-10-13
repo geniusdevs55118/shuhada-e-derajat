@@ -25,7 +25,6 @@ async function ShellForUser({ children }: { children: React.ReactNode }) {
     parsedPathname;
   const onChangePassword = pathname === "/dashboard/change-password";
   if (user.mustChangePassword && !onChangePassword) redirect("/dashboard/change-password");
-  if (!user.mustChangePassword && onChangePassword) redirect("/dashboard");
 
   const menu = getMenuForRole(user.role, user.hospitalId);
   const hospital = user.hospitalId === null ? "All Hospitals" : (user.hospital?.code ?? "Unknown");

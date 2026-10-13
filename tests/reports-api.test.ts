@@ -66,4 +66,52 @@ describe.skipIf(!dbUp)("Phase 23: Monthly reports API", () => {
     const res = await reportsGET(req("http://localhost/api/reports", token));
     expect(res.status).toBe(200);
   });
+
+  it("persists the full 10-row KPI table with targets and status", async () => {
+    const token = await tokenFor("desk.dhq");
+    const res = await reportsPOST(
+      req("http://localhost/api/reports", token, {
+        method: "POST",
+        body: JSON.stringify({
+          month: 11,
+          year: 2026,
+          achievements: "TEST_REPORT",
+          indicators: [
+            { indicator: "Card issuance", target: "50", achievement: "42 cards", status: "Needs Attention" },
+            { indicator: "Referrals", target: "10", achievement: "14" },
+          ],
+        }),
+      })
+    );
+    expect(res.status).toBe(201);
+    const { id } = await res.json();
+
+    const saved = await prisma.reportIndicator.findMany({ where: { monthlyReportId: id }, orderBy: { sortOrder: "asc" } });
+    expect(saved).toHaveLength(10);
+    expect(saved[0]).toMatchObject({ indicator: "Card issuance", target: "50", status: "Needs Attention" });
+    expect(saved.map((row) => row.indicator)).toContain("Ambulance");
+
+    const listRes = await reportsGET(req("http://localhost/api/reports", token));
+    const list = await listRes.json();
+    const report = list.data.find((row: { id: number }) => row.id === id);
+    expect(report.indicators).toHaveLength(10);
+  });
+
+  it("falls back to On Track for an unknown KPI status", async () => {
+    const token = await tokenFor("desk.dhq");
+    const res = await reportsPOST(
+      req("http://localhost/api/reports", token, {
+        method: "POST",
+        body: JSON.stringify({
+          month: 12,
+          year: 2026,
+          achievements: "TEST_REPORT",
+          indicators: [{ indicator: "Pharmacy", status: "banana" }],
+        }),
+      })
+    );
+    const { id } = await res.json();
+    const row = await prisma.reportIndicator.findFirst({ where: { monthlyReportId: id, indicator: "Pharmacy" } });
+    expect(row?.status).toBe("On Track");
+  });
 });

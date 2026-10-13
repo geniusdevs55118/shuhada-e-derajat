@@ -19,12 +19,16 @@ export async function computeLiveStats(year: number, month: number, hospitalId: 
   const { start, end } = monthBounds(year, month);
   const hWhere = hospitalId ? { hospitalId } : {};
 
+  const hospitalFamilyRegNos = hospitalId
+    ? (await prisma.family.findMany({ where: hWhere, select: { registrationNo: true } })).map((f) => f.registrationNo)
+    : null;
+
   const [familiesTotal, familiesNew, verifiedBeneficiaries, familiesPending, cardsIssued, cardsActive, visits] = await Promise.all([
     prisma.family.count({ where: hWhere }),
     prisma.family.count({ where: { ...hWhere, dateOfRegistration: { gte: start, lt: end } } }),
     prisma.family.count({ where: { ...hWhere, verificationStatus: "VERIFIED_ELIGIBLE" } }),
     prisma.family.count({ where: { ...hWhere, verificationStatus: null } }),
-    prisma.healthCard.count({ where: { dateOfCardIssue: { gte: start, lt: end }, ...(hospitalId ? { familyRegistrationNo: { in: (await prisma.family.findMany({ where: hWhere, select: { registrationNo: true } })).map((f) => f.registrationNo) } } : {}) } }),
+    prisma.healthCard.count({ where: { dateOfCardIssue: { gte: start, lt: end }, ...(hospitalFamilyRegNos ? { familyRegistrationNo: { in: hospitalFamilyRegNos } } : {}) } }),
     prisma.healthCard.count({ where: { status: "ACTIVE" } }),
     prisma.visit.findMany({ where: { ...hWhere, dateTime: { gte: start, lt: end } }, include: { sehatClaims: true } }),
   ]);
@@ -55,7 +59,7 @@ export async function computeLiveStats(year: number, month: number, hospitalId: 
   const emergency = {
     emergencyCasesReceived: emergencyVisits.length,
     treatedBeforeVerification: emergencyVisits.filter((v) => v.verificationPending || v.verification === "EMERGENCY_VERIFICATION_IN_PROCESS").length,
-    delaysReported: 0,
+    delaysReported: emergencyVisits.filter((v) => Boolean((v.issueEncountered ?? "").trim())).length,
   };
 
   const ambulanceReferral = {
@@ -79,6 +83,31 @@ export async function computeLiveStats(year: number, month: number, hospitalId: 
     redAlerts: grievances.filter((g) => g.isRedAlert).length,
   };
 
+  // Beneficiaries onboarded this month = eligible members of families registered this month.
+  const newFamilies = await prisma.family.findMany({
+    where: { ...hWhere, dateOfRegistration: { gte: start, lt: end } },
+    select: { id: true, dateOfRegistration: true, verifiedSignatureDate: true },
+  });
+  const newBeneficiaries = newFamilies.length
+    ? await prisma.familyMember.count({ where: { familyId: { in: newFamilies.map((f) => f.id) } } })
+    : 0;
+
+  // Average days from registration to official verification, across verified families.
+  const verifiedFamilies = await prisma.family.findMany({
+    where: { ...hWhere, verificationStatus: { not: null }, verifiedSignatureDate: { not: null } },
+    select: { dateOfRegistration: true, verifiedSignatureDate: true },
+  });
+  const verificationDays = verifiedFamilies
+    .map((f) => {
+      const verifiedAt = f.verifiedSignatureDate ? new Date(f.verifiedSignatureDate) : null;
+      if (!verifiedAt || isNaN(verifiedAt.getTime())) return null;
+      return (verifiedAt.getTime() - f.dateOfRegistration.getTime()) / 86_400_000;
+    })
+    .filter((days): days is number => days !== null && days >= 0);
+  const averageVerificationTimeDays = verificationDays.length
+    ? Math.round((verificationDays.reduce((sum, d) => sum + d, 0) / verificationDays.length) * 10) / 10
+    : null;
+
   return {
     period: { month, year },
     hospitalId,
@@ -86,11 +115,11 @@ export async function computeLiveStats(year: number, month: number, hospitalId: 
       totalFamiliesRegistered: familiesTotal,
       newFamiliesThisMonth: familiesNew,
       totalVerifiedBeneficiaries: verifiedBeneficiaries,
-      newBeneficiariesThisMonth: familiesNew,
+      newBeneficiariesThisMonth: newBeneficiaries,
       healthCardsIssuedThisMonth: cardsIssued,
       digitalQrRecordsActive: cardsActive,
       casesPendingVerification: familiesPending,
-      averageVerificationTimeDays: null as number | null,
+      averageVerificationTimeDays,
     },
     sectionC: { totalVisits: visits.length, byService: serviceCounts },
     sectionD: sehat,

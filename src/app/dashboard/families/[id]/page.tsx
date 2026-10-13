@@ -16,6 +16,22 @@ export default async function FamilyDetailPage({ params }: { params: Promise<{ i
     .catch(() => null);
   if (!family) notFound();
 
-  const canEdit = can({ id: user.id, role: user.role, hospitalId: user.hospitalId }, "family", "edit");
-  return <FamilyDetail family={{ ...family, role: user.role }} canEdit={canEdit} />;
+  const session = { id: user.id, role: user.role, hospitalId: user.hospitalId };
+  const canEdit = can(session, "family", "edit");
+  const canRecordVerification = can(session, "family", "record_verification");
+  const canAuthorize = can(session, "family", "authorize");
+
+  const history = await prisma.auditLog
+    .findMany({ where: { entity: "family", entityId: String(family.id) }, orderBy: { createdAt: "desc" }, take: 25 })
+    .catch(() => []);
+
+  return (
+    <FamilyDetail
+      family={{ ...family, role: user.role }}
+      canEdit={canEdit}
+      canRecordVerification={canRecordVerification}
+      canAuthorize={canAuthorize}
+      history={history.map((entry) => ({ ...entry, createdAt: entry.createdAt.toISOString() }))}
+    />
+  );
 }

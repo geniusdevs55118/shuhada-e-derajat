@@ -32,7 +32,12 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ qr: string 
   }
 
   const family = await prisma.family.findFirst({
-    where: { registrationNo: card.familyRegistrationNo },
+    where: {
+      OR: [
+        { registrationNo: card.familyRegistrationNo },
+        { healthCardNo: card.cardNo },
+      ],
+    },
     include: { members: { orderBy: { serialNo: "asc" } } },
   });
 

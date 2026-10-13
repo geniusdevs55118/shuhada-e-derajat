@@ -58,10 +58,12 @@ export async function getCurrentUser(tokenOverride?: string) {
   const payload = verifyToken(token);
   if (!payload) return null;
 
+  // Deliberately NOT swallowed: a database outage must surface as a server error,
+  // never as a misleading "unauthenticated" result for a valid session.
   const user = await prisma.user.findUnique({
     where: { id: payload.userId },
     include: { hospital: true },
-  }).catch(() => null);
+  });
   if (!user || !user.isActive) return null;
   return user;
 }

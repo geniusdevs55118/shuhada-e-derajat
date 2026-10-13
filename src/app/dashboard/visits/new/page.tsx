@@ -17,6 +17,8 @@ const MEDICINES = ["Prescribed", "Institutional Facilitated", "Fully Available",
 const SEHAT = ["Eligibility Checked", "Service Covered", "Not Covered", "Not Applicable", "Case Approved", "Under Process"];
 const FEEDBACK = ["Satisfied with facilitation", "Felt respected / dignified", "Timely service", "Would recommend desk"];
 const HEALTH_DESK = ["Registered", "Guided", "Facilitated", "Escalated", "Referred", "Follow-up Scheduled"];
+const AMBULANCE = ["Ambulance Requested", "Ambulance Arrived", "Patient Transported", "Transfer Completed"];
+const AMBULANCE_STATUS = ["REQUESTED", "COORDINATING", "FACILITATED", "REFERRED", "CLOSED"];
 
 function CheckGroup({ options, values, onChange }: { options: readonly string[]; values: Record<string, boolean>; onChange: (v: Record<string, boolean>) => void }) {
   return (
@@ -67,6 +69,15 @@ export default function NewVisitPage() {
   const [actionTaken, setActionTaken] = useState("");
   const [feedbackComments, setFeedbackComments] = useState("");
   const [sehatCaseRef, setSehatCaseRef] = useState("");
+  const [ambulanceFlags, setAmbulanceFlags] = useState<Record<string, boolean>>({});
+  const [ambulanceFromTo, setAmbulanceFromTo] = useState("");
+  const [ambulanceDateTime, setAmbulanceDateTime] = useState("");
+  const [ambulanceStatus, setAmbulanceStatus] = useState("");
+  const [referralFacility, setReferralFacility] = useState("");
+  const [referralReason, setReferralReason] = useState("");
+  const [referringConsultant, setReferringConsultant] = useState("");
+
+  const hasReferral = referralFacility.trim().length > 0;
 
   const toggleEmergency = () => {
     const next = !emergency;
@@ -116,8 +127,14 @@ export default function NewVisitPage() {
           diagnostics,
           medicinesFlags: medicines,
           sehatFlags: sehat,
-          emergencyFlags,
-          ambulanceFlags: {},
+emergencyFlags,
+          ambulanceFlags,
+          ambulanceFromTo: ambulanceFromTo || undefined,
+          ambulanceDateTime: ambulanceDateTime || undefined,
+          ambulanceStatus: (ambulanceStatus || undefined) as never,
+          referralFacility: referralFacility || undefined,
+          referralReason: referralReason || undefined,
+          referringConsultant: referringConsultant || undefined,
           healthDeskActions: healthDesk,
           feedbackFlags: feedback,
           department: department || undefined,
@@ -223,8 +240,30 @@ export default function NewVisitPage() {
         </div>
       </details>
 
+<details className="rounded-xl border bg-white p-4 shadow-sm" open={Object.keys(ambulanceFlags).some((k) => ambulanceFlags[k]) || hasReferral}>
+        <summary className="cursor-pointer font-semibold text-gray-800">J. Ambulance & Referral</summary>
+        <div className="mt-3 space-y-3">
+          <CheckGroup options={AMBULANCE} values={ambulanceFlags} onChange={setAmbulanceFlags} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div><Label>Ambulance From / To</Label><Input value={ambulanceFromTo} onChange={(e) => setAmbulanceFromTo(e.target.value)} placeholder="e.g. DHQ to MMMTH" /></div>
+            <div><Label>Ambulance Date &amp; Time</Label><Input type="datetime-local" value={ambulanceDateTime} onChange={(e) => setAmbulanceDateTime(e.target.value)} /></div>
+            <div>
+              <Label>Ambulance Status</Label>
+              <select value={ambulanceStatus} onChange={(e) => setAmbulanceStatus(e.target.value)} className="mt-1 h-9 w-full rounded-md border px-3 text-sm">
+                <option value="">Not recorded</option>
+                {AMBULANCE_STATUS.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div><Label>Referred To (Facility)</Label><Input value={referralFacility} onChange={(e) => setReferralFacility(e.target.value)} placeholder="e.g. Mufti Mehmood Memorial Teaching Hospital" /></div>
+            <div><Label>Reason for Referral</Label><Input value={referralReason} onChange={(e) => setReferralReason(e.target.value)} /></div>
+            <div><Label>Referring Consultant</Label><Input value={referringConsultant} onChange={(e) => setReferringConsultant(e.target.value)} /></div>
+          </div>
+          <p className="text-xs text-gray-500">Recording a referral facility adds this visit to the Ambulance &amp; Referrals register.</p>
+        </div>
+      </details>
+
       <details className="rounded-xl border bg-white p-4 shadow-sm">
-        <summary className="cursor-pointer font-semibold text-gray-800">K. Health Desk Action & Outcome</summary>
+        <summary className="cursor-pointer font-semibold text-gray-800">K. Health Desk Action &amp; Outcome</summary>
         <div className="mt-3 grid gap-3">
           <CheckGroup options={HEALTH_DESK} values={healthDesk} onChange={setHealthDesk} />
           <div><Label>Issue Encountered</Label><Textarea value={issueEncountered} onChange={(e) => setIssueEncountered(e.target.value)} /></div>

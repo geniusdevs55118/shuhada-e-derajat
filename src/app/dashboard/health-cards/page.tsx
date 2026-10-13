@@ -36,22 +36,28 @@ export default function HealthCardsPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams();
+    const params = new URLSearchParams({ page: String(page) });
     if (search) params.set("search", search);
     if (status !== "all") params.set("status", status);
     const res = await fetch(`/api/health-cards?${params.toString()}`);
     const data = await res.json();
     setCards(data.data ?? []);
+    setTotal(data.total ?? 0);
     setLoading(false);
-  }, [search, status]);
+  }, [search, status, page]);
 
   useEffect(() => {
     const t = setTimeout(load, 250);
     return () => clearTimeout(t);
   }, [load]);
+
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
     <div className="space-y-4">
@@ -63,13 +69,13 @@ export default function HealthCardsPage() {
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-3">
-        <input
+<input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           placeholder="Search Card No, Reg No, or Shaheed Name"
           className="rounded-md border px-3 py-2 text-sm flex-1 min-w-[240px]"
         />
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border px-3 py-2 text-sm">
+        <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="rounded-md border px-3 py-2 text-sm">
           <option value="all">All Statuses</option>
           <option value="ACTIVE">Active</option>
           <option value="UNDER_VERIFICATION">Under Verification</option>
@@ -77,8 +83,20 @@ export default function HealthCardsPage() {
           <option value="CLOSED">Closed</option>
         </select>
         </div>
-        <ExportExcelButton filename="dsfhi-health-cards" rows={cards.map((card) => ({ cardNo: card.cardNo, familyRegistrationNo: card.familyRegistrationNo, shaheedName: card.shaheedName, status: STATUS_LABELS[card.status] ?? card.status, dateOfIssue: card.dateOfCardIssue }))} />
+<ExportExcelButton filename="dsfhi-health-cards" rows={cards.map((card) => ({ cardNo: card.cardNo, familyRegistrationNo: card.familyRegistrationNo, shaheedName: card.shaheedName, status: STATUS_LABELS[card.status] ?? card.status, dateOfIssue: card.dateOfCardIssue }))} />
       </div>
+      {!loading && total > 0 && (
+        <div className="flex items-center justify-between text-sm text-gray-600">
+          <p>Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, total)} of {total}</p>
+          {totalPages > 1 && (
+            <div className="flex gap-2">
+              <button type="button" className="rounded border px-3 py-1 disabled:opacity-40" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Previous</button>
+              <span className="px-2 py-1">Page {page} of {totalPages}</span>
+              <button type="button" className="rounded border px-3 py-1 disabled:opacity-40" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Next</button>
+            </div>
+          )}
+        </div>
+      )}
       <div className="hidden overflow-x-auto rounded-xl border bg-white shadow-sm md:block">
         <table className="w-full text-sm">
           <thead className="bg-blue-50 text-left text-blue-900">

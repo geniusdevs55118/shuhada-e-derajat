@@ -5,37 +5,37 @@ export const LANG_KEY = "dsfhi_lang";
 export const dict: Record<string, { en: string; ur: string }> = {
   heroTitle: {
     en: "Derajat Shuhada Family Healthcare Initiative",
-    ur: "Ø¯Ø±Ø¬Ø§Øª Ø´ÛØ¯Ø§Ø¡ ÙÛŒÙ…Ù„ÛŒ ÛÛŒÙ„ØªÚ¾ Ú©ÛŒØ¦Ø± Ø§Ù†ÛŒØ´ÛŒ Ø§ÛŒÙ¹Ùˆ",
+    ur: "درجات شہداء فیملی ہیلتھ کیئر انیشی ایٹو",
   },
   heroTagline: {
     en: "Honouring the Shuhada by Caring for Their Families.",
-    ur: "Ø´ÛØ¯Ø§Ø¡ Ú©ÛŒ Ø¹Ø²Øª Ù…ÛŒÚº Ø§Ù† Ú©Û’ Ø§ÛÙ„ Ø®Ø§Ù†Û Ú©ÛŒ Ø®Ø¯Ù…ØªÛ”",
+    ur: "شہداء کی عزت میں ان کے اہل خانہ کی خدمت۔",
   },
   heroMotto: {
     en: "Their Sacrifice, Our Responsibility",
-    ur: "Ø§Ù† Ú©ÛŒ Ù‚Ø±Ø¨Ø§Ù†ÛŒØŒ ÛÙ…Ø§Ø±ÛŒ Ø°Ù…Û Ø¯Ø§Ø±ÛŒ",
+    ur: "ان کی قربانی، ہماری ذمہ داری",
   },
-  home: { en: "Home", ur: "ÛÙˆÙ…" },
-  services: { en: "Services", ur: "Ø®Ø¯Ù…Ø§Øª" },
-  hospitals: { en: "Three Hospitals", ur: "ØªÛŒÙ† ÛØ³Ù¾ØªØ§Ù„" },
-  eligibility: { en: "Eligibility", ur: "Eligibility" },
-  faq: { en: "FAQs", ur: "FAQs" },
-  verify: { en: "Verify Card", ur: "Ú©Ø§Ø±Úˆ ØªØµØ¯ÛŒÙ‚" },
-  about: { en: "About Initiative", ur: "ÛÙ…Ø§Ø±Û’ Ø¨Ø§Ø±Û’ Ù…ÛŒÚº" },
-  contact: { en: "Contact", ur: "Ø±Ø§Ø¨Ø·Û" },
-  verifyCardCta: { en: "Verify Health Card", ur: "ÛÛŒÙ„ØªÚ¾ Ú©Ø§Ø±Úˆ ØªØµØ¯ÛŒÙ‚ Ú©Ø±ÛŒÚº" },
-  staffLogin: { en: "Staff Login", ur: "Ø¹Ù…Ù„Û Ù„Ø§Ú¯ Ø§Ù†" },
+  home: { en: "Home", ur: "ہوم" },
+  services: { en: "Services", ur: "خدمات" },
+  hospitals: { en: "Three Hospitals", ur: "تین ہسپتال" },
+  eligibility: { en: "Eligibility", ur: "اہلیت" },
+  faq: { en: "FAQs", ur: "عام سوالات" },
+  verify: { en: "Verify Card", ur: "کارڈ تصدیق" },
+  about: { en: "About Initiative", ur: "ہمارے بارے میں" },
+  contact: { en: "Contact", ur: "رابطہ" },
+  verifyCardCta: { en: "Verify Health Card", ur: "ہیلتھ کارڈ تصدیق کریں" },
+  staffLogin: { en: "Staff Login", ur: "عملہ لاگ ان" },
   oneFamilyRecord: {
     en: "One Family Record. Three Hospitals. One Coordinated Healthcare Pathway.",
-    ur: "Ø§ÛŒÚ© Ø®Ø§Ù†Ø¯Ø§Ù†ÛŒ Ø±ÛŒÚ©Ø§Ø±ÚˆÛ” ØªÛŒÙ† ÛØ³Ù¾ØªØ§Ù„Û” Ø§ÛŒÚ© Ù…Ø±Ø¨ÙˆØ· Ø·Ø±ÛŒÙ‚Û Ø¹Ù„Ø§Ø¬Û”",
+    ur: "ایک خاندانی ریکارڈ۔ تین ہسپتال۔ ایک مربوط طریقہ علاج۔",
   },
   emergencyFirst: {
     en: "Emergency Care First",
-    ur: "Ø§ÛŒÙ…Ø±Ø¬Ù†Ø³ÛŒ Ø¹Ù„Ø§Ø¬ Ø³Ø¨ Ø³Û’ Ù¾ÛÙ„Û’",
+    ur: "ایمرجنسی علاج سب سے پہلے",
   },
   grievanceFeedback: {
     en: "Grievance and Feedback",
-    ur: "Ø´Ú©Ø§ÛŒØª Ø§ÙˆØ± Ø±Ø§Ø¦Û’",
+    ur: "شکایت اور رائے",
   },
 };
 

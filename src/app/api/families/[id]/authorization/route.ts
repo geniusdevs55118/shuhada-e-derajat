@@ -56,21 +56,9 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       authorizedDesignation: values.authorizedDesignation,
       authorizedSignature: values.authorizedSignature ? "Signed and stamped on paper" : null,
       authorizationDate,
+      authorizationRemarks: values.authorizationRemarks?.trim() ? values.authorizationRemarks.trim() : null,
     },
   });
-
-  if (values.authorizationDecision === "Returned for Completion / Further Verification") {
-    await prisma.family.update({
-      where: { id: Number(id) },
-      data: {
-        authorizationDecision: null,
-        authorizedOfficer: null,
-        authorizedDesignation: null,
-        authorizedSignature: null,
-        authorizationDate: null,
-      },
-    });
-  }
 
   await prisma.auditLog.create({
     data: {
@@ -91,5 +79,6 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
     authorizedDesignation: updated.authorizedDesignation,
     authorizedSignature: updated.authorizedSignature,
     authorizationDate: updated.authorizationDate,
+    authorizationRemarks: updated.authorizationRemarks,
   });
 }

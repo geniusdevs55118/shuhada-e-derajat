@@ -199,12 +199,13 @@ model Family {
   applicantSignature         String?
   declarationDate            DateTime?
 
-  // I. Authorization
+// I. Authorization
   authorizationDecision  AuthorizationDecision?
   authorizedOfficer      String?
   authorizedDesignation  String?
   authorizedSignature    String?
   authorizationDate      DateTime?
+  authorizationRemarks   String? @db.Text
 
   members FamilyMember[]
   documents Document[]
@@ -591,11 +592,28 @@ model MonthlyReport {
   chairmanComments String?
   directorDirectionsSignature String?
 
-  statsSnapshot Json?
+statsSnapshot Json?
   actionTracker ActionTracker[]
+  indicators   ReportIndicator[]
 
   @@index([hospitalId])
   @@index([year, month])
+}
+
+// O. KPI table - indicator / target / achievement / On Track or Needs Attention
+model ReportIndicator {
+  id              Int           @id @default(autoincrement())
+  monthlyReportId Int
+  monthlyReport   MonthlyReport @relation(fields: [monthlyReportId], references: [id], onDelete: Cascade)
+  indicator       String
+  target          String?
+  achievement     String?
+  status          String        @default("On Track")
+  remarks         String?
+  sortOrder       Int           @default(0)
+  createdAt       DateTime      @default(now())
+
+  @@index([monthlyReportId])
 }
 
 model ActionTracker {
