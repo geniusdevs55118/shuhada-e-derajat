@@ -18,40 +18,135 @@ const ALL_ROLES: Role[] = [
 ];
 
 const READ_ALL = [
+  "Working Group",
   "Families",
   "Health Cards",
-  "Visits",
+  "Visits & Appointments",
   "Sehat Card+",
   "Grievances",
   "Reports",
 ];
 
-const COMMON = [
-  "Dashboard",
-  "Scan Card",
+const DESK_FACILITATION = [
+  "Hospital Facilitation Desk",
+  "Department Reception Queue",
   "Ambulance & Referrals",
   "Verification Queue",
   "Feedback Summary",
   "Misuse Flags",
-  "Working Group",
-  ...READ_ALL,
 ];
 
-const WITH_ACTION = [...COMMON, "Action Tracker"];
+const LEADERSHIP_EXTRAS = [
+  "Hospital Facilitation Desk",
+  "Ambulance & Referrals",
+  "Verification Queue",
+  "Feedback Summary",
+  "Misuse Flags",
+];
+
+const CLINICAL_RECEPTION = [
+  "Department Reception Queue",
+];
 
 const EXPECTED: Record<Role, string[]> = {
-  super_admin: [...WITH_ACTION, "Users", "Audit Log", "Change Password", "Administration"],
-  hospital_director: [...WITH_ACTION, "Audit Log", "Change Password"],
-  additional_director: [...WITH_ACTION, "Audit Log", "Change Password"],
-  medical_superintendent: [...WITH_ACTION, "Change Password"],
-  health_desk_officer: [...COMMON, "Change Password"],
-  sehat_card_desk: [...WITH_ACTION, "Change Password"],
-  pharmacy_rep: [...WITH_ACTION, "Change Password"],
-  diagnostics_rep: [...WITH_ACTION, "Change Password"],
-  admin_finance_rep: [...WITH_ACTION, "Change Password"],
-  nursing_rep: [...WITH_ACTION, "Change Password"],
-  it_mis_rep: [...WITH_ACTION, "Users", "Audit Log", "Change Password", "Administration"],
-  working_group_member: [...WITH_ACTION, "Change Password"],
+  super_admin: [
+    "Dashboard",
+    "Scan Card",
+    ...DESK_FACILITATION,
+    ...READ_ALL,
+    "Action Tracker",
+    "Users",
+    "Audit Log",
+    "Administration",
+    "Change Password",
+  ],
+  hospital_director: [
+    "Dashboard",
+    "Scan Card",
+    ...LEADERSHIP_EXTRAS,
+    ...READ_ALL,
+    "Action Tracker",
+    "Audit Log",
+    "Change Password",
+  ],
+  additional_director: [
+    "Dashboard",
+    "Scan Card",
+    ...LEADERSHIP_EXTRAS,
+    ...READ_ALL,
+    "Action Tracker",
+    "Audit Log",
+    "Change Password",
+  ],
+  medical_superintendent: [
+    "Dashboard",
+    "Scan Card",
+    ...LEADERSHIP_EXTRAS,
+    ...READ_ALL,
+    "Action Tracker",
+    "Change Password",
+  ],
+  health_desk_officer: [
+    "Dashboard",
+    "Scan Card",
+    ...DESK_FACILITATION,
+    ...READ_ALL,
+    "Change Password",
+  ],
+  sehat_card_desk: [
+    "Dashboard",
+    "Scan Card",
+    ...READ_ALL,
+    "Action Tracker",
+    "Change Password",
+  ],
+  pharmacy_rep: [
+    "Dashboard",
+    "Scan Card",
+    ...CLINICAL_RECEPTION,
+    ...READ_ALL,
+    "Action Tracker",
+    "Change Password",
+  ],
+  diagnostics_rep: [
+    "Dashboard",
+    "Scan Card",
+    ...CLINICAL_RECEPTION,
+    ...READ_ALL,
+    "Action Tracker",
+    "Change Password",
+  ],
+  admin_finance_rep: [
+    "Dashboard",
+    "Scan Card",
+    ...READ_ALL,
+    "Action Tracker",
+    "Change Password",
+  ],
+  nursing_rep: [
+    "Dashboard",
+    "Scan Card",
+    ...CLINICAL_RECEPTION,
+    ...READ_ALL,
+    "Action Tracker",
+    "Change Password",
+  ],
+  it_mis_rep: [
+    "Dashboard",
+    "Scan Card",
+    ...READ_ALL,
+    "Action Tracker",
+    "Users",
+    "Audit Log",
+    "Change Password",
+  ],
+  working_group_member: [
+    "Dashboard",
+    "Scan Card",
+    ...READ_ALL,
+    "Action Tracker",
+    "Change Password",
+  ],
 };
 
 describe("menu per role", () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { HOSPITAL_FACILITIES, HospitalFacilityItem, FacilityCategory } from "@/lib/hospital-facilities";
@@ -13,8 +13,10 @@ interface BeneficiaryItem {
   name: string;
   relationship: string;
   cnic?: string;
+  cnicBForm?: string;
   beneficiaryId?: string;
-  eligibility: string;
+  cardStatus?: string;
+  eligibility?: string;
 }
 
 export function FacilitationBookingView({
@@ -52,8 +54,8 @@ export function FacilitationBookingView({
   const [isBooking, setIsBooking] = useState(false);
   const [tokenSlip, setTokenSlip] = useState<TokenSlipData | null>(null);
 
-  // Quick lookup function (scans QR or searches card/CNIC)
-  const handleLookup = async (q?: string) => {
+// Quick lookup function (scans QR or searches card/CNIC)
+  const handleLookup = useCallback(async (q?: string) => {
     const term = (q ?? lookupQuery).trim();
     if (!term) {
       toast.error("Please enter a Card No, CNIC, or Family Reg No to search");
@@ -73,9 +75,9 @@ export function FacilitationBookingView({
       }
       const data = await res.json();
       
-      const benList: BeneficiaryItem[] = (data.members ?? []).map((m: any) => ({
+      const benList: BeneficiaryItem[] = (data.members ?? []).map((m: BeneficiaryItem) => ({
         name: m.name,
-        relationship: m.relationship,
+        relationship: m.relationship ?? "",
         cnic: m.cnicBForm ?? "",
         beneficiaryId: m.beneficiaryId ?? "",
         eligibility: m.cardStatus ?? "Active",
@@ -109,14 +111,7 @@ export function FacilitationBookingView({
     } finally {
       setIsSearchingCard(false);
     }
-  };
-
-  // Auto-verify if card was passed via URL
-  useEffect(() => {
-    if (initialCard) {
-      void handleLookup(initialCard);
-    }
-  }, [initialCard]);
+  }, [lookupQuery]);
 
   // Filter facilities
   const filteredFacilities = useMemo(() => {
@@ -178,7 +173,7 @@ export function FacilitationBookingView({
       }
 
       const resData = await res.json();
-      const tokenNumber = `#TK-${Math.floor(100 + Math.random() * 900)}`;
+      const tokenNumber = `#TK-${String(resData.id ?? Math.floor(100 + Math.random() * 900)).padStart(3, "0")}`;
 
       const slipCategoryMap: Record<FacilityCategory, TokenSlipData["category"]> = {
         doctor: "Doctor / OPD",
@@ -211,8 +206,9 @@ export function FacilitationBookingView({
 
       setTokenSlip(slip);
       toast.success(`Token ${tokenNumber} booked successfully!`);
-    } catch (e: any) {
-      toast.error(e.message || "Something went wrong while booking");
+    } catch (e: unknown) {
+      const error = e instanceof Error ? e.message : "Something went wrong while booking";
+      toast.error(error);
     } finally {
       setIsBooking(false);
     }
@@ -369,7 +365,7 @@ export function FacilitationBookingView({
             ).map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveCategory(tab.id as any)}
+                onClick={() => setActiveCategory(tab.id as "all" | "doctor" | "pharmacy" | "lab" | "radiology")}
                 type="button"
                 className={`rounded-md px-3 py-1 text-xs font-semibold transition ${
                   activeCategory === tab.id

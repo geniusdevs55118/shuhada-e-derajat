@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,16 +22,19 @@ export interface DepartmentQueueItem {
   consultant: string | null;
   treatmentPlan: string | null;
   finalStatus: string | null;
+  role?: string;  // Make role optional
 }
 
 export function DepartmentReceptionView({
   initialQueue,
   userHospitalName,
   canManage,
+  role,
 }: {
   initialQueue: DepartmentQueueItem[];
   userHospitalName: string;
   canManage: boolean;
+  role: string;
 }) {
   const [queue, setQueue] = useState<DepartmentQueueItem[]>(initialQueue);
   const [selectedDeptFilter, setSelectedDeptFilter] = useState<string>("all");
@@ -39,6 +42,47 @@ export function DepartmentReceptionView({
   const [activeSlip, setActiveSlip] = useState<TokenSlipData | null>(null);
   const [processingId, setProcessingId] = useState<number | null>(null);
 
+  // Poll for newly booked tokens every 15 seconds
+  useEffect(() => {
+    const timer = setInterval(async () => {
+      try {
+        const res = await fetch("/api/visits?page=1");
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json.data)) {
+            const freshItems: DepartmentQueueItem[] = json.data.map((v: any) => ({
+              id: v.id,
+              visitNo: v.visitNo,
+              dateTime: v.dateTime,
+              beneficiaryName: v.beneficiaryName,
+              beneficiaryRelationship: v.beneficiaryRelationship,
+              beneficiaryCnic: v.beneficiaryCnicBForm,
+              shaheedName: v.shaheedName,
+              familyRegistrationNo: v.familyRegistrationNo,
+              healthCardNo: v.healthCardNo,
+              hospitalName: v.hospitalName ?? userHospitalName,
+              department: v.department,
+              consultant: v.consultant,
+              treatmentPlan: v.treatmentPlan,
+              finalStatus: v.finalStatus,
+            }));
+            setQueue((prev) => {
+              // merge keeping local optimistic status updates
+              const updated = [...freshItems];
+              return updated;
+            });
+          }
+        }
+      } catch {
+        // silent background poll failure
+      }
+    }, 15000);
+    return () => clearInterval(timer);
+  }, [userHospitalName]);
+
+  // Check if pharmacy or nursing role
+  const isPharmacyOrNursing = role === "pharmacy_rep" || role === "nursing_rep";
+  
   // Departments present in current queue
   const departmentOptions = Array.from(
     new Set(queue.map((q) => q.department).filter(Boolean) as string[])
@@ -51,28 +95,35 @@ export function DepartmentReceptionView({
       (item.department &&
         item.department.toLowerCase().includes(selectedDeptFilter.toLowerCase()));
 
+    // Pharmacy/nursing only search by token or patient name
     const s = searchFilter.toLowerCase();
     const matchesSearch =
       !s ||
-      item.beneficiaryName.toLowerCase().includes(s) ||
-      item.visitNo.toLowerCase().includes(s) ||
-      (item.healthCardNo && item.healthCardNo.toLowerCase().includes(s)) ||
-      (item.shaheedName && item.shaheedName.toLowerCase().includes(s));
+      (isPharmacyOrNursing
+        ? item.beneficiaryName.toLowerCase().includes(s) || item.visitNo.toLowerCase().includes(s)
+        : item.beneficiaryName.toLowerCase().includes(s) ||
+          item.visitNo.toLowerCase().includes(s) ||
+          (item.healthCardNo && item.healthCardNo.toLowerCase().includes(s)) ||
+          (item.shaheedName && item.shaheedName.toLowerCase().includes(s)));
 
     return matchesDept && matchesSearch;
   });
 
-  // Mark appointment status (e.g. In Consultation, Completed)
+  // Mark appointment status (e.g. In Consultation, Completed, Meds Dispensed)
   const handleUpdateStatus = async (
     id: number,
-    newStatus: "IN_CONSULTATION" | "COMPLETED" | "REFERRED_PHARMACY"
+    newStatus: "IN_CONSULTATION" | "COMPLETED" | "REFERRED_PHARMACY" | "MEDS_DISPENSED" | "LAB_COMPLETED"
   ) => {
     setProcessingId(id);
     try {
       const res = await fetch(`/api/visits/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ finalStatus: newStatus }),
+        body: JSON.stringify({
+          finalStatus: newStatus,
+          ...(newStatus === "MEDS_DISPENSED" ? { medicinesRemarks: "Medicines fully facilitated by pharmacy desk" } : {}),
+          ...(newStatus === "LAB_COMPLETED" ? { investigationsStatus: "COMPLETED" } : {}),
+        }),
       });
 
       if (!res.ok) {
@@ -87,6 +138,8 @@ export function DepartmentReceptionView({
         IN_CONSULTATION: "Patient marked as In Consultation / Attended",
         COMPLETED: "Consultation / Service completed successfully",
         REFERRED_PHARMACY: "Referred to Pharmacy Counter for Free Medicines",
+        MEDS_DISPENSED: "Free medicines dispensed to Shuhada family member",
+        LAB_COMPLETED: "Laboratory diagnostics marked as completed",
       };
 
       toast.success(statusLabels[newStatus] || "Updated");
@@ -220,6 +273,7 @@ export function DepartmentReceptionView({
             {filteredQueue.map((item) => {
               const isDone = item.finalStatus === "COMPLETED";
               const inProgress = item.finalStatus === "IN_CONSULTATION";
+              const showTreatmentPlan = !isPharmacyOrNursing && item.treatmentPlan;
 
               return (
                 <div
@@ -232,43 +286,47 @@ export function DepartmentReceptionView({
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs font-extrabold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">
-                        Token #{item.id}
+                        #TK-{String(item.id).padStart(3, "0")}
                       </span>
                       <h4 className="text-sm font-bold text-slate-900">
                         {item.beneficiaryName}
                       </h4>
-                      {item.beneficiaryRelationship && (
+                      {item.beneficiaryRelationship && !isPharmacyOrNursing && (
                         <span className="text-xs text-slate-500 font-medium">
                           ({item.beneficiaryRelationship})
                         </span>
                       )}
                       <Badge
                         className={`text-[10px] uppercase tracking-wide ${
-                          isDone
+                          isPharmacyOrNursing
+                            ? "bg-emerald-700 text-white"
+                            : isDone
                             ? "bg-slate-600 text-white"
                             : inProgress
                             ? "bg-amber-600 text-white"
                             : "bg-emerald-700 text-white"
                         }`}
-                      >
+                        >
                         {item.finalStatus || "Waiting in Queue"}
                       </Badge>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
-                      {item.shaheedName && (
+                    {!isPharmacyOrNursing && (
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
+                        {item.shaheedName && (
+                          <span>
+                            🎖️ Family of Shaheed: <strong>{item.shaheedName}</strong>
+                          </span>
+                        )}
                         <span>
-                          🎖️ Family of Shaheed: <strong>{item.shaheedName}</strong>
+                          💳 Card: <strong>{item.healthCardNo || item.familyRegistrationNo}</strong>
                         </span>
-                      )}
-                      <span>
-                        💳 Card: <strong>{item.healthCardNo || item.familyRegistrationNo}</strong>
-                      </span>
-                      <span className="text-slate-400">·</span>
-                      <span className="text-slate-500">
-                        🕒 {new Date(item.dateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </span>
-                    </div>
+                        <span className="text-slate-400">·</span>
+                        <span className="text-slate-500">
+                          🕒 {new Date(item.dateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                    )}
 
                     <div className="text-xs text-slate-700 mt-1">
                       <span className="font-semibold text-blue-950">Target Clinic:</span>{" "}
@@ -278,11 +336,11 @@ export function DepartmentReceptionView({
                       </span>
                     </div>
 
-                    {item.treatmentPlan && (
-                      <p className="text-[11px] text-slate-500 bg-slate-100/70 p-1.5 rounded mt-1">
-                        📝 {item.treatmentPlan}
-                      </p>
-                    )}
+                    {item.treatmentPlan && (!isPharmacyOrNursing ? (
+                        <p className="text-[11px] text-slate-500 bg-slate-100/70 p-1.5 rounded mt-1">
+                          📝 {item.treatmentPlan}
+                        </p>
+                      ) : null)}
                   </div>
 
                   {/* Right Column: Reception Actions */}
@@ -296,7 +354,18 @@ export function DepartmentReceptionView({
                       🖨️ View Slip
                     </Button>
 
-                    {!isDone && (
+                    {role === "pharmacy_rep" && (
+                      <Button
+                        size="sm"
+                        disabled={processingId === item.id || isDone}
+                        onClick={() => handleUpdateStatus(item.id, "MEDS_DISPENSED")}
+                        className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold"
+                      >
+                        💊 Dispense Medicines
+                      </Button>
+                    )}
+
+                    {!isPharmacyOrNursing && (
                       <>
                         <Button
                           size="sm"

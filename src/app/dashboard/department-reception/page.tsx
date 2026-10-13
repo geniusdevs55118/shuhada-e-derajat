@@ -52,6 +52,7 @@ export default async function DepartmentReceptionPage() {
       initialQueue={queueItems}
       userHospitalName={userHospitalName}
       canManage={can(session, "visit", "edit")}
+      role={user.role}
     />
   );
 }
