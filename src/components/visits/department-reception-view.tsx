@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TokenSlipCard, TokenSlipData } from "@/components/visits/token-slip-modal";
+import { Building2, Award, CreditCard, Clock, FileText, Printer, Pill, UserCheck, Check, Stethoscope } from "lucide-react";
 
 export interface DepartmentQueueItem {
   id: number;
@@ -198,8 +199,9 @@ export function DepartmentReceptionView({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="rounded-lg bg-white/10 px-3 py-1.5 text-xs font-bold text-white border border-white/20">
-              🏥 {userHospitalName}
+            <span className="flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-bold text-white border border-white/20">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>{userHospitalName}</span>
             </span>
           </div>
         </div>
@@ -262,7 +264,7 @@ export function DepartmentReceptionView({
 
         {filteredQueue.length === 0 ? (
           <div className="p-12 text-center">
-            <span className="text-3xl">🩺</span>
+            <Stethoscope className="mx-auto size-10 text-slate-400" />
             <h3 className="mt-2 text-sm font-bold text-slate-800">No Patients in this Queue</h3>
             <p className="mt-1 text-xs text-slate-500">
               When the Main Helpdesk books an appointment or issues a chit, it appears right here instantly.
@@ -314,16 +316,19 @@ export function DepartmentReceptionView({
                     {!isPharmacyOrNursing && (
                       <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
                         {item.shaheedName && (
-                          <span>
-                            🎖️ Family of Shaheed: <strong>{item.shaheedName}</strong>
+                          <span className="flex items-center gap-1.5">
+                            <Award className="w-3.5 h-3.5 text-amber-600" />
+                            <span>Family of Shaheed: <strong>{item.shaheedName}</strong></span>
                           </span>
                         )}
-                        <span>
-                          💳 Card: <strong>{item.healthCardNo || item.familyRegistrationNo}</strong>
+                        <span className="flex items-center gap-1.5">
+                          <CreditCard className="w-3.5 h-3.5 text-blue-700" />
+                          <span>Card: <strong>{item.healthCardNo || item.familyRegistrationNo}</strong></span>
                         </span>
                         <span className="text-slate-400">·</span>
-                        <span className="text-slate-500">
-                          🕒 {new Date(item.dateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        <span className="flex items-center gap-1 text-slate-500">
+                          <Clock className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{new Date(item.dateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                         </span>
                       </div>
                     )}
@@ -337,8 +342,9 @@ export function DepartmentReceptionView({
                     </div>
 
                     {item.treatmentPlan && (!isPharmacyOrNursing ? (
-                        <p className="text-[11px] text-slate-500 bg-slate-100/70 p-1.5 rounded mt-1">
-                          📝 {item.treatmentPlan}
+                        <p className="text-[11px] text-slate-600 bg-slate-100/70 p-1.5 rounded mt-1 flex items-start gap-1.5">
+                          <FileText className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
+                          <span>{item.treatmentPlan}</span>
                         </p>
                       ) : null)}
                   </div>
@@ -349,9 +355,10 @@ export function DepartmentReceptionView({
                       variant="outline"
                       size="sm"
                       onClick={() => handleReprintSlip(item)}
-                      className="text-xs border-slate-300 text-slate-700 hover:bg-slate-100"
+                      className="text-xs border-slate-300 text-slate-700 hover:bg-slate-100 flex items-center gap-1.5"
                     >
-                      🖨️ View Slip
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>View Slip</span>
                     </Button>
 
                     {role === "pharmacy_rep" && (
@@ -359,9 +366,10 @@ export function DepartmentReceptionView({
                         size="sm"
                         disabled={processingId === item.id || isDone}
                         onClick={() => handleUpdateStatus(item.id, "MEDS_DISPENSED")}
-                        className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold"
+                        className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold flex items-center gap-1.5"
                       >
-                        💊 Dispense Medicines
+                        <Pill className="w-3.5 h-3.5" />
+                        <span>Dispense Medicines</span>
                       </Button>
                     )}
 
@@ -371,17 +379,19 @@ export function DepartmentReceptionView({
                           size="sm"
                           disabled={processingId === item.id || inProgress}
                           onClick={() => handleUpdateStatus(item.id, "IN_CONSULTATION")}
-                          className="bg-blue-800 hover:bg-blue-900 text-white text-xs font-semibold"
+                          className="bg-blue-800 hover:bg-blue-900 text-white text-xs font-semibold flex items-center gap-1.5"
                         >
-                          {inProgress ? "In Consultation" : "👨‍⚕️ Call & Attend"}
+                          <UserCheck className="w-3.5 h-3.5" />
+                          <span>{inProgress ? "In Consultation" : "Call & Attend"}</span>
                         </Button>
                         <Button
                           size="sm"
                           disabled={processingId === item.id}
                           onClick={() => handleUpdateStatus(item.id, "COMPLETED")}
-                          className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold"
+                          className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold flex items-center gap-1.5"
                         >
-                          ✓ Mark Completed
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Mark Completed</span>
                         </Button>
                       </>
                     )}

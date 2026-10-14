@@ -78,17 +78,39 @@ async function DashboardContent() {
 
       <DashboardCharts data={data.chartData} />
 
-      <section className="border-y border-border bg-white px-4 py-5 sm:px-5">
-        <h2 className="mb-3 font-heading text-2xl text-blue-950">Quick actions</h2>
-        <ul className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
-          {menu.filter((m) => m.href !== "/dashboard").map((m) => (
-            <li key={m.href}>
-              <a href={m.href} className="block border-t border-border px-1 py-3 text-sm font-medium text-blue-800 hover:text-blue-600 transition-colors">
-                {m.label}
-              </a>
-            </li>
+      <section className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs">
+        <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h2 className="font-heading text-lg sm:text-xl font-bold text-slate-900">
+              Priority Shortcuts & Operational Actions
+            </h2>
+            <p className="text-xs text-slate-500">Direct access to daily hospital facilitation and beneficiary services</p>
+          </div>
+          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600">
+            Ordered by priority
+          </span>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {menu.filter((m) => m.href !== "/dashboard").map((m, idx) => (
+            <a
+              key={m.href}
+              href={m.href}
+              className="group flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/50 p-3.5 transition-all hover:border-blue-500 hover:bg-blue-50/50 hover:shadow-xs hover:-translate-y-0.5"
+            >
+              <div className="min-w-0 pr-2">
+                <p className="text-sm font-semibold text-slate-800 group-hover:text-blue-900 truncate">
+                  {m.label}
+                </p>
+                <p className="mt-0.5 text-[11px] text-slate-500 group-hover:text-blue-700/80">
+                  {idx < 5 ? "Daily Operational Task" : idx < 9 ? "Hospital Clinical Desk" : "System & Oversight"}
+                </p>
+              </div>
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-400 transition-colors group-hover:border-blue-500 group-hover:bg-blue-600 group-hover:text-white">
+                &rarr;
+              </span>
+            </a>
           ))}
-        </ul>
+        </div>
       </section>
     </div>
   );

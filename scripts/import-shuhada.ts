@@ -428,7 +428,6 @@ async function main() {
             }
           ]
         },
-        healthCardNo_relation: undefined,
       }
     });
 

@@ -6,29 +6,36 @@ export type MenuEntry = {
   label: string;
   resource: Resource | null;
   roles?: Role[];
+  section?: "operations" | "oversight" | "admin";
+  icon?: string;
 };
 
 const MENU: MenuEntry[] = [
-  { href: "/dashboard",                     label: "Dashboard",                resource: null },
-  { href: "/dashboard/scan",                 label: "Scan Card",                 resource: "card" },
-  { href: "/dashboard/facilitation-booking", label: "Hospital Facilitation Desk",    resource: "visit", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
-  { href: "/dashboard/department-reception", label: "Department Reception Queue",   resource: "visit", roles: ["super_admin", "health_desk_officer", "pharmacy_rep", "diagnostics_rep", "nursing_rep"] },
-  { href: "/dashboard/ambulance-referrals",   label: "Ambulance & Referrals",     resource: "visit", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
-  { href: "/dashboard/verification-queue",   label: "Verification Queue",       resource: "family", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
-  { href: "/dashboard/feedback",             label: "Feedback Summary",          resource: "visit", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
-  { href: "/dashboard/misuse",               label: "Misuse Flags",              resource: "card", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
-  { href: "/dashboard/working-group",        label: "Working Group",             resource: "working_group" },
-  { href: "/dashboard/families",             label: "Families",                 resource: "family" },
-  { href: "/dashboard/health-cards",         label: "Health Cards",             resource: "card" },
-  { href: "/dashboard/visits",               label: "Visits & Appointments",    resource: "visit" },
-  { href: "/dashboard/sehat-card-plus",      label: "Sehat Card+",               resource: "sehat_claim" },
-  { href: "/dashboard/grievances",           label: "Grievances",               resource: "grievance" },
-  { href: "/dashboard/monthly-reports",      label: "Reports",                   resource: "monthly_report" },
-  { href: "/dashboard/action-tracker",       label: "Action Tracker",            resource: "action_tracker" },
-  { href: "/dashboard/users",                label: "Users",                    resource: "user", roles: ["super_admin", "it_mis_rep"] },
-  { href: "/dashboard/audit-log",            label: "Audit Log",                resource: "audit_log" },
-  { href: "/dashboard/admin",                label: "Administration",           resource: "user", roles: ["super_admin"] },
-  { href: "/dashboard/change-password",      label: "Change Password",          resource: null },
+  // --- High-Frequency Daily Operations (Top of Sidebar / Nearest to Cursor) ---
+  { href: "/dashboard",                     label: "Dashboard",                resource: null,            section: "operations", icon: "LayoutDashboard" },
+  { href: "/dashboard/scan",                 label: "Scan Card",                 resource: "card",          section: "operations", icon: "QrCode" },
+  { href: "/dashboard/visits",               label: "Visits & Appointments",    resource: "visit",         section: "operations", icon: "CalendarClock" },
+  { href: "/dashboard/families",             label: "Families",                 resource: "family",        section: "operations", icon: "Users" },
+  { href: "/dashboard/health-cards",         label: "Health Cards",             resource: "card",          section: "operations", icon: "CreditCard" },
+  { href: "/dashboard/facilitation-booking", label: "Hospital Facilitation Desk", resource: "visit",      section: "operations", icon: "Building2", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
+  { href: "/dashboard/department-reception", label: "Department Reception Queue", resource: "visit",     section: "operations", icon: "ClipboardList", roles: ["super_admin", "health_desk_officer", "pharmacy_rep", "diagnostics_rep", "nursing_rep"] },
+  { href: "/dashboard/grievances",           label: "Grievances",               resource: "grievance",     section: "operations", icon: "AlertTriangle" },
+  { href: "/dashboard/sehat-card-plus",      label: "Sehat Card+",               resource: "sehat_claim",   section: "operations", icon: "HeartPulse" },
+  { href: "/dashboard/ambulance-referrals",   label: "Ambulance & Referrals",     resource: "visit",         section: "operations", icon: "Ambulance", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
+
+  // --- Monitoring, Verification & Coordination ---
+  { href: "/dashboard/verification-queue",   label: "Verification Queue",       resource: "family",        section: "oversight",  icon: "UserCheck", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
+  { href: "/dashboard/feedback",             label: "Feedback Summary",          resource: "visit",         section: "oversight",  icon: "MessageSquareQuote", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
+  { href: "/dashboard/monthly-reports",      label: "Reports",                   resource: "monthly_report", section: "oversight", icon: "BarChart3" },
+  { href: "/dashboard/action-tracker",       label: "Action Tracker",            resource: "action_tracker", section: "oversight", icon: "CheckSquare" },
+  { href: "/dashboard/misuse",               label: "Misuse Flags",              resource: "card",          section: "oversight",  icon: "ShieldAlert", roles: ["super_admin", "health_desk_officer", "hospital_director", "additional_director", "medical_superintendent"] },
+  { href: "/dashboard/working-group",        label: "Working Group",             resource: "working_group", section: "oversight",  icon: "UsersRound" },
+
+  // --- Administration, Audit & System Settings (Bottom) ---
+  { href: "/dashboard/users",                label: "Users",                    resource: "user",          section: "admin",      icon: "UserCog", roles: ["super_admin", "it_mis_rep"] },
+  { href: "/dashboard/audit-log",            label: "Audit Log",                resource: "audit_log",     section: "admin",      icon: "History" },
+  { href: "/dashboard/admin",                label: "Administration",           resource: "user",          section: "admin",      icon: "SlidersHorizontal", roles: ["super_admin"] },
+  { href: "/dashboard/change-password",      label: "Change Password",          resource: null,            section: "admin",      icon: "KeyRound" },
 ];
 
 export function getMenuForRole(role: Role, hospitalId: number | null): MenuEntry[] {

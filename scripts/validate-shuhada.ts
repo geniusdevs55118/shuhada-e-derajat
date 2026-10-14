@@ -178,19 +178,19 @@ async function main() {
   console.log("────────────────────────────────────────────");
 
   if (errors.length === 0 && warns.length === 0) {
-    console.log("\n✅  PERFECT — No errors or warnings found. Data is clean.");
+    console.log("\n[PASS] PERFECT — No errors or warnings found. Data is clean.");
   }
 
   if (errors.length > 0) {
-    console.log("\n🔴  ERRORS:");
+    console.log("\n[ERROR] ERRORS:");
     for (const e of errors)
-      console.log(`   [${e.recordId ?? "global"}] ${e.field ?? ""} → ${e.message}`);
+      console.log(`   [${e.recordId ?? "global"}] ${e.field ?? ""} -> ${e.message}`);
   }
 
   if (warns.length > 0) {
-    console.log("\n🟡  WARNINGS:");
+    console.log("\n[WARN] WARNINGS:");
     for (const w of warns)
-      console.log(`   [${w.recordId ?? "global"}] ${w.field ?? ""} → ${w.message}`);
+      console.log(`   [${w.recordId ?? "global"}] ${w.field ?? ""} -> ${w.message}`);
   }
 
   console.log("\n=== VALIDATION COMPLETE ===");

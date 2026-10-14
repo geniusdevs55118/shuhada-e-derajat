@@ -11,13 +11,72 @@ import { GlobalSearch } from "@/components/dashboard/global-search";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
 import Image from "next/image";
 
-export type MenuItem = { href: string; label: string };
+import {
+  LayoutDashboard,
+  QrCode,
+  CalendarClock,
+  Users,
+  CreditCard,
+  Building2,
+  ClipboardList,
+  AlertTriangle,
+  HeartPulse,
+  Ambulance,
+  UserCheck,
+  MessageSquareQuote,
+  BarChart3,
+  CheckSquare,
+  ShieldAlert,
+  UsersRound,
+  UserCog,
+  History,
+  SlidersHorizontal,
+  KeyRound,
+  CircleDot,
+  LogOut,
+} from "lucide-react";
+
+export type MenuItem = {
+  href: string;
+  label: string;
+  section?: "operations" | "oversight" | "admin";
+  icon?: string;
+};
 
 export type DashboardUser = {
   id?: number;
   name: string;
   role: string;
   hospital: string;
+};
+
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  LayoutDashboard,
+  QrCode,
+  CalendarClock,
+  Users,
+  CreditCard,
+  Building2,
+  ClipboardList,
+  AlertTriangle,
+  HeartPulse,
+  Ambulance,
+  UserCheck,
+  MessageSquareQuote,
+  BarChart3,
+  CheckSquare,
+  ShieldAlert,
+  UsersRound,
+  UserCog,
+  History,
+  SlidersHorizontal,
+  KeyRound,
+};
+
+const SECTION_LABELS: Record<string, string> = {
+  operations: "Daily Operations",
+  oversight: "Monitoring & Oversight",
+  admin: "Administration & Settings",
 };
 
 export function DashboardShell({
@@ -39,25 +98,99 @@ export function DashboardShell({
     router.refresh();
   };
 
+  // Group menu items into sections while maintaining high-priority items at the top
+  const sections: { key: string; label: string; items: MenuItem[] }[] = [];
+  const grouped: Record<string, MenuItem[]> = { operations: [], oversight: [], admin: [] };
+
+  for (const item of menu) {
+    const sec = item.section || "operations";
+    if (!grouped[sec]) grouped[sec] = [];
+    grouped[sec].push(item);
+  }
+
+  if (grouped.operations.length) {
+    sections.push({ key: "operations", label: SECTION_LABELS.operations, items: grouped.operations });
+  }
+  if (grouped.oversight.length) {
+    sections.push({ key: "oversight", label: SECTION_LABELS.oversight, items: grouped.oversight });
+  }
+  if (grouped.admin.length) {
+    sections.push({ key: "admin", label: SECTION_LABELS.admin, items: grouped.admin });
+  }
+
   const sidebar = (
-    <nav className="flex flex-col gap-1 p-4">
-      <Link href="/" className="mb-4 flex items-center gap-2.5 px-2 py-1">
-        <Image src="/images/logo.svg" alt="" width={38} height={38} className="shrink-0" />
-        <div>
-          <p className="font-heading text-base font-semibold leading-tight text-blue-950">Derajat Shuhada</p>
-          <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">Staff portal</p>
+    <div className="flex h-full flex-col justify-between">
+      <nav className="flex flex-col gap-4 p-3.5 overflow-y-auto">
+        <Link href="/" className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-100">
+          <Image src="/images/logo.svg" alt="Derajat Shuhada Portal" width={38} height={38} className="shrink-0 drop-shadow-sm" />
+          <div className="min-w-0">
+            <p className="font-heading text-sm font-bold leading-tight text-blue-950 truncate">Derajat Shuhada</p>
+            <p className="text-[10px] font-medium uppercase tracking-wider text-emerald-700">Staff Portal</p>
+          </div>
+        </Link>
+
+        {sections.map((section, idx) => (
+          <div key={section.key} className="space-y-1">
+            <div className="flex items-center justify-between px-2.5 pb-1 pt-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                {section.label}
+              </span>
+              {idx === 0 && (
+                <span className="inline-flex items-center rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-700">
+                  Priority
+                </span>
+              )}
+            </div>
+            <div className="space-y-0.5">
+              {section.items.map((item) => {
+                const active = item.href === "/dashboard"
+                  ? pathname === item.href
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                const IconComp = (item.icon && ICONS[item.icon]) ? ICONS[item.icon] : CircleDot;
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    aria-current={active ? "page" : undefined}
+                    className={`group flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs sm:text-sm font-medium transition-all ${
+                      active
+                        ? "bg-blue-600 font-semibold text-white shadow-sm shadow-blue-500/20"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-blue-950"
+                    }`}
+                  >
+                    <IconComp
+                      className={`size-4 shrink-0 transition-colors ${
+                        active ? "text-white" : "text-slate-400 group-hover:text-blue-700"
+                      }`}
+                    />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      {/* User Quick Info & Logout at bottom of sidebar */}
+      <div className="border-t border-slate-200 bg-slate-50/70 p-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <p className="truncate text-xs font-semibold text-slate-800">{user.name}</p>
+            <p className="truncate text-[10px] text-slate-500">{user.role}</p>
+          </div>
+          <button
+            onClick={logout}
+            title="Log out"
+            className="flex size-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+          >
+            <LogOut className="size-3.5" />
+          </button>
         </div>
-      </Link>
-      <div className="my-1 border-t border-gray-100" />
-      {menu.map((item) => {
-        const active = item.href === "/dashboard"
-          ? pathname === item.href
-          : pathname === item.href || pathname.startsWith(`${item.href}/`);
-        return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} aria-current={active ? "page" : undefined} className={`rounded-lg border-l-2 px-3 py-2 text-xs sm:text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-700 ${active ? "border-blue-700 bg-blue-50 text-blue-900" : "border-transparent text-gray-700 hover:bg-blue-50 hover:text-blue-800"}`}>
-          {item.label}
-        </Link>;
-      })}
-    </nav>
+      </div>
+    </div>
   );
 
   return (

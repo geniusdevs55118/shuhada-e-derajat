@@ -8,6 +8,7 @@ import { TokenSlipCard, TokenSlipData } from "@/components/visits/token-slip-mod
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Search, Check, Stethoscope, Pill, FlaskConical, Scan, User, MapPin, Clock, Ticket } from "lucide-react";
 
 interface BeneficiaryItem {
   name: string;
@@ -277,9 +278,10 @@ export function FacilitationBookingView({
           <Button
             onClick={() => handleLookup()}
             disabled={isSearchingCard}
-            className="h-10 bg-blue-900 hover:bg-blue-950 text-white font-semibold px-5"
+            className="h-10 bg-blue-900 hover:bg-blue-950 text-white font-semibold px-5 flex items-center gap-1.5"
           >
-            {isSearchingCard ? "Verifying..." : "🔍 Search & Verify"}
+            <Search className="w-4 h-4" />
+            {isSearchingCard ? "Verifying..." : "Search & Verify"}
           </Button>
         </div>
 
@@ -326,7 +328,9 @@ export function FacilitationBookingView({
                       <div className="flex items-start justify-between">
                         <span className="text-sm font-bold text-slate-900">{b.name}</span>
                         {isSelected && (
-                          <span className="text-emerald-600 font-bold text-xs">✓ Selected</span>
+                          <span className="text-emerald-600 font-bold text-xs flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5" /> Selected
+                          </span>
                         )}
                       </div>
                       <p className="text-xs text-slate-600 mt-0.5">Relation: {b.relationship}</p>
@@ -356,26 +360,30 @@ export function FacilitationBookingView({
           <div className="flex flex-wrap gap-1 rounded-lg bg-slate-100 p-1">
             {(
               [
-                { id: "all", label: "All Services" },
-                { id: "doctor", label: "🩺 Doctors & OPD" },
-                { id: "pharmacy", label: "💊 Pharmacy" },
-                { id: "lab", label: "🧪 Laboratory" },
-                { id: "radiology", label: "🩻 Radiology & X-Ray" },
+                { id: "all", label: "All Services", icon: null },
+                { id: "doctor", label: "Doctors & OPD", icon: Stethoscope },
+                { id: "pharmacy", label: "Pharmacy", icon: Pill },
+                { id: "lab", label: "Laboratory", icon: FlaskConical },
+                { id: "radiology", label: "Radiology & X-Ray", icon: Scan },
               ] as const
-            ).map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveCategory(tab.id as "all" | "doctor" | "pharmacy" | "lab" | "radiology")}
-                type="button"
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition ${
-                  activeCategory === tab.id
-                    ? "bg-white text-blue-950 shadow-sm font-bold"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+            ).map((tab) => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveCategory(tab.id as "all" | "doctor" | "pharmacy" | "lab" | "radiology")}
+                  type="button"
+                  className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-semibold transition ${
+                    activeCategory === tab.id
+                      ? "bg-white text-blue-950 shadow-sm"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+                  }`}
+                >
+                  {TabIcon && <TabIcon className="w-3.5 h-3.5" />}
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -430,19 +438,26 @@ export function FacilitationBookingView({
                 </p>
 
                 {facility.doctorName && (
-                  <p className="mt-1 text-xs text-slate-700 font-medium">
-                    👤 {facility.doctorName}
+                  <p className="mt-1 text-xs text-slate-700 font-medium flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{facility.doctorName}</span>
                   </p>
                 )}
 
-                <div className="mt-3 border-t border-slate-100 pt-2 text-[11px] text-slate-500 space-y-0.5">
-                  <p>📍 <strong className="text-slate-700">{facility.roomOrCounter}</strong></p>
-                  <p>⏰ {facility.availableTiming} ({facility.daysAvailable})</p>
+                <div className="mt-3 border-t border-slate-100 pt-2 text-[11px] text-slate-500 space-y-1">
+                  <p className="flex items-center gap-1.5">
+                    <MapPin className="w-3 h-3 text-slate-500 shrink-0" />
+                    <strong className="text-slate-700">{facility.roomOrCounter}</strong>
+                  </p>
+                  <p className="flex items-center gap-1.5">
+                    <Clock className="w-3 h-3 text-slate-500 shrink-0" />
+                    <span>{facility.availableTiming} ({facility.daysAvailable})</span>
+                  </p>
                 </div>
 
                 {isSelected && (
-                  <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-700 text-[10px] font-bold text-white">
-                    ✓
+                  <div className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-blue-700 text-white">
+                    <Check className="w-3 h-3" />
                   </div>
                 )}
               </div>
@@ -508,9 +523,10 @@ export function FacilitationBookingView({
             <Button
               onClick={handleBookAppointment}
               disabled={!familyData || !selectedBeneficiary || !selectedFacility || isBooking}
-              className="mt-4 w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 shadow-sm"
+              className="mt-4 w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 shadow-sm flex items-center justify-center gap-2"
             >
-              {isBooking ? "Generating Slip..." : "🎫 Book Appointment & Print Parchi (Chit)"}
+              <Ticket className="w-4 h-4" />
+              {isBooking ? "Generating Slip..." : "Book Appointment & Print Parchi (Chit)"}
             </Button>
           </div>
         </div>

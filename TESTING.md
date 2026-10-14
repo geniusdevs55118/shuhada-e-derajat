@@ -2,7 +2,7 @@
 2.  Add family → /dashboard/families/new → save
 3.  Verify family → /dashboard/verification-queue → verify
 4.  Issue card → /dashboard/health-cards → create → QR + PDF
-5.  Scan card → /dashboard/scan → scan QR → verified ✅
+5.  Scan card → /dashboard/scan → scan QR → verified (active)
 6.  New visit → /dashboard/visits/new → hospital → save
 7.  Check visits → /dashboard/visits → see record
 8.  Grievance → /dashboard/grievances/new → submit

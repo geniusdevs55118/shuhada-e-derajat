@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Html5Qrcode } from "html5-qrcode";
+import { Ticket } from "lucide-react";
 
 
 type VerifyResult = {
@@ -155,10 +156,11 @@ export default function ScanPage() {
           </div>
           <div className="flex items-center gap-2">
             <Link
-              className="rounded-md bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-800"
+              className="flex items-center gap-1.5 rounded-md bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-800"
               href={`/dashboard/facilitation-booking?card=${encodeURIComponent(result.cardNo ?? result.familyRegistrationId ?? "")}`}
             >
-              🎫 Facilitate & Book Appointment Slip
+              <Ticket className="w-3.5 h-3.5" />
+              <span>Facilitate & Book Appointment Slip</span>
             </Link>
             <Link className="text-xs text-blue-700 underline" href={`/dashboard/health-cards?search=${encodeURIComponent(result.cardNo ?? "")}`}>
               Card register

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Users } from "lucide-react";
 import type { Role } from "@prisma/client";
 
 type UserRow = {
@@ -66,7 +67,7 @@ export function UsersAdmin() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-200 mb-1">Administration</p>
             <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-              <span>👥</span> User Management
+              <Users className="w-6 h-6 text-blue-200" /> User Management
             </h1>
             <p className="text-sm text-blue-100/80 mt-0.5">Add, edit, deactivate users and manage role-based access control.</p>
           </div>
@@ -228,6 +229,7 @@ function EditDialog({ target, onClose, onSaved }: { target: UserRow; onClose: ()
     resolver: zodResolver(updateUserSchema),
     defaultValues: { name: target.name, role: target.role, designation: target.designation ?? "", hospitalCode: (target.hospital?.code as "DHQ" | "MMMTH" | "WC" | undefined) ?? undefined },
   });
+
 
   const onSubmit = async (values: UpdateUserInput) => {
     setServerError(null);
