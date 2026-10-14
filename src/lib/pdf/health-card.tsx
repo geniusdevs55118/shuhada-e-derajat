@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
+import { extractFamilyCode } from "@/lib/family-code";
 
 const GREEN = "#166534";
 const RED = "#b91c1c";
@@ -127,9 +128,13 @@ export function HealthCardPdf({
                 </View>
               </View>
               <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={s.label}>Family Code / کوڈ</Text>
+                <Text style={[s.value, { color: GREEN, fontSize: 11 }]}>
+                  #{extractFamilyCode(family)}
+                </Text>
                 <Text style={s.label}>Card No</Text>
                 <Text style={s.value}>{card.cardNo}</Text>
-                <Text style={s.label}>Family ID</Text>
+                <Text style={s.label}>Family Reg No</Text>
                 <Text style={s.value}>{family?.registrationNo}</Text>
                 <Text style={s.label}>Beneficiary ID</Text>
                 <Text style={s.value}>{member?.beneficiaryId ?? "—"}</Text>

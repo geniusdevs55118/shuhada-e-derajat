@@ -5,18 +5,19 @@ import { getCurrentUser } from "@/lib/auth";
 import { LoginForm } from "@/components/auth/login-form";
 
 const DEMO_ACCOUNTS = [
-  { role: "Hospital Director", username: "director" },
-  { role: "Additional Hospital Director", username: "addl.director" },
-  { role: "Medical Superintendent", username: "ms.dhq" },
-  { role: "Health Desk Focal Person", username: "desk.dhq" },
-  { role: "Health Desk Focal Person (MMMTH)", username: "desk.mmmth" },
-  { role: "Health Desk Focal Person (W&C)", username: "desk.wc" },
-  { role: "Administration / Finance", username: "wg.admin" },
-  { role: "Sehat Card Plus", username: "wg.sehat" },
-  { role: "Pharmacy", username: "wg.pharmacy" },
-  { role: "Diagnostics / Radiology", username: "wg.diagnostics" },
-  { role: "Nursing", username: "wg.nursing" },
-  { role: "IT / MIS", username: "wg.it" },
+  { role: "Hospital Director", username: "director123" },
+  { role: "Additional Hospital Director", username: "addldirector123" },
+  { role: "Medical Superintendent", username: "ms123" },
+  { role: "Health Desk Focal Person (DHQ)", username: "helpdesk123" },
+  { role: "Health Desk Focal Person (MMMTH)", username: "deskmmmth123" },
+  { role: "Health Desk Focal Person (W&C)", username: "deskwc123" },
+  { role: "Administration / Finance", username: "admin123" },
+  { role: "Sehat Card Plus", username: "sehat123" },
+  { role: "Pharmacy", username: "pharmacy123" },
+  { role: "Diagnostics / Radiology", username: "diagnostics123" },
+  { role: "Nursing", username: "nursing123" },
+  { role: "IT / MIS", username: "it123" },
+  { role: "Super Administrator", username: "superadmin123" },
 ];
 
 async function LoginGate() {

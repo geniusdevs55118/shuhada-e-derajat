@@ -9,6 +9,7 @@ import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
 import { Badge } from "@/components/ui/badge";
 import { GlobalSearch } from "@/components/dashboard/global-search";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
+import { SecurityShield } from "@/components/dashboard/security-shield";
 import Image from "next/image";
 
 import {
@@ -119,8 +120,9 @@ export function DashboardShell({
   }
 
   const sidebar = (
-    <div className="flex h-full flex-col justify-between">
-      <nav className="flex flex-col gap-4 p-3.5 overflow-y-auto">
+    <div className="flex h-full flex-col justify-between overflow-hidden">
+      {/* Fixed brand header at the top of the sidebar */}
+      <div className="p-3.5 pb-2.5 shrink-0 border-b border-slate-100">
         <Link href="/" className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-100">
           <Image src="/images/logo.svg" alt="Derajat Shuhada Portal" width={38} height={38} className="shrink-0 drop-shadow-sm" />
           <div className="min-w-0">
@@ -128,7 +130,10 @@ export function DashboardShell({
             <p className="text-[10px] font-medium uppercase tracking-wider text-emerald-700">Staff Portal</p>
           </div>
         </Link>
+      </div>
 
+      {/* Internal scrollable navigation for menus of any role */}
+      <nav className="flex-1 overflow-y-auto p-3.5 space-y-4">
         {sections.map((section, idx) => (
           <div key={section.key} className="space-y-1">
             <div className="flex items-center justify-between px-2.5 pb-1 pt-1">
@@ -156,13 +161,13 @@ export function DashboardShell({
                     aria-current={active ? "page" : undefined}
                     className={`group flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs sm:text-sm font-medium transition-all ${
                       active
-                        ? "bg-blue-600 font-semibold text-white shadow-sm shadow-blue-500/20"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-blue-950"
+                        ? "bg-[#01411c] font-semibold text-white shadow-sm shadow-[#01411c]/30 border-l-2 border-amber-400"
+                        : "text-slate-600 hover:bg-emerald-50 hover:text-[#01411c]"
                     }`}
                   >
                     <IconComp
                       className={`size-4 shrink-0 transition-colors ${
-                        active ? "text-white" : "text-slate-400 group-hover:text-blue-700"
+                        active ? "text-amber-300" : "text-slate-400 group-hover:text-emerald-700"
                       }`}
                     />
                     <span className="truncate">{item.label}</span>
@@ -174,8 +179,8 @@ export function DashboardShell({
         ))}
       </nav>
 
-      {/* User Quick Info & Logout at bottom of sidebar */}
-      <div className="border-t border-slate-200 bg-slate-50/70 p-3">
+      {/* User Quick Info & Logout fixed at bottom of sidebar */}
+      <div className="border-t border-slate-200 bg-slate-50/70 p-3 shrink-0">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">
             <p className="truncate text-xs font-semibold text-slate-800">{user.name}</p>
@@ -184,7 +189,7 @@ export function DashboardShell({
           <button
             onClick={logout}
             title="Log out"
-            className="flex size-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+            className="flex size-7 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors cursor-pointer"
           >
             <LogOut className="size-3.5" />
           </button>
@@ -194,10 +199,31 @@ export function DashboardShell({
   );
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
-      <aside className="hidden w-64 border-r bg-white md:block shrink-0">{sidebar}</aside>
-      <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
-        <header className="flex flex-wrap items-center justify-between gap-2 border-b bg-white px-3 py-2.5 sm:px-4 sm:py-3">
+    <div className="relative flex h-screen max-h-screen overflow-hidden bg-slate-100">
+      {/* Background Security Watermark & Anti-Theft Shield */}
+      <SecurityShield userName={user.name} role={user.role} hospital={user.hospital} />
+
+      {/* Desktop Fixed Sidebar - Stays stationary during page scroll */}
+      <aside className="relative z-10 hidden w-64 border-r border-slate-200 bg-white md:flex md:flex-col shrink-0 h-full overflow-hidden select-none">
+        {sidebar}
+      </aside>
+
+      {/* Main View Area */}
+      <div className="relative z-10 flex flex-1 flex-col min-w-0 h-full overflow-hidden">
+        {/* Subtle Pakistani National Tribute Top Strip - Fixed at top */}
+        <div className="bg-[#01411c] px-3 py-1 text-center text-white border-b border-amber-500/40 flex items-center justify-between text-[11px] shrink-0">
+          <span className="text-amber-300 font-serif">★</span>
+          <span className="font-semibold tracking-wider uppercase text-[10px] sm:text-[11px] text-emerald-100 truncate">
+            Derajat Shuhada Family Healthcare Initiative • Honouring Sacrifice Through Care
+          </span>
+          <span className="hidden md:inline font-serif text-[11px] text-amber-200" dir="rtl">
+            شہید کی جو موت ہے، وہ قوم کی حیات ہے
+          </span>
+          <span className="text-amber-300 font-serif">★</span>
+        </div>
+
+        {/* Top Header - Fixed at top */}
+        <header className="flex flex-wrap items-center justify-between gap-2 border-b bg-white px-3 py-2 sm:px-4 sm:py-2.5 shrink-0 z-10 shadow-xs">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <Sheet open={open} onOpenChange={setOpen}>
               {open ? null : (
@@ -210,7 +236,7 @@ export function DashboardShell({
                   <MenuToggleIcon />
                 </SheetTrigger>
               )}
-              <SheetContent side="left" showCloseButton={true} className="w-72 p-0">
+              <SheetContent side="left" showCloseButton={true} className="w-72 p-0 h-full">
                 <SheetTitle className="sr-only">Menu</SheetTitle>
                 {sidebar}
               </SheetContent>
@@ -223,13 +249,17 @@ export function DashboardShell({
             <GlobalSearch />
             <NotificationBell />
             <Badge variant="secondary" className="rounded-sm text-xs px-2 py-0.5">{user.role}</Badge>
-            <Badge className="rounded-sm bg-emerald-700 text-xs px-2 py-0.5">{user.hospital}</Badge>
+            <Badge className="rounded-sm bg-[#01411c] text-white text-xs px-2 py-0.5">{user.hospital}</Badge>
             <Button variant="outline" size="sm" className="h-8 cursor-pointer px-2.5 text-xs" onClick={logout}>
               Logout
             </Button>
           </div>
         </header>
-        <main className="flex-1 p-3 sm:p-5 md:p-6 min-w-0 overflow-y-auto">{children}</main>
+
+        {/* Scrollable Content Container - Only main content scrolls */}
+        <main className="flex-1 p-3 sm:p-5 md:p-6 min-w-0 overflow-y-auto">
+          {children}
+        </main>
       </div>
     </div>
   );

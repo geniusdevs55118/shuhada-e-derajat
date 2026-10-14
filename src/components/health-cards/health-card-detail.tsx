@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MISUSE_CONTROL_FLAGS, PERIODIC_REVIEW_FLAGS } from "@/lib/card-schemas";
+import { extractFamilyCode } from "@/lib/family-code";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -22,6 +23,8 @@ export function HealthCardDetail({ card, family, role, canProposeStatus, canAuth
   const [benForm, setBenForm] = useState({ beneficiaryName: "", previousStatus: "", newStatus: "", reason: "" });
   const [misuseForm, setMisuseForm] = useState({ flagType: "", remarks: "" });
   const [reviewForm, setReviewForm] = useState({ confirmations: [] as string[], nextReviewDate: "", reviewedBy: "", designation: "" });
+
+  const familyCode = extractFamilyCode(family || { registrationNo: card.familyRegistrationNo });
 
   async function submit(path: string, body: unknown) {
     setLoading(true); setError("");
@@ -41,20 +44,37 @@ export function HealthCardDetail({ card, family, role, canProposeStatus, canAuth
   }
 
   const statusColors: Record<string, string> = {
-    ACTIVE: "bg-green-100 text-green-800",
+    ACTIVE: "bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold",
     UNDER_VERIFICATION: "bg-amber-100 text-amber-800",
     TEMPORARILY_SUSPENDED: "bg-red-100 text-red-800",
     CLOSED: "bg-gray-200 text-gray-700",
   };
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-900">{card.cardNo}</h1>
-          <span className={`rounded px-3 py-1 text-sm ${statusColors[card.status] ?? ""}`}>{card.status}</span>
+    <div className="space-y-6 protect-data">
+      <div className="rounded-xl border border-emerald-800/40 bg-gradient-to-r from-[#01411c] via-[#046a38] to-[#065f46] p-6 text-white shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-amber-300 text-sm">★</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-200">
+                Official Shuhada Health Card
+              </span>
+              <span className="rounded bg-amber-400 text-slate-950 font-black px-2.5 py-0.5 text-xs font-mono tracking-wider shadow-sm">
+                Family Code: #{familyCode}
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">{card.cardNo}</h1>
+            <p className="text-xs sm:text-sm text-emerald-100/90 mt-1">
+              Shaheed: <strong className="text-white">{family?.shaheedName ?? "Honoured Martyr"}</strong> · Reg: {card.familyRegistrationNo} · Logged in as {role}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className={`rounded-lg px-3 py-1.5 text-xs sm:text-sm shadow-sm ${statusColors[card.status] ?? "bg-white text-slate-900"}`}>
+              {card.status}
+            </span>
+          </div>
         </div>
-        <p className="text-sm text-gray-500">Family Reg No: {card.familyRegistrationNo} · Issued: {card.dateOfCardIssue ? new Date(card.dateOfCardIssue).toLocaleDateString() : "—"} · Logged in as {role}</p>
       </div>
 
       {family && (

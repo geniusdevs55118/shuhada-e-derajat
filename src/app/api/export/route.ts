@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
 
   if (resource === "cards") {
     const cards = await prisma.healthCard.findMany({
+      where: hospitalScope(user, "card"),
       orderBy: { id: "desc" },
       take: 1000,
     });
@@ -73,6 +74,17 @@ export async function GET(req: NextRequest) {
   XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 
   const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+
+  await prisma.auditLog.create({
+    data: {
+      who: user.email ?? String(user.id),
+      role: user.role,
+      action: "export_excel",
+      entity: resource,
+      entityId: `${data.length}_rows`,
+      hospitalId: user.hospitalId,
+    },
+  }).catch(() => {});
 
   return new NextResponse(buffer, {
     headers: {

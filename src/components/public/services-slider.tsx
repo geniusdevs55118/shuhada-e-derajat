@@ -233,14 +233,14 @@ export function ServicesSlider() {
             <button
               onClick={() => scroll("left")}
               aria-label="Scroll left"
-              className="rounded-lg border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 hover:text-emerald-800 shadow-sm transition"
+              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 hover:text-emerald-800 shadow-sm transition"
             >
               <ChevronLeft className="size-5" />
             </button>
             <button
               onClick={() => scroll("right")}
               aria-label="Scroll right"
-              className="rounded-lg border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 hover:text-emerald-800 shadow-sm transition"
+              className="cursor-pointer rounded-lg border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 hover:text-emerald-800 shadow-sm transition"
             >
               <ChevronRight className="size-5" />
             </button>
@@ -253,7 +253,7 @@ export function ServicesSlider() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 ${
+              className={`cursor-pointer rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 ${
                 selectedCategory === cat.id
                   ? "bg-emerald-800 text-white shadow-sm"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"

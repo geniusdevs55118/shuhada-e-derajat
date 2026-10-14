@@ -8,7 +8,8 @@ import { TokenSlipCard, TokenSlipData } from "@/components/visits/token-slip-mod
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Check, Stethoscope, Pill, FlaskConical, Scan, User, MapPin, Clock, Ticket } from "lucide-react";
+import { Search, Check, Stethoscope, Pill, FlaskConical, Scan, User, MapPin, Clock, Ticket, Smile } from "lucide-react";
+import { extractFamilyCode } from "@/lib/family-code";
 
 interface BeneficiaryItem {
   name: string;
@@ -140,6 +141,7 @@ export function FacilitationBookingView({
     try {
       // Map category to nature of healthcare
       const natureMap: Record<FacilityCategory, string> = {
+        dental: "Dental Consultation / Procedure",
         doctor: "Specialist Consultation",
         pharmacy: "Medicines",
         lab: "Laboratory",
@@ -177,6 +179,7 @@ export function FacilitationBookingView({
       const tokenNumber = `#TK-${String(resData.id ?? Math.floor(100 + Math.random() * 900)).padStart(3, "0")}`;
 
       const slipCategoryMap: Record<FacilityCategory, TokenSlipData["category"]> = {
+        dental: "Dental Department",
         doctor: "Doctor / OPD",
         pharmacy: "Pharmacy",
         lab: "Laboratory",
@@ -192,6 +195,7 @@ export function FacilitationBookingView({
         }),
         hospitalName: defaultHospitalName,
         familyRegistrationNo: familyData.familyRegistrationNo,
+        familyCode: extractFamilyCode({ registrationNo: familyData.familyRegistrationNo }),
         healthCardNo: familyData.healthCardNo,
         shaheedName: familyData.shaheedName,
         beneficiaryName: selectedBeneficiary.name,
@@ -361,6 +365,7 @@ export function FacilitationBookingView({
             {(
               [
                 { id: "all", label: "All Services", icon: null },
+                { id: "dental", label: "Dental Department", icon: Smile },
                 { id: "doctor", label: "Doctors & OPD", icon: Stethoscope },
                 { id: "pharmacy", label: "Pharmacy", icon: Pill },
                 { id: "lab", label: "Laboratory", icon: FlaskConical },
@@ -371,11 +376,11 @@ export function FacilitationBookingView({
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveCategory(tab.id as "all" | "doctor" | "pharmacy" | "lab" | "radiology")}
+                  onClick={() => setActiveCategory(tab.id as "all" | "dental" | "doctor" | "pharmacy" | "lab" | "radiology")}
                   type="button"
                   className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-semibold transition ${
                     activeCategory === tab.id
-                      ? "bg-white text-blue-950 shadow-sm"
+                      ? "bg-white text-blue-950 shadow-sm ring-1 ring-slate-200"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
                   }`}
                 >
@@ -392,7 +397,7 @@ export function FacilitationBookingView({
           <Input
             value={facilitySearch}
             onChange={(e) => setFacilitySearch(e.target.value)}
-            placeholder="Search doctor name (e.g. Dermatologist, Dr. Farhan), room, test, or facility..."
+            placeholder="Search doctor name (e.g. Dental Surgeon, Dr. Farhan), room, test, or facility..."
             className="h-9 text-xs"
           />
         </div>
@@ -407,14 +412,16 @@ export function FacilitationBookingView({
                 onClick={() => setSelectedFacility(facility)}
                 className={`cursor-pointer rounded-xl border p-4 transition-all relative ${
                   isSelected
-                    ? "border-blue-700 bg-blue-50/50 ring-2 ring-blue-600 shadow-md"
+                    ? "border-emerald-700 bg-emerald-50/50 ring-2 ring-emerald-600 shadow-md"
                     : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <span
                     className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                      facility.category === "doctor"
+                      facility.category === "dental"
+                        ? "bg-amber-100 text-amber-900 border border-amber-300"
+                        : facility.category === "doctor"
                         ? "bg-purple-100 text-purple-800"
                         : facility.category === "pharmacy"
                         ? "bg-emerald-100 text-emerald-800"
@@ -423,7 +430,9 @@ export function FacilitationBookingView({
                         : "bg-blue-100 text-blue-800"
                     }`}
                   >
-                    {facility.category === "doctor"
+                    {facility.category === "dental"
+                      ? "Dental Department"
+                      : facility.category === "doctor"
                       ? "Doctor / Clinic"
                       : facility.category.toUpperCase()}
                   </span>

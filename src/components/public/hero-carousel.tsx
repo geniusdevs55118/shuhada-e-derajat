@@ -273,7 +273,7 @@ export function HeroCarousel() {
         <button
           onClick={prevSlide}
           aria-label="Previous slide"
-          className="pointer-events-auto inline-flex size-9 sm:size-10 items-center justify-center rounded-full border border-white/20 bg-slate-950/70 text-white backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-white/50 hover:bg-slate-900 focus-visible:outline-2 focus-visible:outline-emerald-400 shadow-md"
+          className="pointer-events-auto cursor-pointer inline-flex size-9 sm:size-10 items-center justify-center rounded-full border border-white/20 bg-slate-950/70 text-white backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-white/50 hover:bg-slate-900 focus-visible:outline-2 focus-visible:outline-emerald-400 shadow-md"
         >
           <ChevronLeft className="size-5 sm:size-6" />
         </button>
@@ -281,7 +281,7 @@ export function HeroCarousel() {
         <button
           onClick={nextSlide}
           aria-label="Next slide"
-          className="pointer-events-auto inline-flex size-9 sm:size-10 items-center justify-center rounded-full border border-white/20 bg-slate-950/70 text-white backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-white/50 hover:bg-slate-900 focus-visible:outline-2 focus-visible:outline-emerald-400 shadow-md"
+          className="pointer-events-auto cursor-pointer inline-flex size-9 sm:size-10 items-center justify-center rounded-full border border-white/20 bg-slate-950/70 text-white backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-white/50 hover:bg-slate-900 focus-visible:outline-2 focus-visible:outline-emerald-400 shadow-md"
         >
           <ChevronRight className="size-5 sm:size-6" />
         </button>
@@ -297,7 +297,7 @@ export function HeroCarousel() {
                 key={slide.id}
                 onClick={() => setCurrent(index)}
                 aria-label={`Go to slide ${index + 1}: ${slide.title}`}
-                className={`transition-all duration-300 rounded-full focus-visible:outline-2 focus-visible:outline-emerald-400 ${
+                className={`cursor-pointer transition-all duration-300 rounded-full focus-visible:outline-2 focus-visible:outline-emerald-400 ${
                   isActive
                     ? "w-7 h-2 bg-emerald-400 shadow-sm shadow-emerald-400/50"
                     : "w-2 h-2 bg-white/40 hover:bg-white/70"

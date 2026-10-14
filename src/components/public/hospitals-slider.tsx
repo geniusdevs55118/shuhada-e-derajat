@@ -17,9 +17,30 @@ import {
 
 const HOSPITALS = [
   {
+    code: "MMMTI",
+    name: "Mufti Mehmood Memorial Teaching Hospital",
+    subtitle: "Premier Medical Teaching & Multi-Specialty Institute",
+    categoryLabel: "Apex Medical Institute",
+    logo: "/images/logo-mmmti.svg",
+    image: "/images/mmtth.jpg",
+    city: "Dera Ismail Khan",
+    emergency: "24/7 Medical Emergency & Inpatient Services",
+    healthDesk: "Central OPD Registration Concourse, Ground Floor",
+    facilities: [
+      "Multi-Specialty OPD & Dental Surgery",
+      "Advanced Pathology & Radiology (CT/MRI)",
+      "Inpatient Medical Wards & CCU",
+      "Institutional Pharmacy Dispensary",
+    ],
+    contact: "Family Health Desk Focal: MMMTH Campus",
+    link: "/hospitals#mmmth",
+  },
+  {
     code: "DHQ",
     name: "District Headquarters Teaching Hospital",
     subtitle: "Tertiary Trauma & Specialist Surgical Center",
+    categoryLabel: "Trauma & Surgical Center",
+    logo: "/images/logo-dhq.svg",
     image: "/images/dhq.jpg",
     city: "Dera Ismail Khan",
     emergency: "24/7 Trauma & Emergency Department",
@@ -34,26 +55,11 @@ const HOSPITALS = [
     link: "/hospitals#dhq",
   },
   {
-    code: "MMMTH",
-    name: "Mufti Mehmood Memorial Teaching Hospital",
-    subtitle: "Premier Medical Teaching & Multi-Specialty Institute",
-    image: "/images/mmtth.jpg",
-    city: "Dera Ismail Khan",
-    emergency: "24/7 Medical Emergency & Inpatient Services",
-    healthDesk: "Central OPD Registration Concourse, Ground Floor",
-    facilities: [
-      "Multi-Specialty OPD & Consultations",
-      "Advanced Pathology & Radiology (CT/MRI)",
-      "Inpatient Medical Wards & CCU",
-      "Institutional Pharmacy Dispensary",
-    ],
-    contact: "Family Health Desk Focal: MMMTH Campus",
-    link: "/hospitals#mmmth",
-  },
-  {
     code: "DWCH",
     name: "Derajat Women & Children Hospital",
     subtitle: "Dedicated Maternal, Neonatal & Paediatric Healthcare",
+    categoryLabel: "Mother & Child Category",
+    logo: "/images/logo-dwch.svg",
     image: "/images/dwch.jpg",
     city: "Dera Ismail Khan",
     emergency: "24/7 Obstetric & Paediatric Emergency",
@@ -66,6 +72,25 @@ const HOSPITALS = [
     ],
     contact: "Family Health Desk Focal: DWCH Campus",
     link: "/hospitals#dwch",
+  },
+  {
+    code: "DSFHI",
+    name: "Derajat Shuhada Healthcare Directorate",
+    subtitle: "Central Shuhada Facilitation & Health Desk Authority",
+    categoryLabel: "Central Shuhada Coordination",
+    logo: "/images/logo-dsfhi.svg",
+    image: "/images/derajat-shuhada-banner.jpg",
+    city: "Dera Ismail Khan",
+    emergency: "Unified Fast-Track Shuhada Pathway Across All 3 Hospitals",
+    healthDesk: "Central Registry & Inter-Hospital Facilitation Cell",
+    facilities: [
+      "Single Verified Family Health Record",
+      "Dedicated Family Health Desks & Concierge",
+      "Priority Dental, Medical & Surgical Access",
+      "Zero Bureaucratic Delay for Shuhada Dependants",
+    ],
+    contact: "Central Directorate Helpdesk: 24/7 Dedicated Line",
+    link: "/about",
   },
 ];
 
@@ -113,14 +138,14 @@ export function HospitalsSlider() {
               <button
                 onClick={prev}
                 aria-label="Previous hospital"
-                className="rounded-md p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
+                className="cursor-pointer rounded-md p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
               >
                 <ChevronLeft className="size-5" />
               </button>
               <button
                 onClick={next}
                 aria-label="Next hospital"
-                className="rounded-md p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
+                className="cursor-pointer rounded-md p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
               >
                 <ChevronRight className="size-5" />
               </button>
@@ -129,7 +154,7 @@ export function HospitalsSlider() {
         </div>
 
         {/* Hospital Cards Grid / Slider */}
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {HOSPITALS.map((hospital, index) => {
             const isFeatured = index === activeIndex;
 
@@ -149,17 +174,28 @@ export function HospitalsSlider() {
                     src={hospital.image}
                     alt={hospital.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
                   
                   {/* Hospital Code Badge */}
                   <div className="absolute top-3 left-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-900/90 px-2.5 py-1 text-xs font-extrabold uppercase tracking-widest text-emerald-200 backdrop-blur-md border border-emerald-500/30">
-                      <ShieldCheck className="size-3.5 text-emerald-400" />
+                    <span className="inline-flex items-center gap-1.5 rounded-md bg-[#01411c]/90 px-2.5 py-1 text-xs font-extrabold uppercase tracking-widest text-white backdrop-blur-md border border-amber-400/40">
+                      <ShieldCheck className="size-3.5 text-amber-300" />
                       {hospital.code}
                     </span>
+                  </div>
+
+                  {/* Hospital Dedicated Category Logo */}
+                  <div className="absolute top-3 right-3 size-11 rounded-full bg-white p-1 shadow-lg border-2 border-amber-400 flex items-center justify-center">
+                    <Image
+                      src={hospital.logo}
+                      alt={`${hospital.name} logo`}
+                      width={36}
+                      height={36}
+                      className="object-contain"
+                    />
                   </div>
 
                   {/* Location Pin */}
@@ -170,11 +206,16 @@ export function HospitalsSlider() {
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-1 flex-col p-6">
-                  <h3 className="font-heading text-xl font-bold text-slate-900 group-hover:text-emerald-900 transition-colors">
+                <div className="flex flex-1 flex-col p-5">
+                  <div className="mb-1">
+                    <span className="rounded bg-emerald-50 text-[#01411c] border border-emerald-200 font-bold px-2 py-0.5 text-[10px] uppercase tracking-wider">
+                      {hospital.categoryLabel}
+                    </span>
+                  </div>
+                  <h3 className="font-heading text-lg font-bold text-slate-900 group-hover:text-emerald-900 transition-colors">
                     {hospital.name}
                   </h3>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                  <p className="mt-1 text-xs font-semibold text-emerald-700">
                     {hospital.subtitle}
                   </p>
 

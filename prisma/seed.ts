@@ -28,20 +28,20 @@ const DEMO_USERS: {
   name: string;
   designation: string;
 }[] = [
-  { username: "director", role: "hospital_director", name: "Demo Hospital Director", designation: "Hospital Director" },
-  { username: "ms.dhq", role: "medical_superintendent", hospitalCode: "DHQ", name: "Demo Medical Superintendent", designation: "Medical Superintendent" },
-  { username: "desk.dhq", role: "health_desk_officer", hospitalCode: "DHQ", name: "Demo Health Desk Officer", designation: "Health Desk Focal Person" },
-  { username: "desk.mmmth", role: "health_desk_officer", hospitalCode: "MMMTH", name: "Demo MMMTH Health Desk Officer", designation: "Health Desk Focal Person" },
-  { username: "desk.wc", role: "health_desk_officer", hospitalCode: "WC", name: "Demo W&C Health Desk Officer", designation: "Health Desk Focal Person" },
-  { username: "wg.admin", role: "admin_finance_rep", name: "Demo Administration Officer", designation: "Administration / Finance Representative" },
-  { username: "wg.sehat", role: "sehat_card_desk", name: "Demo Sehat Card Officer", designation: "Sehat Card Plus Representative" },
-  { username: "wg.pharmacy", role: "pharmacy_rep", name: "Demo Pharmacy Officer", designation: "Pharmacy Representative" },
-  { username: "wg.diagnostics", role: "diagnostics_rep", name: "Demo Diagnostics Officer", designation: "Diagnostics / Radiology Representative" },
-  { username: "wg.nursing", role: "nursing_rep", name: "Demo Nursing Officer", designation: "Nursing Representative" },
-  { username: "wg.it", role: "it_mis_rep", name: "Demo IT Officer", designation: "IT / MIS Representative" },
-  { username: "addl.director", role: "additional_director", name: "Demo Additional Director", designation: "Additional Hospital Director" },
-  { username: "super.admin", role: "super_admin", name: "Demo Super Administrator", designation: "Chief System Administrator" },
-  { username: "wg.member", role: "working_group_member", name: "Demo Working Group Member", designation: "Working Group General Member" },
+  { username: "director123", role: "hospital_director", name: "Demo Hospital Director", designation: "Hospital Director" },
+  { username: "ms123", role: "medical_superintendent", hospitalCode: "DHQ", name: "Demo Medical Superintendent", designation: "Medical Superintendent" },
+  { username: "helpdesk123", role: "health_desk_officer", hospitalCode: "DHQ", name: "Demo Health Desk Officer", designation: "Health Desk Focal Person" },
+  { username: "deskmmmth123", role: "health_desk_officer", hospitalCode: "MMMTH", name: "Demo MMMTH Health Desk Officer", designation: "Health Desk Focal Person" },
+  { username: "deskwc123", role: "health_desk_officer", hospitalCode: "WC", name: "Demo W&C Health Desk Officer", designation: "Health Desk Focal Person" },
+  { username: "admin123", role: "admin_finance_rep", name: "Demo Administration Officer", designation: "Administration / Finance Representative" },
+  { username: "sehat123", role: "sehat_card_desk", name: "Demo Sehat Card Officer", designation: "Sehat Card Plus Representative" },
+  { username: "pharmacy123", role: "pharmacy_rep", name: "Demo Pharmacy Officer", designation: "Pharmacy Representative" },
+  { username: "diagnostics123", role: "diagnostics_rep", name: "Demo Diagnostics Officer", designation: "Diagnostics / Radiology Representative" },
+  { username: "nursing123", role: "nursing_rep", name: "Demo Nursing Officer", designation: "Nursing Representative" },
+  { username: "it123", role: "it_mis_rep", name: "Demo IT Officer", designation: "IT / MIS Representative" },
+  { username: "addldirector123", role: "additional_director", name: "Demo Additional Director", designation: "Additional Hospital Director" },
+  { username: "superadmin123", role: "super_admin", name: "Demo Super Administrator", designation: "Chief System Administrator" },
+  { username: "member123", role: "working_group_member", name: "Demo Working Group Member", designation: "Working Group General Member" },
 ];
 
 const PEOPLE = [
@@ -184,11 +184,13 @@ async function populateDemoData(db: Db, passwordHash: string) {
 
   for (const user of DEMO_USERS) {
     const email = user.username + DEMO_DOMAIN;
+    const userPasswordHash = await bcrypt.hash(user.username, 10);
     await db.user.upsert({
       where: { email },
       update: {
         name: user.name,
         role: user.role,
+        passwordHash: userPasswordHash,
         hospitalId: user.hospitalCode ? hospitals[user.hospitalCode] : null,
         designation: user.designation,
         isActive: true,
@@ -198,7 +200,7 @@ async function populateDemoData(db: Db, passwordHash: string) {
       create: {
         name: user.name,
         email,
-        passwordHash,
+        passwordHash: userPasswordHash,
         role: user.role,
         hospitalId: user.hospitalCode ? hospitals[user.hospitalCode] : null,
         designation: user.designation,

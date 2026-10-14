@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TokenSlipCard, TokenSlipData } from "@/components/visits/token-slip-modal";
 import { Building2, Award, CreditCard, Clock, FileText, Printer, Pill, UserCheck, Check, Stethoscope } from "lucide-react";
+import { extractFamilyCode } from "@/lib/family-code";
 
 export interface DepartmentQueueItem {
   id: number;
@@ -153,6 +154,7 @@ export function DepartmentReceptionView({
 
   // Reprint chit/slip
   const handleReprintSlip = (item: DepartmentQueueItem) => {
+    const isDental = (item.department ?? "").toLowerCase().includes("dental");
     const slip: TokenSlipData = {
       tokenNo: `#TK-${String(item.id).padStart(3, "0")}`,
       visitNo: item.visitNo,
@@ -162,15 +164,19 @@ export function DepartmentReceptionView({
       }),
       hospitalName: item.hospitalName,
       familyRegistrationNo: item.familyRegistrationNo,
+      familyCode: extractFamilyCode({
+        registrationNo: item.familyRegistrationNo,
+        cardNo: item.healthCardNo,
+      }),
       healthCardNo: item.healthCardNo ?? undefined,
       shaheedName: item.shaheedName ?? undefined,
       beneficiaryName: item.beneficiaryName,
       beneficiaryRelationship: item.beneficiaryRelationship ?? undefined,
       beneficiaryCnic: item.beneficiaryCnic ?? undefined,
-      category: "Doctor / OPD",
-      departmentName: item.department || "Consultation Clinic",
+      category: isDental ? "Dental Department" : "Doctor / OPD",
+      departmentName: item.department || (isDental ? "Dental Surgery & OPD" : "Consultation Clinic"),
       doctorOrIncharge: item.consultant || undefined,
-      roomOrCounter: "Assigned OPD Room",
+      roomOrCounter: isDental ? "Dental Wing, Room D-01" : "Assigned OPD Room",
       priorityLevel: "PRIORITY - SHUHADA FAMILY",
       notes: item.treatmentPlan ?? undefined,
     };

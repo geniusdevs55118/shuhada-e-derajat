@@ -43,32 +43,78 @@ async function DashboardContent() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="grid overflow-hidden border-l-4 border-emerald-400 bg-blue-950 text-white lg:grid-cols-[1fr_19rem]">
-        <div className="flex flex-wrap items-center justify-between gap-4 p-5">
-          <div>
-            <div className="mb-1">
-              <span className="text-xs font-medium uppercase tracking-wider text-blue-200">Official Portal</span>
+      {/* Official Shuhada Portal Header - Pakistani Green & Gold Theme */}
+      <div className="overflow-hidden rounded-2xl border-2 border-amber-500/40 bg-gradient-to-r from-[#01411c] via-[#046a38] to-[#013817] text-white shadow-xl">
+        <div className="grid lg:grid-cols-[1fr_20rem] items-stretch">
+          <div className="flex flex-col justify-between p-5 sm:p-6">
+            <div>
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-400 text-slate-950 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider">
+                  ★ Shuhada Healthcare Portal
+                </span>
+                <span className="text-xs font-semibold text-emerald-200">
+                  Mufti Mehmood Memorial MTI • DHQ • DWCH
+                </span>
+              </div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white">
+                Welcome, {user.name}
+              </h1>
+              <p className="text-xs sm:text-sm text-emerald-100/90 mt-0.5">
+                {user.designation ?? ROLE_LABELS[role]}
+              </p>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">Welcome, {user.name}</h1>
-            <p className="text-xs sm:text-sm text-blue-100/90">{user.designation ?? ROLE_LABELS[role]}</p>
+
+            {/* Martyr Poetic Quotation in Urdu & English */}
+            <div className="my-4 rounded-xl border border-amber-400/30 bg-black/25 p-3.5 backdrop-blur-sm">
+              <p dir="rtl" className="font-serif text-sm sm:text-base md:text-lg font-bold text-amber-300">
+                شہید کی جو موت ہے، وہ قوم کی حیات ہے • لہو جو ہے شہید کا، وہ قوم کی زکوٰۃ ہے
+              </p>
+              <p className="mt-1 text-[11px] sm:text-xs text-emerald-100 italic">
+                &ldquo;Their sacrifice is our enduring responsibility. Honouring the Shuhada by caring for their families.&rdquo;
+              </p>
+            </div>
+
+            {/* Badges & 4 Hospital Categories */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-emerald-700/50">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-md border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold">
+                  {ROLE_LABELS[role]}
+                </span>
+                <span className="rounded-md bg-amber-400 text-slate-950 px-3 py-1 text-xs font-bold shadow-sm">
+                  {user.hospitalId === null ? "All 3 Network Hospitals" : user.hospital?.name ?? "Hospital"}
+                </span>
+              </div>
+
+              {/* 4 Logos Mini Strip */}
+              <div className="flex items-center gap-1.5 bg-white/10 rounded-lg p-1 border border-white/10">
+                <div title="Mufti Mehmood Memorial MTI" className="size-7 rounded-full bg-white p-0.5 shadow-xs">
+                  <Image src="/images/logo-mmmti.svg" alt="MMMTI" width={24} height={24} className="object-contain" />
+                </div>
+                <div title="DHQ Teaching Hospital" className="size-7 rounded-full bg-white p-0.5 shadow-xs">
+                  <Image src="/images/logo-dhq.svg" alt="DHQ" width={24} height={24} className="object-contain" />
+                </div>
+                <div title="Derajat Women & Children Hospital" className="size-7 rounded-full bg-white p-0.5 shadow-xs">
+                  <Image src="/images/logo-dwch.svg" alt="DWCH" width={24} height={24} className="object-contain" />
+                </div>
+                <div title="Central Shuhada Directorate" className="size-7 rounded-full bg-white p-0.5 shadow-xs">
+                  <Image src="/images/logo-dsfhi.svg" alt="DSFHI" width={24} height={24} className="object-contain" />
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-sm border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold">
-              {ROLE_LABELS[role]}
-            </span>
-            <span className="rounded-sm bg-emerald-600 px-3 py-1 text-xs font-semibold">
-              {user.hospitalId === null ? "All 3 Hospitals" : user.hospital?.name ?? "Hospital"}
-            </span>
+
+          {/* Right Banner Artwork */}
+          <div className="relative min-h-44 lg:min-h-0 border-t lg:border-t-0 lg:border-l border-amber-500/30">
+            <Image
+              src="/images/derajat-shuhada-banner.jpg"
+              alt="Derajat Shuhada Memorial Artwork"
+              fill
+              sizes="(max-width: 1024px) 100vw, 320px"
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent lg:bg-gradient-to-l lg:from-transparent lg:to-[#01411c]/60" />
           </div>
-        </div>
-        <div className="relative min-h-40 lg:min-h-0">
-          <Image
-            src="/images/services.jpg"
-            alt="Hospital staff supporting patients through care"
-            fill
-            sizes="(max-width: 1024px) 100vw, 304px"
-            className="object-cover"
-          />
         </div>
       </div>
 

@@ -69,7 +69,7 @@ export function LoginForm({
               const account = demoAccounts.find((item) => item.username === event.target.value);
               setSelectedDemo(event.target.value);
               setValue("username", account?.username ?? "", { shouldValidate: true });
-              if (account && demoPassword) setValue("password", demoPassword, { shouldValidate: true });
+              if (account) setValue("password", account.username, { shouldValidate: true });
             }}
             className="mt-1.5 h-10 w-full border border-input bg-white px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
           >
@@ -80,7 +80,7 @@ export function LoginForm({
               </option>
             ))}
           </select>
-          <p className="mt-1.5 text-xs text-muted-foreground">Select a seeded role to fill its test credentials.</p>
+          <p className="mt-1.5 text-xs text-muted-foreground">Select a role to fill its credentials (password is identical to username, e.g. helpdesk123).</p>
         </div>
       )}
       <div className="space-y-1.5">

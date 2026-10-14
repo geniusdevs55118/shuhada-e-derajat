@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ExportExcelButton } from "@/components/dashboard/export-excel-button";
+import { extractFamilyCode } from "@/lib/family-code";
 import {
   Search,
   Filter,
@@ -325,10 +326,10 @@ export function FamiliesView({
         </div>
       )}
 
-      {/* Main Table (Desktop / Tablet) - Protected against text stretching and overflow */}
+      {/* Main Table (Desktop / Tablet) - Protected against text stretching and data theft */}
       {rows.length > 0 && (
         <>
-          <div className="hidden md:block overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xs">
+          <div className="protect-data select-none hidden md:block overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[960px] border-collapse text-left text-xs sm:text-sm">
                 <thead>
@@ -372,15 +373,20 @@ export function FamiliesView({
                         key={f.id}
                         className="group transition-colors hover:bg-blue-50/40"
                       >
-                        {/* Registration No */}
+                        {/* Registration No & Family Code */}
                         <td className="px-4 py-3.5">
-                          <Link
-                            href={`/dashboard/families/${f.id}`}
-                            className="inline-flex items-center gap-1.5 font-bold font-mono text-xs text-blue-700 hover:text-blue-900 hover:underline"
-                          >
-                            <FileText className="size-3.5 text-blue-500 shrink-0" />
-                            <span>{f.registrationNo}</span>
-                          </Link>
+                          <div className="flex flex-col gap-1">
+                            <span className="inline-block w-fit rounded bg-emerald-100 text-[#01411c] text-[10px] font-mono font-bold px-1.5 py-0.5 border border-emerald-300">
+                              Code: #{extractFamilyCode(f)}
+                            </span>
+                            <Link
+                              href={`/dashboard/families/${f.id}`}
+                              className="inline-flex items-center gap-1.5 font-bold font-mono text-xs text-blue-700 hover:text-blue-900 hover:underline"
+                            >
+                              <FileText className="size-3.5 text-blue-500 shrink-0" />
+                              <span>{f.registrationNo}</span>
+                            </Link>
+                          </div>
                         </td>
 
                         {/* Shaheed Name */}
@@ -478,7 +484,7 @@ export function FamiliesView({
           </div>
 
           {/* Mobile Card Grid (md:hidden) */}
-          <div className="grid gap-3 md:hidden">
+          <div className="protect-data select-none grid gap-3 md:hidden">
             {rows.map((f) => {
               const verification =
                 (f.verificationStatus && VERIFICATION_CONFIG[f.verificationStatus]) || null;

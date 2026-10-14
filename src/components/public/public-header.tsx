@@ -147,34 +147,39 @@ export function PublicHeader() {
         Skip to main content
       </a>
 
-      {/* Top Reverence & Emergency Triage Ribbon */}
-      <div className="bg-emerald-950 text-emerald-100 text-xs border-b border-emerald-900/80">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-1.5 sm:px-6 lg:px-8">
+      {/* Top Reverence & Emergency Triage Ribbon - Pakistan National Green & Gold */}
+      <div className="bg-[#01411c] text-emerald-100 text-xs border-b border-amber-500/40">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-1 sm:px-6 lg:px-8">
           {/* Left badge */}
           <div className="flex items-center gap-2 min-w-0">
-            <span className="flex size-2 shrink-0 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-semibold tracking-wide text-emerald-200 truncate text-[11px] sm:text-xs">
+            <span className="text-amber-300 font-serif text-sm">★</span>
+            <span className="font-semibold tracking-wide text-white truncate text-[11px] sm:text-xs">
               <span className="hidden sm:inline">Mufti Mehmood Memorial MTI • </span>
-              Derajat Shuhada Healthcare Initiative
+              Derajat Shuhada Family Healthcare Initiative
             </span>
+          </div>
+
+          {/* Center Urdu Poet Tribute on larger screens */}
+          <div className="hidden lg:flex items-center gap-1.5 text-amber-200 font-serif text-xs" dir="rtl">
+            <span>شہید کی جو موت ہے، وہ قوم کی حیات ہے</span>
           </div>
 
           {/* Right utility items */}
           <div className="flex items-center gap-3 sm:gap-4 shrink-0 text-xs font-medium">
-            <div className="hidden md:flex items-center gap-1.5 text-emerald-300">
-              <HeartPulse className="size-3.5 text-emerald-400 shrink-0" />
-              <span>24/7 Priority Emergency Care</span>
+            <div className="hidden md:flex items-center gap-1.5 text-emerald-200">
+              <HeartPulse className="size-3.5 text-amber-300 shrink-0" />
+              <span className="text-[11px]">24/7 Priority Emergency Care</span>
             </div>
 
-            <div className="hidden sm:block h-3 w-px bg-emerald-800/80" />
+            <div className="hidden sm:block h-3 w-px bg-emerald-700/80" />
 
             {/* Language Switcher */}
             <button
               onClick={() => setLang(lang === "en" ? "ur" : "en")}
               aria-label={lang === "en" ? "Switch language to Urdu" : "Switch language to English"}
-              className="inline-flex items-center gap-1.5 rounded-full bg-emerald-900/70 border border-emerald-700/60 px-2.5 py-0.5 text-[11px] sm:text-xs font-bold text-white hover:bg-emerald-800 hover:border-emerald-500 transition focus-visible:outline-2 focus-visible:outline-white"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#046a38] border border-amber-400/50 px-2.5 py-0.5 text-[11px] sm:text-xs font-bold text-white hover:bg-[#065f46] hover:border-amber-300 transition focus-visible:outline-2 focus-visible:outline-white"
             >
-              <Globe className="size-3 text-emerald-400 shrink-0" />
+              <Globe className="size-3 text-amber-300 shrink-0" />
               <span>{lang === "en" ? "اردو" : "English"}</span>
             </button>
           </div>

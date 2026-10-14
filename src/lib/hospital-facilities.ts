@@ -1,4 +1,4 @@
-export type FacilityCategory = "doctor" | "pharmacy" | "lab" | "radiology";
+export type FacilityCategory = "doctor" | "dental" | "pharmacy" | "lab" | "radiology";
 
 export interface HospitalFacilityItem {
   id: string;
@@ -14,6 +14,44 @@ export interface HospitalFacilityItem {
 }
 
 export const HOSPITAL_FACILITIES: HospitalFacilityItem[] = [
+  // --- DENTAL DEPARTMENT (DEDICATED SHUHADA DENTAL CLINIC) ---
+  {
+    id: "dental-surg-1",
+    name: "Dental Surgery & Consultation OPD",
+    category: "dental",
+    specialityOrType: "Dental Surgery / Oral Healthcare",
+    roomOrCounter: "Dental Wing, Room D-01, 1st Floor",
+    doctorName: "Dr. Irfanullah Khan (Consultant Dental Surgeon)",
+    availableTiming: "08:30 AM - 02:30 PM",
+    daysAvailable: "Mon - Sat",
+    status: "Available",
+    description: "Full dental checkup, maxillofacial evaluation, toothache diagnosis, dental consultations for Shuhada families.",
+  },
+  {
+    id: "dental-rest-2",
+    name: "Operative & Restorative Dentistry",
+    category: "dental",
+    specialityOrType: "Restorative Dentistry & Root Canal",
+    roomOrCounter: "Dental Operatory Room D-02",
+    doctorName: "Dr. Ayesha Tariq (Dental Specialist)",
+    availableTiming: "09:00 AM - 02:00 PM",
+    daysAvailable: "Mon - Sat",
+    status: "Available",
+    description: "Tooth fillings, endodontics/root canals, scaling, polishing and preventive dental therapy.",
+  },
+  {
+    id: "dental-ext-3",
+    name: "Emergency Dental & Extraction Unit",
+    category: "dental",
+    specialityOrType: "Oral Surgery & Tooth Extractions",
+    roomOrCounter: "Dental Wing Counter D-03, Ground Floor",
+    doctorName: "Dr. Kamran Malik (Senior Dental Officer)",
+    availableTiming: "08:00 AM - 03:00 PM (Emergency On-Call 24/7)",
+    daysAvailable: "Mon - Sun",
+    status: "Available",
+    description: "Urgent toothache relief, emergency extractions, trauma management, and post-extraction medications.",
+  },
+
   // --- DOCTORS & SPECIALISTS ---
   {
     id: "doc-derm-1",
@@ -99,53 +137,77 @@ export const HOSPITAL_FACILITIES: HospitalFacilityItem[] = [
     status: "Available",
     description: "Antenatal care, maternal wellness, women healthcare.",
   },
-
-  // --- PHARMACY ---
   {
-    id: "pharma-main-1",
-    name: "Central Shuhada Facilitation Pharmacy",
+    id: "doc-pulm-1",
+    name: "Pulmonology & Chest Clinic",
+    category: "doctor",
+    specialityOrType: "Pulmonologist (Chest Specialist)",
+    roomOrCounter: "OPD Room 07, Ground Floor",
+    doctorName: "Dr. Tariq Jamil (Pulmonologist)",
+    availableTiming: "09:00 AM - 02:00 PM",
+    daysAvailable: "Mon - Thu",
+    status: "Available",
+    description: "Asthma, COPD, chronic cough, respiratory diagnostics and oxygenation care.",
+  },
+
+  // --- PHARMACY & DISPENSARIES ---
+  {
+    id: "pharm-main-1",
+    name: "Main Hospital Dispensary (OPD)",
     category: "pharmacy",
-    specialityOrType: "OPD Pharmacy Counter",
-    roomOrCounter: "Pharmacy Counter 1 (Dedicated Shuhada Desk)",
-    doctorName: "Pharmacist Kashif Ali",
+    specialityOrType: "Main Pharmacy Dispensary",
+    roomOrCounter: "Pharmacy Counter 1 (Dedicated Shuhada Priority Window)",
+    doctorName: "Pharmacist Zubair Alam",
+    availableTiming: "08:00 AM - 03:00 PM",
+    daysAvailable: "Mon - Sat",
+    status: "Available",
+    description: "Full supply of institutional formulary medicines with 100% free dispensing for registered Shuhada beneficiaries.",
+  },
+  {
+    id: "pharm-emg-1",
+    name: "Emergency 24/7 Pharmacy",
+    category: "pharmacy",
+    specialityOrType: "Emergency Pharmacy & Critical Meds",
+    roomOrCounter: "Emergency Department Pharmacy Window",
+    doctorName: "Duty Pharmacist (24 Hours)",
     availableTiming: "24/7 Round the Clock",
     daysAvailable: "Mon - Sun",
     status: "Available",
-    description: "Free and priority medicine dispensing for registered Shuhada beneficiaries.",
+    description: "Emergency life-saving drugs, IV infusions, immediate medication supplies.",
   },
   {
-    id: "pharma-spec-1",
-    name: "Specialized & Chronic Medication Counter",
+    id: "pharm-chronic-1",
+    name: "Chronic Illness Refill Counter",
     category: "pharmacy",
-    specialityOrType: "Chronic Illness Medication",
-    roomOrCounter: "Pharmacy Counter 3, Main Lobby",
-    doctorName: "Pharmacist Zainab Bibi",
-    availableTiming: "08:30 AM - 03:00 PM",
-    daysAvailable: "Mon - Sat",
+    specialityOrType: "Chronic Care Medicine Dispensary",
+    roomOrCounter: "Pharmacy Window 3, OPD Hall",
+    doctorName: "Pharmacist Nida Parveen",
+    availableTiming: "09:00 AM - 01:30 PM",
+    daysAvailable: "Mon - Fri",
     status: "Available",
-    description: "Monthly refills for insulin, cardiac meds, neurological treatments.",
+    description: "Monthly recurring refills for diabetes, hypertension, and cardiac maintenance medications.",
   },
 
-  // --- LABORATORY / PATHOLOGY ---
+  // --- LABORATORY & DIAGNOSTIC SERVICES ---
   {
     id: "lab-sample-1",
-    name: "Main Pathology & Blood Sample Collection",
+    name: "Central Clinical Pathology Lab",
     category: "lab",
-    specialityOrType: "Clinical Laboratory / Sample Counter",
-    roomOrCounter: "Lab Counter 2 (Priority Lane)",
-    doctorName: "Dr. M. Haris (Pathologist)",
-    availableTiming: "07:30 AM - 03:30 PM (Emergency 24/7)",
-    daysAvailable: "Mon - Sun",
+    specialityOrType: "Blood, Urine & Stool Analysis",
+    roomOrCounter: "Lab Counter 2 (Shuhada Sample Collection Desk)",
+    doctorName: "Dr. Noman Hashmi (Pathologist)",
+    availableTiming: "08:00 AM - 02:30 PM (24/7 for Emergency)",
+    daysAvailable: "Mon - Sat",
     status: "Available",
-    description: "CBC, Blood Sugar, LFT, RFT, Urine Routine, Lipid Profile.",
+    description: "CBC, LFTs, RFTs, Blood Glucose, Lipid Profiles, HbA1c, routine chemistry.",
   },
   {
     id: "lab-micro-1",
-    name: "Microbiology & Specialized Tests",
+    name: "Microbiology & Special Diagnostics",
     category: "lab",
-    specialityOrType: "Specialized Laboratory",
-    roomOrCounter: "Diagnostic Block Lab 4, 2nd Floor",
-    doctorName: "Dr. Noman Bashir (Microbiologist)",
+    specialityOrType: "Microbiology & Serology",
+    roomOrCounter: "Diagnostic Wing Room 102",
+    doctorName: "Dr. Noman Hashmi (Pathologist)",
     availableTiming: "08:30 AM - 02:00 PM",
     daysAvailable: "Mon - Fri",
     status: "Available",

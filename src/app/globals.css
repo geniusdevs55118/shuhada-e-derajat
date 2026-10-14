@@ -175,6 +175,39 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Pointer cursor on everything clickable (Tailwind v4 resets buttons to default) */
+  button,
+  a[href],
+  summary,
+  select,
+  label[for],
+  [role="button"],
+  [role="tab"],
+  [role="link"],
+  [role="checkbox"],
+  [role="radio"],
+  [role="switch"],
+  [role="option"],
+  [role="menuitem"],
+  [role="combobox"],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="file"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"],
+  input[type="color"],
+  input[type="range"],
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+  }
+  button:disabled,
+  select:disabled,
+  input:disabled,
+  [aria-disabled="true"],
+  [data-disabled] {
+    cursor: not-allowed;
+  }
   html {
     @apply font-sans;
     scrollbar-width: thin;
@@ -360,4 +393,73 @@ button[data-slot="sheet-trigger"]:not(:disabled):hover {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ==========================================================================
+   Universal Interactive Elements Pointer Cursor
+   ========================================================================== */
+button,
+[role="button"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
+[role="switch"],
+[role="checkbox"],
+[role="radio"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"]::file-selector-button,
+select,
+summary,
+a,
+label[for],
+[data-slot="button"],
+[data-slot="trigger"],
+[data-slot="sheet-trigger"],
+[data-slot="sheet-close"],
+[data-slot="dialog-trigger"],
+[data-slot="dialog-close"],
+[data-slot="select-trigger"],
+[data-slot="select-item"],
+[data-slot="checkbox"],
+[data-slot="tab"],
+.cursor-pointer,
+table tbody tr[onClick],
+[data-clickable="true"] {
+  cursor: pointer !important;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled="true"],
+[disabled] {
+  cursor: not-allowed !important;
+}
+
+/* Dashboard fixed layout print styling */
+@media print {
+  .flex.h-screen {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  main {
+    overflow: visible !important;
+    height: auto !important;
+  }
+}
+
+/* Anti-copy protection for confidential martyr records */
+.protect-data,
+.protect-data table tbody,
+.protect-data [data-confidential="true"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
