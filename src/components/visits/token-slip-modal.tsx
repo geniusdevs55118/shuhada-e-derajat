@@ -56,11 +56,19 @@ export function TokenSlipCard({
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
   useEffect(() => {
+    // Prevent background website scrolling while modal popup is open
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [onClose]);
 
   // Generate QR code matching the card
@@ -221,10 +229,18 @@ export function TokenSlipCard({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-3 bg-slate-950/75 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-3 bg-slate-950/75 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
       <div
         className="relative my-auto w-full max-w-[295px] rounded-xl border-2 border-emerald-900 bg-white shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[92vh]"
         id="printable-token-slip-container"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Top Control Bar (Always visible at top of modal, hidden on print) */}
         <div className="bg-[#01411c] px-2.5 py-1 text-white flex items-center justify-between border-b border-amber-500/50 shrink-0 print:hidden">
