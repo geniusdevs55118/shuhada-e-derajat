@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import QRCode from "qrcode";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,23 +54,77 @@ export function TokenSlipCard({
   onClose: () => void;
   onPrint?: () => void;
 }) {
+  const [mounted, setMounted] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
   useEffect(() => {
-    // Prevent background website scrolling while modal popup is open
-    const prevOverflow = document.body.style.overflow;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!data) return;
+
+    // Completely freeze background website scrolling while popup modal is open
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    // Freeze any scrollable main or dashboard containers
+    const scrollContainers = Array.from(
+      document.querySelectorAll<HTMLElement>("main, .overflow-y-auto, .overflow-auto")
+    );
+    const originalContainerStyles = scrollContainers.map((el) => ({
+      el,
+      overflow: el.style.overflow,
+    }));
+    scrollContainers.forEach(({ style }) => {
+      style.overflow = "hidden";
+    });
+
+    // Intercept wheel & touchmove globally so background page cannot scroll under any circumstances
+    const handlePreventScroll = (e: WheelEvent | TouchEvent) => {
+      const target = e.target as HTMLElement | null;
+      const scrollableParchi = document.getElementById("printable-parchi");
+      // If user is scrolling inside the printable parchi chit itself, allow it if it overflows
+      if (scrollableParchi && scrollableParchi.contains(target)) {
+        if (scrollableParchi.scrollHeight > scrollableParchi.clientHeight) {
+          return;
+        }
+      }
+      e.preventDefault();
+    };
+
+    window.addEventListener("wheel", handlePreventScroll, { passive: false });
+    window.addEventListener("touchmove", handlePreventScroll, { passive: false });
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+      }
+      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", " "].includes(e.key)) {
+        const target = e.target as HTMLElement | null;
+        const isInput = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA";
+        if (!isInput) {
+          e.preventDefault();
+        }
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+
+      originalContainerStyles.forEach(({ el, overflow }) => {
+        el.style.overflow = overflow;
+      });
+
+      window.removeEventListener("wheel", handlePreventScroll);
+      window.removeEventListener("touchmove", handlePreventScroll);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onClose]);
+  }, [data, onClose]);
 
   // Generate QR code matching the card
   useEffect(() => {
@@ -90,7 +145,7 @@ export function TokenSlipCard({
       .catch((err) => console.error("Token QR generation error:", err));
   }, [data]);
 
-  if (!data) return null;
+  if (!data || !mounted) return null;
 
   const displayFamilyCode =
     data.familyCode ||
@@ -228,17 +283,27 @@ export function TokenSlipCard({
     }, 250);
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-3 bg-slate-950/75 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150"
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-3 bg-slate-950/75 backdrop-blur-xs select-none"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 99999,
+      }}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose();
         }
       }}
+      onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
     >
       <div
-        className="relative my-auto w-full max-w-[295px] rounded-xl border-2 border-emerald-900 bg-white shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[92vh]"
+        className="relative w-full max-w-[295px] rounded-xl border-2 border-emerald-900 bg-white shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[90vh] select-text"
         id="printable-token-slip-container"
         onClick={(e) => e.stopPropagation()}
       >
@@ -499,6 +564,7 @@ export function TokenSlipCard({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
