@@ -14,9 +14,11 @@ export interface DepartmentQueueItem {
   visitNo: string;
   dateTime: string | Date;
   beneficiaryName: string;
+  beneficiaryFatherHusbandGuardian?: string | null;
   beneficiaryRelationship: string | null;
   beneficiaryCnic: string | null;
   shaheedName: string | null;
+  shaheedFatherName?: string | null;
   familyRegistrationNo: string;
   healthCardNo: string | null;
   hospitalName: string;
@@ -155,6 +157,18 @@ export function DepartmentReceptionView({
   // Reprint chit/slip
   const handleReprintSlip = (item: DepartmentQueueItem) => {
     const isDental = (item.department ?? "").toLowerCase().includes("dental");
+    const fatherCandidate =
+      item.beneficiaryFatherHusbandGuardian ||
+      (item.beneficiaryRelationship?.toLowerCase().includes("son") ||
+      item.beneficiaryRelationship?.toLowerCase().includes("daughter") ||
+      item.beneficiaryRelationship?.toLowerCase().includes("child")
+        ? item.shaheedName
+        : item.beneficiaryRelationship?.toLowerCase().includes("spouse") ||
+          item.beneficiaryRelationship?.toLowerCase().includes("wife") ||
+          item.beneficiaryRelationship?.toLowerCase().includes("widow")
+        ? `${item.shaheedName} (Husband)`
+        : item.shaheedFatherName || item.shaheedName || "—");
+
     const slip: TokenSlipData = {
       tokenNo: `#TK-${String(item.id).padStart(3, "0")}`,
       visitNo: item.visitNo,
@@ -170,12 +184,17 @@ export function DepartmentReceptionView({
       }),
       healthCardNo: item.healthCardNo ?? undefined,
       shaheedName: item.shaheedName ?? undefined,
+      shaheedFatherName: item.shaheedFatherName ?? undefined,
       beneficiaryName: item.beneficiaryName,
+      patientName: item.beneficiaryName,
+      fatherName: fatherCandidate ?? undefined,
+      beneficiaryFatherName: fatherCandidate ?? undefined,
       beneficiaryRelationship: item.beneficiaryRelationship ?? undefined,
       beneficiaryCnic: item.beneficiaryCnic ?? undefined,
       category: isDental ? "Dental Department" : "Doctor / OPD",
       departmentName: item.department || (isDental ? "Dental Surgery & OPD" : "Consultation Clinic"),
       doctorOrIncharge: item.consultant || undefined,
+      doctorReferred: item.consultant || undefined,
       roomOrCounter: isDental ? "Dental Wing, Room D-01" : "Assigned OPD Room",
       priorityLevel: "PRIORITY - SHUHADA FAMILY",
       notes: item.treatmentPlan ?? undefined,

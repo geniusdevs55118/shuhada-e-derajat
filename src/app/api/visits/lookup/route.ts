@@ -39,22 +39,49 @@ export async function GET(req: NextRequest) {
       registrationNo: family.registrationNo,
       healthCardNo: family.healthCardNo,
       shaheedName: family.shaheedName,
+      shaheedFatherName: family.shaheedFatherName,
       verificationStatus: family.verificationStatus,
       contactName: family.contactName,
     },
-    members: family.members.map((m) => ({
-      id: m.id,
-      name: m.name,
-      relationship: m.relationship,
-      cnicBForm: m.cnicBForm,
-      mobile: m.mobile,
-      beneficiaryId: m.beneficiaryId,
-      cardStatus: m.cardStatus,
-    })),
+    members: family.members.map((m) => {
+      const isChild =
+        m.relationship?.toLowerCase().includes("son") ||
+        m.relationship?.toLowerCase().includes("daughter") ||
+        m.relationship?.toLowerCase().includes("child");
+      const isSpouse =
+        m.relationship?.toLowerCase().includes("spouse") ||
+        m.relationship?.toLowerCase().includes("wife") ||
+        m.relationship?.toLowerCase().includes("widow");
+      const fatherHusband = isChild
+        ? family.shaheedName
+        : isSpouse
+        ? `${family.shaheedName} (Husband)`
+        : family.shaheedFatherName ?? family.shaheedName ?? null;
+
+      return {
+        id: m.id,
+        name: m.name,
+        relationship: m.relationship,
+        cnicBForm: m.cnicBForm,
+        mobile: m.mobile,
+        beneficiaryId: m.beneficiaryId,
+        cardStatus: m.cardStatus,
+        fatherHusbandGuardian: fatherHusband,
+      };
+    }),
     beneficiary: member
       ? {
           name: member.name,
-          fatherHusbandGuardian: null,
+          fatherHusbandGuardian:
+            member.relationship?.toLowerCase().includes("son") ||
+            member.relationship?.toLowerCase().includes("daughter") ||
+            member.relationship?.toLowerCase().includes("child")
+              ? family.shaheedName
+              : member.relationship?.toLowerCase().includes("spouse") ||
+                member.relationship?.toLowerCase().includes("wife") ||
+                member.relationship?.toLowerCase().includes("widow")
+              ? `${family.shaheedName} (Husband)`
+              : family.shaheedFatherName ?? family.shaheedName ?? null,
           cnicBForm: member.cnicBForm,
           relationship: member.relationship,
           mobile: member.mobile,

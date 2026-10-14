@@ -16,6 +16,8 @@ interface BeneficiaryItem {
   relationship: string;
   cnic?: string;
   cnicBForm?: string;
+  fatherHusbandGuardian?: string | null;
+  fatherName?: string | null;
   beneficiaryId?: string;
   cardStatus?: string;
   eligibility?: string;
@@ -40,6 +42,7 @@ export function FacilitationBookingView({
     familyRegistrationNo: string;
     healthCardNo: string;
     shaheedName: string;
+    shaheedFatherName?: string;
     beneficiaries: BeneficiaryItem[];
   } | null>(null);
 
@@ -77,12 +80,13 @@ export function FacilitationBookingView({
       }
       const data = await res.json();
       
-      const benList: BeneficiaryItem[] = (data.members ?? []).map((m: BeneficiaryItem) => ({
+      const benList: BeneficiaryItem[] = (data.members ?? []).map((m: any) => ({
         name: m.name,
         relationship: m.relationship ?? "",
         cnic: m.cnicBForm ?? "",
         beneficiaryId: m.beneficiaryId ?? "",
         eligibility: m.cardStatus ?? "Active",
+        fatherHusbandGuardian: m.fatherHusbandGuardian ?? null,
       }));
 
       // If lookup returned a specific beneficiary
@@ -92,6 +96,7 @@ export function FacilitationBookingView({
           relationship: data.beneficiary.relationship,
           cnic: data.beneficiary.cnicBForm ?? "",
           eligibility: "Active",
+          fatherHusbandGuardian: data.beneficiary.fatherHusbandGuardian ?? null,
         });
       }
 
@@ -99,6 +104,7 @@ export function FacilitationBookingView({
         familyRegistrationNo: data.family.registrationNo,
         healthCardNo: data.family.healthCardNo ?? "",
         shaheedName: data.family.shaheedName ?? "Honored Martyr",
+        shaheedFatherName: data.family.shaheedFatherName ?? "",
         beneficiaries: benList,
       };
 
@@ -186,6 +192,19 @@ export function FacilitationBookingView({
         radiology: "Radiology / Imaging",
       };
 
+      const fatherCandidate =
+        selectedBeneficiary.fatherHusbandGuardian ||
+        selectedBeneficiary.fatherName ||
+        (selectedBeneficiary.relationship?.toLowerCase().includes("son") ||
+        selectedBeneficiary.relationship?.toLowerCase().includes("daughter") ||
+        selectedBeneficiary.relationship?.toLowerCase().includes("child")
+          ? familyData.shaheedName
+          : selectedBeneficiary.relationship?.toLowerCase().includes("spouse") ||
+            selectedBeneficiary.relationship?.toLowerCase().includes("wife") ||
+            selectedBeneficiary.relationship?.toLowerCase().includes("widow")
+          ? `${familyData.shaheedName} (Husband)`
+          : familyData.shaheedFatherName || familyData.shaheedName || "—");
+
       const slip: TokenSlipData = {
         tokenNo: tokenNumber,
         visitNo: resData.visitNo,
@@ -198,12 +217,17 @@ export function FacilitationBookingView({
         familyCode: extractFamilyCode({ registrationNo: familyData.familyRegistrationNo }),
         healthCardNo: familyData.healthCardNo,
         shaheedName: familyData.shaheedName,
+        shaheedFatherName: familyData.shaheedFatherName,
         beneficiaryName: selectedBeneficiary.name,
+        patientName: selectedBeneficiary.name,
+        fatherName: fatherCandidate,
+        beneficiaryFatherName: fatherCandidate,
         beneficiaryRelationship: selectedBeneficiary.relationship,
         beneficiaryCnic: selectedBeneficiary.cnic,
         category: slipCategoryMap[selectedFacility.category],
         departmentName: selectedFacility.specialityOrType,
-        doctorOrIncharge: selectedFacility.doctorName,
+        doctorOrIncharge: selectedFacility.doctorName || selectedFacility.name,
+        doctorReferred: selectedFacility.doctorName || selectedFacility.name,
         roomOrCounter: selectedFacility.roomOrCounter,
         priorityLevel: "PRIORITY - SHUHADA FAMILY",
         notes: bookingNotes,
