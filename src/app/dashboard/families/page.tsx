@@ -7,7 +7,11 @@ import { maskCnic } from "@/lib/cnic";
 
 export const instant = false;
 
-export default async function FamiliesPage({ searchParams }: { searchParams: Promise<{ search?: string; status?: string; page?: string }> }) {
+export default async function FamiliesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; status?: string; page?: string; pageSize?: string }>;
+}) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
@@ -15,7 +19,7 @@ export default async function FamiliesPage({ searchParams }: { searchParams: Pro
   const search = params.search?.trim() ?? "";
   const status = params.status ?? "all";
   const page = Math.max(1, Number(params.page ?? 1) || 1);
-  const pageSize = 10;
+  const pageSize = Math.min(100, Math.max(5, Number(params.pageSize ?? 10) || 10));
 
   const where: Record<string, unknown> = {};
   if (search) {
