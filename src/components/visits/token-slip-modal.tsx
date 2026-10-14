@@ -45,6 +45,15 @@ export interface TokenSlipData {
   qrCodeUrl?: string;
 }
 
+export function cleanPersonName(name?: string | null): string {
+  if (!name) return "";
+  return name
+    .replace(/\bKhan\s+Khan\b/gi, "Khan")
+    .replace(/\bBibi\s+Bibi\b/gi, "Bibi")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function TokenSlipCard({
   data,
   onClose,
@@ -154,22 +163,56 @@ export function TokenSlipCard({
       cardNo: data.healthCardNo,
     });
 
-  const displayPatientName = data.patientName || data.beneficiaryName || "—";
+  const displayPatientName = cleanPersonName(data.patientName || data.beneficiaryName || "—");
 
   const displayFatherName = (() => {
-    if (data.fatherName && data.fatherName !== "—") return data.fatherName;
-    if (data.beneficiaryFatherName && data.beneficiaryFatherName !== "—") return data.beneficiaryFatherName;
+    const raw = (() => {
+      if (data.fatherName && data.fatherName !== "—") return data.fatherName;
+      if (data.beneficiaryFatherName && data.beneficiaryFatherName !== "—") return data.beneficiaryFatherName;
 
-    const rel = (data.beneficiaryRelationship || "").toLowerCase();
-    if (rel.includes("son") || rel.includes("daughter") || rel.includes("child")) {
-      return data.shaheedName ? `${data.shaheedName} (Shaheed)` : "—";
+      const rel = (data.beneficiaryRelationship || "").toLowerCase();
+      const sName = cleanPersonName(data.shaheedName);
+      if (rel.includes("son") || rel.includes("daughter") || rel.includes("child")) {
+        return sName ? `${sName} (Shaheed)` : "—";
+      }
+      if (rel.includes("spouse") || rel.includes("wife") || rel.includes("widow")) {
+        return sName ? `${sName} (Husband)` : "—";
+      }
+      if (data.shaheedFatherName) return cleanPersonName(data.shaheedFatherName);
+      if (data.shaheedName) return sName;
+      return "—";
+    })();
+    return cleanPersonName(raw);
+  })();
+
+  const displayShaheedName = cleanPersonName(data.shaheedName) || "Honoured Martyr";
+
+  const hospitalHeaderTitle = (() => {
+    const raw = (data.hospitalName || "").toLowerCase();
+    if (raw.includes("mufti") || raw.includes("mmmth") || raw.includes("mmti")) {
+      return "MUFTI MEHMOOD MEMORIAL MTI";
     }
-    if (rel.includes("spouse") || rel.includes("wife") || rel.includes("widow")) {
-      return data.shaheedName ? `${data.shaheedName} (Husband)` : "—";
+    if (raw.includes("women") || raw.includes("children") || raw.includes("dwch")) {
+      return "DERAJAT WOMEN & CHILDREN HOSPITAL";
     }
-    if (data.shaheedFatherName) return data.shaheedFatherName;
-    if (data.shaheedName) return data.shaheedName;
-    return "—";
+    if (raw.includes("dhq") || raw.includes("headquarters")) {
+      return "DHQ TEACHING HOSPITAL";
+    }
+    return data.hospitalName ? data.hospitalName.toUpperCase() : "DERAJAT MEDICAL TEACHING INSTITUTION";
+  })();
+
+  const hospitalEmblemSrc = (() => {
+    const raw = (data.hospitalName || "").toLowerCase();
+    if (raw.includes("mufti") || raw.includes("mmmth") || raw.includes("mmti")) {
+      return "/images/logo-mmmti.svg";
+    }
+    if (raw.includes("women") || raw.includes("children") || raw.includes("dwch")) {
+      return "/images/logo-dwch.svg";
+    }
+    if (raw.includes("dhq") || raw.includes("headquarters")) {
+      return "/images/logo-dhq.svg";
+    }
+    return "/images/card-emblem-dhq.png";
   })();
 
   const displayDoctorReferred =
@@ -311,8 +354,8 @@ export function TokenSlipCard({
         <div className="bg-[#01411c] px-2.5 py-1 text-white flex items-center justify-between border-b border-amber-500/50 shrink-0 print:hidden">
           <div className="flex items-center gap-1 min-w-0">
             <span className="text-amber-300 text-xs font-bold shrink-0">★</span>
-            <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-emerald-100 truncate">
-              Shuhada-e-Derajat Parchi
+            <span className="text-[9.5px] font-extrabold tracking-wider text-emerald-100 truncate">
+              SHUHADA-<span className="lowercase font-black">e</span>-DERAJAT PARCHI
             </span>
           </div>
           <div className="flex items-center gap-1 shrink-0">
@@ -342,42 +385,46 @@ export function TokenSlipCard({
           {/* Header Section with Emblems, Red Badge & Slogan */}
           <div className="bg-[#01411c] text-white rounded-lg p-2 mb-1.5 border border-amber-500/40 text-center relative overflow-hidden shadow-xs">
             {/* Top emblems row */}
-            <div className="flex items-center justify-between">
-              {/* Left Logo / Emblem */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/card-emblem-kpk.png"
-                alt="Emblem"
-                className="w-5 h-5 object-contain drop-shadow-sm shrink-0"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = "none";
-                }}
-              />
+            <div className="flex items-center justify-between gap-1.5 px-0.5">
+              {/* Left Logo / Emblem: Government of Khyber Pakhtunkhwa */}
+              <div className="w-8 h-8 rounded-full bg-white p-0.5 shadow-xs border border-emerald-300/80 shrink-0 flex items-center justify-center overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/card-emblem-kpk.png"
+                  alt="Government of KPK"
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = "none";
+                  }}
+                />
+              </div>
 
-              <div className="flex-1 px-1 min-w-0">
-                <p className="text-[7.5px] font-black uppercase tracking-wider text-white leading-none">
-                  MUFTI MEHMOOD MEMORIAL MTI
+              <div className="flex-1 px-1 min-w-0 text-center">
+                <p className="text-[8px] font-black uppercase tracking-wider text-white leading-tight">
+                  {hospitalHeaderTitle}
                 </p>
-                <p className="text-[6.5px] font-bold text-emerald-200 leading-none mt-0.5">
+                <p className="text-[7px] font-bold text-emerald-200 leading-tight mt-0.5">
                   DERA ISMAIL KHAN
                 </p>
               </div>
 
-              {/* Right Logo / Emblem */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/card-emblem-dhq.png"
-                alt="Hospital"
-                className="w-5 h-5 object-contain drop-shadow-sm shrink-0"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = "none";
-                }}
-              />
+              {/* Right Logo / Emblem: Hospital / Healthcare Seal */}
+              <div className="w-8 h-8 rounded-full bg-white p-0.5 shadow-xs border border-emerald-300/80 shrink-0 flex items-center justify-center overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={hospitalEmblemSrc}
+                  alt="Hospital Emblem"
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = "none";
+                  }}
+                />
+              </div>
             </div>
 
-            {/* Red Badge - SHUHADA-E-DERAJAT */}
-            <div className="inline-block bg-[#d32f2f] text-white px-2 py-0.5 rounded-full text-[8px] font-black tracking-wider uppercase shadow-xs mt-1">
-              SHUHADA-E-DERAJAT
+            {/* Red Badge - SHUHADA-e-DERAJAT */}
+            <div className="inline-block bg-[#d32f2f] text-white px-2.5 py-0.5 rounded-full text-[8.5px] font-black tracking-wider shadow-xs mt-1">
+              SHUHADA-<span className="lowercase font-black">e</span>-DERAJAT
             </div>
 
             {/* Slogan requested by user: Their sacrifices will not go in vain */}
@@ -421,7 +468,7 @@ export function TokenSlipCard({
             <p className="text-[8px] text-slate-700 leading-tight">
               <Shield className="size-2.5 text-emerald-700 inline-block mr-0.5 align-middle" />
               <span className="font-bold">Shaheed:</span>{" "}
-              <span className="font-extrabold text-emerald-950">{data.shaheedName || "Honoured Martyr"}</span>
+              <span className="font-extrabold text-emerald-950">{displayShaheedName}</span>
             </p>
           </div>
 
@@ -495,54 +542,14 @@ export function TokenSlipCard({
               </span>
             </div>
 
-            {/* Time Stamp (Date & Time) */}
-            <div className="flex justify-between items-center gap-1 pb-0.5 border-b border-slate-100">
+            {/* Date & Time */}
+            <div className="flex justify-between items-center gap-1">
               <span className="text-slate-500 font-bold flex items-center gap-1 shrink-0">
-                <Clock className="size-2.5 text-slate-600" /> Time Stamp:
+                <Clock className="size-2.5 text-slate-600" /> Date & Time:
               </span>
               <span className="font-mono font-bold text-slate-800 text-[8px] text-right">
                 {formattedDateTime}
               </span>
-            </div>
-
-            {/* Health Card / Reg No */}
-            <div className="flex justify-between items-center gap-1">
-              <span className="text-slate-500 font-bold flex items-center gap-1 shrink-0">
-                <CreditCard className="size-2.5 text-slate-600" /> Card / Receipt:
-              </span>
-              <span className="font-mono font-extrabold text-slate-900 text-[8px]">
-                {data.healthCardNo || data.familyRegistrationNo}
-              </span>
-            </div>
-          </div>
-
-          {/* QR Code & Scan Strip */}
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-1.5 mb-1.5 flex items-center justify-between gap-1.5">
-            <div className="flex-1 min-w-0">
-              <span className="text-[7.5px] font-black uppercase tracking-wider text-emerald-900 block leading-none">
-                Scan to Verify • تصدیق
-              </span>
-              <p className="text-[7px] text-slate-600 leading-tight mt-0.5 truncate">
-                Fast-Track Shuhada Counter Processing
-              </p>
-              <p className="text-[6.5px] font-mono text-emerald-800 font-bold mt-0.5">
-                Visit: {data.visitNo}
-              </p>
-            </div>
-
-            <div className="shrink-0 bg-white p-0.5 rounded border border-slate-300 shadow-2xs">
-              {qrCodeDataUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={qrCodeDataUrl}
-                  alt="QR Code"
-                  className="w-9 h-9 object-contain"
-                />
-              ) : (
-                <div className="w-9 h-9 flex items-center justify-center bg-slate-100 rounded">
-                  <QrIcon className="w-5 h-5 text-slate-400" />
-                </div>
-              )}
             </div>
           </div>
 

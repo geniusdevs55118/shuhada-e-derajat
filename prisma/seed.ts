@@ -227,7 +227,7 @@ async function populateDemoData(db: Db, passwordHash: string) {
       dateOfRegistration: dateDaysAgo(35 - i * 2),
       healthCardNo: cardNo,
       qrDigitalId: "DEMO-QR-" + suffix,
-      shaheedName: "Late " + person.father + " Khan",
+      shaheedName: "Late " + person.father.trim() + (person.father.trim().toLowerCase().endsWith("khan") ? "" : " Khan"),
       shaheedFatherName: "Muhammad " + person.father,
       shaheedCnic: fakeCnic(i),
       shaheedServiceNo: "DSF-" + String(43000 + i),

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TokenSlipCard, TokenSlipData } from "@/components/visits/token-slip-modal";
+import { TokenSlipCard, TokenSlipData, cleanPersonName } from "@/components/visits/token-slip-modal";
 import { Building2, Award, CreditCard, Clock, FileText, Printer, Pill, UserCheck, Check, Stethoscope } from "lucide-react";
 import { extractFamilyCode } from "@/lib/family-code";
 
@@ -157,17 +157,19 @@ export function DepartmentReceptionView({
   // Reprint chit/slip
   const handleReprintSlip = (item: DepartmentQueueItem) => {
     const isDental = (item.department ?? "").toLowerCase().includes("dental");
+    const cleanShaheed = cleanPersonName(item.shaheedName);
+    const cleanShaheedFather = cleanPersonName(item.shaheedFatherName);
     const fatherCandidate =
-      item.beneficiaryFatherHusbandGuardian ||
+      cleanPersonName(item.beneficiaryFatherHusbandGuardian) ||
       (item.beneficiaryRelationship?.toLowerCase().includes("son") ||
       item.beneficiaryRelationship?.toLowerCase().includes("daughter") ||
       item.beneficiaryRelationship?.toLowerCase().includes("child")
-        ? item.shaheedName
+        ? cleanShaheed
         : item.beneficiaryRelationship?.toLowerCase().includes("spouse") ||
           item.beneficiaryRelationship?.toLowerCase().includes("wife") ||
           item.beneficiaryRelationship?.toLowerCase().includes("widow")
-        ? `${item.shaheedName} (Husband)`
-        : item.shaheedFatherName || item.shaheedName || "—");
+        ? `${cleanShaheed} (Husband)`
+        : cleanShaheedFather || cleanShaheed || "—");
 
     const slip: TokenSlipData = {
       tokenNo: `#TK-${String(item.id).padStart(3, "0")}`,
@@ -183,10 +185,10 @@ export function DepartmentReceptionView({
         cardNo: item.healthCardNo,
       }),
       healthCardNo: item.healthCardNo ?? undefined,
-      shaheedName: item.shaheedName ?? undefined,
-      shaheedFatherName: item.shaheedFatherName ?? undefined,
-      beneficiaryName: item.beneficiaryName,
-      patientName: item.beneficiaryName,
+      shaheedName: cleanShaheed || undefined,
+      shaheedFatherName: cleanShaheedFather || undefined,
+      beneficiaryName: cleanPersonName(item.beneficiaryName),
+      patientName: cleanPersonName(item.beneficiaryName),
       fatherName: fatherCandidate ?? undefined,
       beneficiaryFatherName: fatherCandidate ?? undefined,
       beneficiaryRelationship: item.beneficiaryRelationship ?? undefined,

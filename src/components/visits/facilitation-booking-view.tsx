@@ -4,7 +4,7 @@ import { useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { HOSPITAL_FACILITIES, HospitalFacilityItem, FacilityCategory } from "@/lib/hospital-facilities";
-import { TokenSlipCard, TokenSlipData } from "@/components/visits/token-slip-modal";
+import { TokenSlipCard, TokenSlipData, cleanPersonName } from "@/components/visits/token-slip-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -161,7 +161,7 @@ export function FacilitationBookingView({
         beneficiaryName: selectedBeneficiary.name,
         beneficiaryRelationship: selectedBeneficiary.relationship,
         beneficiaryCnicBForm: selectedBeneficiary.cnic || null,
-        shaheedName: familyData.shaheedName,
+        shaheedName: cleanPersonName(familyData.shaheedName),
         verification: "VERIFIED" as const,
         natureOfHealthcare: [natureMap[selectedFacility.category]],
         department: selectedFacility.specialityOrType,
@@ -192,18 +192,20 @@ export function FacilitationBookingView({
         radiology: "Radiology / Imaging",
       };
 
+      const cleanShaheed = cleanPersonName(familyData.shaheedName);
+      const cleanShaheedFather = cleanPersonName(familyData.shaheedFatherName);
       const fatherCandidate =
-        selectedBeneficiary.fatherHusbandGuardian ||
-        selectedBeneficiary.fatherName ||
+        cleanPersonName(selectedBeneficiary.fatherHusbandGuardian) ||
+        cleanPersonName(selectedBeneficiary.fatherName) ||
         (selectedBeneficiary.relationship?.toLowerCase().includes("son") ||
         selectedBeneficiary.relationship?.toLowerCase().includes("daughter") ||
         selectedBeneficiary.relationship?.toLowerCase().includes("child")
-          ? familyData.shaheedName
+          ? cleanShaheed
           : selectedBeneficiary.relationship?.toLowerCase().includes("spouse") ||
             selectedBeneficiary.relationship?.toLowerCase().includes("wife") ||
             selectedBeneficiary.relationship?.toLowerCase().includes("widow")
-          ? `${familyData.shaheedName} (Husband)`
-          : familyData.shaheedFatherName || familyData.shaheedName || "—");
+          ? `${cleanShaheed} (Husband)`
+          : cleanShaheedFather || cleanShaheed || "—");
 
       const slip: TokenSlipData = {
         tokenNo: tokenNumber,
@@ -216,10 +218,10 @@ export function FacilitationBookingView({
         familyRegistrationNo: familyData.familyRegistrationNo,
         familyCode: extractFamilyCode({ registrationNo: familyData.familyRegistrationNo }),
         healthCardNo: familyData.healthCardNo,
-        shaheedName: familyData.shaheedName,
-        shaheedFatherName: familyData.shaheedFatherName,
-        beneficiaryName: selectedBeneficiary.name,
-        patientName: selectedBeneficiary.name,
+        shaheedName: cleanShaheed,
+        shaheedFatherName: cleanShaheedFather,
+        beneficiaryName: cleanPersonName(selectedBeneficiary.name),
+        patientName: cleanPersonName(selectedBeneficiary.name),
         fatherName: fatherCandidate,
         beneficiaryFatherName: fatherCandidate,
         beneficiaryRelationship: selectedBeneficiary.relationship,
