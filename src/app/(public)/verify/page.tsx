@@ -38,7 +38,7 @@ export default function VerifyCardPage() {
       <PublicPageIntro
         section="Beneficiary Verification"
         title="Verify a Shuhada Health Card"
-        description="Verify the active status and institutional entitlements of a Derajat Shuhada Family Health Card in real-time."
+        description="Verify the active status and institutional entitlements of a Shuhada-e-Derajat Family Health Card in real-time."
         breadcrumbs={[{ label: "Verify" }]}
       />
 
@@ -126,7 +126,7 @@ export default function VerifyCardPage() {
                 <span className="rounded bg-emerald-600 px-2 py-0.5 text-xs font-bold uppercase tracking-wider">
                   Beneficiary Identification
                 </span>
-                <p className="mt-1 font-heading text-lg font-bold">Derajat Shuhada Health Card</p>
+                <p className="mt-1 font-heading text-lg font-bold">Shuhada-e-Derajat Health Card</p>
                 <p className="text-xs text-emerald-200 mt-0.5">Accepted at DHQ, MMMTH & DWCH</p>
               </div>
             </div>

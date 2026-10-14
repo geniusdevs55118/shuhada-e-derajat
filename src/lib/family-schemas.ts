@@ -22,6 +22,7 @@ export const VERIFICATION_STATUS_OPTIONS = [
 
 export const AUTHORIZATION_DECISION_OPTIONS = [
   "Approved for Registration",
+  "Approved for Shuhada-e-Derajat Family Health Card",
   "Approved for Derajat Shuhada Family Health Card",
   "Returned for Completion / Further Verification",
 ] as const;

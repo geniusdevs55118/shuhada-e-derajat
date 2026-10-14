@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 
 export const metadata = {
-  title: "Lodge a Grievance | Derajat Shuhada Healthcare Initiative",
+  title: "Lodge a Grievance | Shuhada-e-Derajat Healthcare Initiative",
   description:
     "Confidential grievance and feedback channel for families facing difficulties with healthcare facilitation or hospital desks.",
 };

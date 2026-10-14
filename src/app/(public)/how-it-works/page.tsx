@@ -62,7 +62,7 @@ const WHAT_TO_BRING = [
   {
     title: "For Routine OPD Visits",
     items: [
-      "Original Derajat Shuhada Family Health Card",
+      "Original Shuhada-e-Derajat Family Health Card",
       "CNIC of the visiting adult family member (or B-Form for child)",
       "Previous hospital discharge summaries or prescription slips",
     ],
@@ -70,7 +70,7 @@ const WHAT_TO_BRING = [
   {
     title: "For Inpatient Admissions & Surgery",
     items: [
-      "Derajat Shuhada Family Health Card",
+      "Shuhada-e-Derajat Family Health Card",
       "Valid CNIC for Sehat Card Plus biometric counter registration",
       "Doctor's admission advice slip issued by treating consultant",
     ],
@@ -86,7 +86,7 @@ const WHAT_TO_BRING = [
 ];
 
 export const metadata = {
-  title: "How It Works | Derajat Shuhada Healthcare Initiative",
+  title: "How It Works | Shuhada-e-Derajat Healthcare Initiative",
   description:
     "Learn how verified families of Shuhada receive coordinated healthcare facilitation from verification to hospital health desk support.",
 };

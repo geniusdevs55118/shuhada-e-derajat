@@ -36,7 +36,7 @@ const FAQ_ITEMS = [
     cat: "Card & Security",
   },
   {
-    q: "Which hospitals can the Derajat Shuhada Health Card be used at?",
+    q: "Which hospitals can the Shuhada-e-Derajat Health Card be used at?",
     a: "The card is valid at all three teaching hospitals of Mufti Mehmood Memorial Medical Teaching Institution, Dera Ismail Khan: DHQ Teaching Hospital, Mufti Mehmood Memorial Hospital, and Derajat Women & Children Hospital.",
     cat: "Hospital Access",
   },

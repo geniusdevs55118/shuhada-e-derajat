@@ -97,7 +97,7 @@ const SERVICE_POINTS = [
 ];
 
 export const metadata = {
-  title: "Participating Hospitals Network | Derajat Shuhada Healthcare",
+  title: "Participating Hospitals Network | Shuhada-e-Derajat Healthcare",
   description:
     "Explore the three participating teaching hospitals of Mufti Mehmood Memorial MTI Dera Ismail Khan providing coordinated healthcare for Shuhada families.",
 };

@@ -60,7 +60,7 @@ const STEPS = [
 ];
 
 export const metadata = {
-  title: "Sehat Card Plus Facilitation | Derajat Shuhada Healthcare",
+  title: "Sehat Card Plus Facilitation | Shuhada-e-Derajat Healthcare",
   description:
     "Comprehensive guidance on accessing Sehat Card Plus hospital coverage, cashless admission facilitation, and zero duplicate claim safeguards.",
 };
@@ -88,7 +88,7 @@ export default function SehatCardPlusPage() {
               Facilitated Coverage Through Authorized Government Systems
             </h2>
             <p className="mt-4 text-base leading-relaxed text-slate-700">
-              The Derajat Shuhada Family Healthcare Initiative integrates seamlessly with the existing Sehat
+              The Shuhada-e-Derajat Family Healthcare Initiative integrates seamlessly with the existing Sehat
               Card Plus framework. When a verified beneficiary requires inpatient admission, specialized
               surgery, or covered medical management, the Family Health Desk expedites counter processing.
             </p>

@@ -1,62 +1,317 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
+import fs from "fs";
+import path from "path";
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 import { extractFamilyCode } from "@/lib/family-code";
 
-const GREEN = "#166534";
-const RED = "#b91c1c";
-const GOLD = "#d4a017";
+// Standard Pakistani CNIC / Smart ID Card Dimensions:
+// 85.60 mm x 53.98 mm (ISO/IEC 7810 ID-1 standard)
+// In PostScript points (72 DPI): 242.65 pt (width) x 153.01 pt (height)
+// HORIZONTAL / LANDSCAPE ORIENTATION
+export const CARD_WIDTH = 242.65;
+export const CARD_HEIGHT = 153.01;
+
+const CARD_BG = "#d7eedf"; // Soft mint/sage green matching reference
+const NAVY = "#0a335c";
+const DARK_BLUE = "#1e3a8a";
+const RED_BADGE = "#d32f2f";
+const MAROON_TEXT = "#b71c1c";
+const BORDER_COLOR = "#0f4a24";
+const TEXT_DARK = "#0f172a";
+
+function getLocalAssetBase64(filename: string): string {
+  try {
+    const fullPath = path.join(process.cwd(), "public", "images", filename);
+    if (fs.existsSync(fullPath)) {
+      const data = fs.readFileSync(fullPath).toString("base64");
+      return `data:image/png;base64,${data}`;
+    }
+  } catch {}
+  return "";
+}
 
 const s = StyleSheet.create({
-  landscapePage: { padding: 12, fontSize: 9, fontFamily: "Helvetica", backgroundColor: "#ffffff" },
+  page: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    padding: 5,
+    fontFamily: "Helvetica",
+    backgroundColor: CARD_BG,
+  },
+  cardFrame: {
+    flex: 1,
+    borderWidth: 0.8,
+    borderColor: BORDER_COLOR,
+    borderRadius: 4,
+    padding: 4,
+    backgroundColor: CARD_BG,
+    justifyContent: "space-between",
+  },
 
-  // Red title banner
-  titleBanner: { backgroundColor: RED, paddingVertical: 5, paddingHorizontal: 12, borderRadius: 4, alignItems: "center" },
-  bannerTitle: { fontSize: 14, fontWeight: "bold", color: "#ffffff" },
-  bannerSubtitle: { fontSize: 7.5, color: "#fee2e2", marginTop: 1 },
+  // FRONT: Header
+  frontHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  emblemLeft: {
+    width: 25,
+    height: 25,
+  },
+  emblemRight: {
+    width: 25,
+    height: 25,
+  },
+  frontHeaderCenter: {
+    flex: 1,
+    alignItems: "center",
+    marginHorizontal: 2,
+  },
+  instTitle: {
+    fontSize: 4.8,
+    fontWeight: "bold",
+    color: NAVY,
+    textAlign: "center",
+    lineHeight: 1.15,
+  },
+  badgeRed: {
+    backgroundColor: RED_BADGE,
+    borderRadius: 6,
+    paddingVertical: 1.2,
+    paddingHorizontal: 10,
+    marginTop: 1,
+  },
+  badgeText: {
+    color: "#ffffff",
+    fontSize: 6.5,
+    fontWeight: "bold",
+    textAlign: "center",
+    letterSpacing: 0.4,
+  },
+  familyHealthCardTitle: {
+    fontSize: 6,
+    fontWeight: "bold",
+    color: DARK_BLUE,
+    textAlign: "center",
+    marginTop: 1,
+  },
+  mottoText: {
+    fontSize: 3.8,
+    color: MAROON_TEXT,
+    fontStyle: "italic",
+    textAlign: "center",
+    marginTop: 0.5,
+  },
 
-  // Flag + mountains theme band
-  themeBand: { height: 36, marginTop: 6, backgroundColor: GREEN, borderRadius: 4, overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 12 },
-  themeLeft: { flexDirection: "row", alignItems: "center", gap: 6 },
-  crescent: { width: 16, height: 16, borderRadius: 8, backgroundColor: "#ffffff" },
-  crescentCut: { width: 13, height: 13, borderRadius: 7, backgroundColor: GREEN, marginLeft: -7 },
-  star: { fontSize: 11, color: "#ffffff", marginTop: -9, marginLeft: -3 },
-  themeText: { color: "#ffffff", fontSize: 8 },
-  mountain: { width: 0, height: 0, borderLeftWidth: 22, borderRightWidth: 22, borderBottomWidth: 26, borderLeftColor: "transparent", borderRightColor: "transparent", borderBottomColor: "#14532d" },
-  mountainBack: { width: 0, height: 0, borderLeftWidth: 16, borderRightWidth: 16, borderBottomWidth: 20, borderLeftColor: "transparent", borderRightColor: "transparent", borderBottomColor: "#166534", marginLeft: -10 },
+  // FRONT: Body
+  frontBody: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flex: 1,
+    marginTop: 2,
+    paddingHorizontal: 2,
+  },
+  infoList: {
+    width: "70%",
+    justifyContent: "center",
+    paddingRight: 6,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2.2,
+  },
+  infoLabel: {
+    width: 62,
+    fontSize: 5.1,
+    fontWeight: "bold",
+    color: DARK_BLUE,
+  },
+  infoValue: {
+    flex: 1,
+    fontSize: 5.1,
+    fontWeight: "bold",
+    color: TEXT_DARK,
+  },
+  photoColumn: {
+    width: "28%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  photoBox: {
+    width: 44,
+    height: 52,
+    borderWidth: 0.8,
+    borderColor: "#94a3b8",
+    borderRadius: 2,
+    overflow: "hidden",
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  photoImg: {
+    width: 44,
+    height: 52,
+    objectFit: "cover",
+  },
+  signatureBox: {
+    alignItems: "center",
+    marginTop: 1.5,
+  },
+  signatureImg: {
+    width: 46,
+    height: 12,
+  },
+  directorLabel: {
+    fontSize: 4.5,
+    color: TEXT_DARK,
+    textAlign: "center",
+    marginTop: -1,
+  },
 
-  body: { flexDirection: "row", gap: 8, marginTop: 7 },
-  col: { flex: 1 },
-  label: { color: "#475569", fontSize: 7.5, marginTop: 7 },
-  value: { fontWeight: "bold", fontSize: 9 },
+  // BACK: Header
+  backHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  backHeaderCenter: {
+    alignItems: "center",
+    flex: 1,
+  },
+  backRightSlogan: {
+    alignItems: "flex-end",
+    justifyContent: "center",
+  },
+  sloganSacrifice: {
+    fontSize: 4.8,
+    fontWeight: "bold",
+    color: MAROON_TEXT,
+  },
+  sloganResponsibility: {
+    fontSize: 4.6,
+    fontWeight: "bold",
+    color: NAVY,
+  },
+  subSlogan: {
+    fontSize: 3.2,
+    color: DARK_BLUE,
+    textAlign: "center",
+    marginTop: 0.5,
+  },
 
-  photoBox: { width: 62, height: 72, borderWidth: 1, borderColor: "#cbd5e1", borderRadius: 3, alignItems: "center", justifyContent: "center", backgroundColor: "#f8fafc" },
-  photoCaption: { fontSize: 6.5, color: "#94a3b8", marginTop: 3, textAlign: "center" },
+  // BACK: Blue Table Banner
+  blueBanner: {
+    backgroundColor: DARK_BLUE,
+    paddingVertical: 1.5,
+    alignItems: "center",
+    borderRadius: 1,
+    marginTop: 1.5,
+  },
+  blueBannerText: {
+    color: "#ffffff",
+    fontSize: 5,
+    fontWeight: "bold",
+    letterSpacing: 0.6,
+    textAlign: "center",
+  },
 
-  chip: { width: 42, height: 30, borderRadius: 4, backgroundColor: GOLD, marginTop: 6, padding: 4, flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
-  chipLineH: { width: "44%", height: 1.5, backgroundColor: "#92400e", marginVertical: 2 },
-  chipLineV: { width: 1.5, height: "42%", backgroundColor: "#92400e", marginHorizontal: 2 },
+  // BACK: Table
+  tableContainer: {
+    borderWidth: 0.8,
+    borderColor: DARK_BLUE,
+    backgroundColor: "#ffffff",
+    marginTop: 1,
+  },
+  tableHeaderRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.8,
+    borderBottomColor: DARK_BLUE,
+    backgroundColor: "#ffffff",
+  },
+  tableHeaderCell: {
+    fontSize: 4.5,
+    fontWeight: "bold",
+    color: DARK_BLUE,
+    paddingVertical: 1,
+    textAlign: "center",
+  },
+  tableDataRow: {
+    flexDirection: "row",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#cbd5e1",
+    alignItems: "center",
+  },
+  tableCellName: {
+    width: "40%",
+    fontSize: 4.3,
+    fontWeight: "bold",
+    color: TEXT_DARK,
+    paddingVertical: 1,
+    paddingHorizontal: 2,
+    borderRightWidth: 0.8,
+    borderRightColor: DARK_BLUE,
+  },
+  tableCellRelation: {
+    width: "26%",
+    fontSize: 4.3,
+    color: TEXT_DARK,
+    paddingVertical: 1,
+    textAlign: "center",
+    borderRightWidth: 0.8,
+    borderRightColor: DARK_BLUE,
+  },
+  tableCellCnic: {
+    width: "34%",
+    fontSize: 4.3,
+    color: TEXT_DARK,
+    paddingVertical: 1,
+    textAlign: "center",
+  },
 
-  qr: { width: 78, height: 78 },
-  qrCaption: { fontSize: 6.5, color: "#475569", textAlign: "center", marginTop: 2 },
-
-  footer: { marginTop: 6, padding: 5, backgroundColor: "#fef2f2", borderLeftWidth: 3, borderLeftColor: RED, fontSize: 7.5, lineHeight: 1.45, color: "#7f1d1d" },
-
-  // Back of card
-  backPage: { padding: 22, fontFamily: "Helvetica", backgroundColor: GREEN },
-  backOrg: { color: "#bbf7d0", fontSize: 7, textAlign: "center" },
-  backTitle: { color: "#ffffff", fontSize: 13, fontWeight: "bold", textAlign: "center", marginTop: 5 },
-  backBody: { color: "#ecfdf5", fontSize: 8, lineHeight: 1.5, marginTop: 10, textAlign: "center" },
-  backEmergency: { color: "#fecaca", fontSize: 8.5, lineHeight: 1.45, marginTop: 12, textAlign: "center", fontWeight: "bold" },
-  backFoot: { color: "#a7f3d0", fontSize: 7, textAlign: "center", marginTop: 14 },
-
-  // Members layout
-  memberPage: { padding: 30, fontSize: 9, fontFamily: "Helvetica" },
-  memberTitle: { fontSize: 13, fontWeight: "bold", color: "#1e3a8a", textAlign: "center" },
-  memberOrg: { fontSize: 8, color: GREEN, textAlign: "center", marginBottom: 10 },
-  tableHead: { flexDirection: "row", backgroundColor: "#f1f5f9", padding: 4, borderBottomWidth: 1, borderBottomColor: "#cbd5e1" },
-  tableRow: { flexDirection: "row", padding: 4, borderBottomWidth: 1, borderBottomColor: "#e2e8f0" },
-  terms: { marginTop: 10, padding: 6, backgroundColor: "#f8fafc", borderRadius: 4, borderWidth: 1, borderColor: "#e2e8f0" },
+  // BACK: Bottom Info & QR
+  backBottomRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 2,
+    paddingHorizontal: 1,
+  },
+  importantInfoBox: {
+    width: "74%",
+  },
+  importantInfoTitle: {
+    fontSize: 4.6,
+    fontWeight: "bold",
+    color: DARK_BLUE,
+    textAlign: "center",
+    marginBottom: 1,
+  },
+  bulletPoint: {
+    fontSize: 3.6,
+    color: TEXT_DARK,
+    lineHeight: 1.25,
+    marginLeft: 3,
+  },
+  qrCodeBox: {
+    width: "24%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  qrImage: {
+    width: 32,
+    height: 32,
+    borderRadius: 1,
+  },
+  qrVerifyText: {
+    fontSize: 3.2,
+    fontWeight: "bold",
+    color: DARK_BLUE,
+    textAlign: "center",
+    marginTop: 0.5,
+  },
 });
 
 export function HealthCardPdf({
@@ -64,7 +319,6 @@ export function HealthCardPdf({
   family,
   qrSrc,
   photoSrc,
-  healthDeskContact,
 }: {
   card: any;
   family: any;
@@ -73,167 +327,197 @@ export function HealthCardPdf({
   healthDeskContact?: string | null;
 }) {
   const members: any[] = Array.isArray(family?.members) && family.members.length > 0 ? family.members : [];
-  const member = members[0];
+  const cardMembers = members.slice(0, 4);
+
+  // Asset base64 URLs
+  const kpkEmblem = getLocalAssetBase64("card-emblem-kpk.png");
+  const dhqEmblem = getLocalAssetBase64("card-emblem-dhq.png");
+  const signature = getLocalAssetBase64("card-signature.png");
+  const fallbackPhoto = getLocalAssetBase64("card-photo-placeholder.png");
+
+  const effectivePhoto = photoSrc || fallbackPhoto;
 
   return (
     <Document>
-      {/* ---------- Card face (landscape) ---------- */}
-      <Page size="A6" orientation="landscape" style={s.landscapePage}>
-        <View style={s.titleBanner}>
-          <Text style={s.bannerTitle}>DERAJAT SHUHADA FAMILY HEALTH CARD</Text>
-          <Text style={s.bannerSubtitle}>Mufti Mehmood Memorial Medical Teaching Institution, Dera Ismail Khan</Text>
-        </View>
+      {/* ========================================================
+          SIDE 1: FRONT (Exact Pakistani CNIC Horizontal Size: 85.6mm x 54mm)
+          NO orientation prop so react-pdf preserves exact [242.65, 153.01] width x height
+         ======================================================== */}
+      <Page size={[CARD_WIDTH, CARD_HEIGHT]} style={s.page}>
+        <View style={s.cardFrame}>
+          {/* Header */}
+          <View style={s.frontHeader}>
+            {kpkEmblem ? (
+              // eslint-disable-next-line jsx-a11y/alt-text
+              <Image src={kpkEmblem} style={s.emblemLeft} />
+            ) : (
+              <View style={s.emblemLeft} />
+            )}
 
-        <View style={s.themeBand}>
-          <View style={s.themeLeft}>
-            <View>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <View style={s.crescent} />
-                <View style={s.crescentCut} />
+            <View style={s.frontHeaderCenter}>
+              <Text style={s.instTitle}>MUFTI MEHMOOD MEMORIAL</Text>
+              <Text style={s.instTitle}>MEDICAL TEACHING INSTITUTION</Text>
+              <Text style={s.instTitle}>DERA ISMAIL KHAN</Text>
+
+              <View style={s.badgeRed}>
+                <Text style={s.badgeText}>SHUHADA-E-DERAJAT</Text>
               </View>
-              <Text style={s.star}>★</Text>
+
+              <Text style={s.familyHealthCardTitle}>FAMILY HEALTH CARD</Text>
+              <Text style={s.mottoText}>"Honouring the Shuhda by Caring for Their Families"</Text>
             </View>
-            <Text style={s.themeText}>Honouring the Shuhada{`\n`}by Caring for Their Families</Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-            <View style={s.mountain} />
-            <View style={s.mountainBack} />
-          </View>
-        </View>
 
-        <View style={s.body}>
-          <View style={[s.col, { flex: 1.15 }]}>
-            <View style={{ flexDirection: "row" }}>
-              <View>
-                {photoSrc ? (
-                  // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt prop
-                  <Image src={photoSrc} style={{ width: 62, height: 72, objectFit: "cover", borderRadius: 3 }} />
-                ) : (
-                  <View style={s.photoBox}>
-                    <Text style={{ fontSize: 6.5, color: "#94a3b8" }}>PHOTO</Text>
-                  </View>
-                )}
-                <View style={{ alignItems: "center" }}>
-                  <View style={s.chip}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
-                      <View style={s.chipLineH} />
-                      <View style={s.chipLineH} />
-                    </View>
-                    <View style={s.chipLineV} />
-                    <View style={s.chipLineV} />
-                    <View style={s.chipLineH} />
-                    <View style={s.chipLineH} />
-                  </View>
-                  <Text style={s.photoCaption}>CHIP</Text>
-                </View>
+            {dhqEmblem ? (
+              // eslint-disable-next-line jsx-a11y/alt-text
+              <Image src={dhqEmblem} style={s.emblemRight} />
+            ) : (
+              <View style={s.emblemRight} />
+            )}
+          </View>
+
+          {/* Body: Left Info Details + Right Photo & Signature */}
+          <View style={s.frontBody}>
+            {/* Left Details */}
+            <View style={s.infoList}>
+              <View style={s.infoRow}>
+                <Text style={s.infoLabel}>Name of Shuhada:</Text>
+                <Text style={s.infoValue}>{family?.shaheedName || "—"}</Text>
               </View>
-              <View style={{ flex: 1, marginLeft: 10 }}>
-                <Text style={s.label}>Family Code / کوڈ</Text>
-                <Text style={[s.value, { color: GREEN, fontSize: 11 }]}>
-                  #{extractFamilyCode(family)}
+
+              <View style={s.infoRow}>
+                <Text style={s.infoLabel}>Shaheed CNIC:</Text>
+                <Text style={s.infoValue}>{family?.shaheedCnic || "—"}</Text>
+              </View>
+
+              <View style={s.infoRow}>
+                <Text style={s.infoLabel}>Organization:</Text>
+                <Text style={s.infoValue}>{family?.shaheedDepartment || "Police"}</Text>
+              </View>
+
+              <View style={s.infoRow}>
+                <Text style={s.infoLabel}>I-Card No:</Text>
+                <Text style={s.infoValue}>{card?.cardNo || "—"}</Text>
+              </View>
+
+              <View style={s.infoRow}>
+                <Text style={s.infoLabel}>Family Code:</Text>
+                <Text style={[s.infoValue, { color: "#166534" }]}>#{extractFamilyCode(family)}</Text>
+              </View>
+
+              <View style={s.infoRow}>
+                <Text style={s.infoLabel}>District:</Text>
+                <Text style={s.infoValue}>{family?.shaheedPermanentDistrict || "Dera Ismail Khan"}</Text>
+              </View>
+
+              <View style={s.infoRow}>
+                <Text style={s.infoLabel}>Date of Issue:</Text>
+                <Text style={s.infoValue}>
+                  {card?.dateOfCardIssue ? new Date(card.dateOfCardIssue).toLocaleDateString("en-GB") : new Date().toLocaleDateString("en-GB")}
                 </Text>
-                <Text style={s.label}>Card No</Text>
-                <Text style={s.value}>{card.cardNo}</Text>
-                <Text style={s.label}>Family Reg No</Text>
-                <Text style={s.value}>{family?.registrationNo}</Text>
-                <Text style={s.label}>Beneficiary ID</Text>
-                <Text style={s.value}>{member?.beneficiaryId ?? "—"}</Text>
-                <Text style={s.label}>Card Status</Text>
-                <Text style={s.value}>{card.status}</Text>
+              </View>
+            </View>
+
+            {/* Right Photo & Director Signature */}
+            <View style={s.photoColumn}>
+              <View style={s.photoBox}>
+                {effectivePhoto ? (
+                  // eslint-disable-next-line jsx-a11y/alt-text
+                  <Image src={effectivePhoto} style={s.photoImg} />
+                ) : (
+                  <Text style={{ fontSize: 6, color: "#94a3b8" }}>PHOTO</Text>
+                )}
+              </View>
+
+              <View style={s.signatureBox}>
+                {signature ? (
+                  // eslint-disable-next-line jsx-a11y/alt-text
+                  <Image src={signature} style={s.signatureImg} />
+                ) : (
+                  <View style={{ width: 46, height: 1, backgroundColor: "#0f172a", marginTop: 8 }} />
+                )}
+                <Text style={s.directorLabel}>Hospital Director</Text>
               </View>
             </View>
           </View>
-
-          <View style={s.col}>
-            <Text style={s.label}>Name of Shaheed</Text>
-            <Text style={s.value}>{family?.shaheedName ?? "—"}</Text>
-            <Text style={s.label}>Beneficiary Name</Text>
-            <Text style={s.value}>{member?.name ?? family?.contactName ?? "—"}</Text>
-            <Text style={s.label}>Relationship</Text>
-            <Text style={s.value}>{member?.relationship ?? family?.contactRelationship ?? "—"}</Text>
-            <Text style={s.label}>CNIC / B-Form</Text>
-            <Text style={s.value}>{member?.cnicBForm ?? family?.contactCnic ?? "—"}</Text>
-            <Text style={s.label}>Eligible Beneficiaries</Text>
-            <Text style={s.value}>{members.length}</Text>
-          </View>
-
-          <View style={{ alignItems: "center" }}>
-            {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt prop */}
-            <Image style={s.qr} src={qrSrc} />
-            <Text style={s.qrCaption}>Scan at any DSFHI Health Desk</Text>
-            <Text style={[s.qrCaption, { marginTop: 6, color: RED }]}>
-              {healthDeskContact ?? "Contact your nearest Family Health Desk"}
-            </Text>
-          </View>
-        </View>
-
-        <View style={s.footer}>
-          <Text>
-            In a medical emergency, immediate clinical assessment shall not be delayed solely for routine card verification.
-          </Text>
         </View>
       </Page>
 
-      {/* ---------- Card back ---------- */}
-      <Page size="A6" orientation="landscape" style={s.backPage}>
-        <Text style={s.backOrg}>MUFTI MEHMOOD MEMORIAL MEDICAL TEACHING INSTITUTION, DERA ISMAIL KHAN</Text>
-        <Text style={s.backTitle}>DERAJAT SHUHADA FAMILY HEALTH CARD</Text>
-        <Text style={s.backBody}>
-          Valid for healthcare facilitation through the Derajat Shuhada Family Health Desks of Mufti Mehmood Memorial
-          Medical Teaching Institution, Dera Ismail Khan, subject to applicable institutional rules and clinical protocols.
-        </Text>
-        <Text style={s.backEmergency}>
-          In a medical emergency, immediate clinical assessment shall not be delayed solely for routine card verification.
-        </Text>
-        <Text style={s.backFoot}>
-          Card No {card.cardNo} · Family ID {family?.registrationNo} · Non-transferable · Report loss immediately
-        </Text>
-      </Page>
+      {/* ========================================================
+          SIDE 2: BACK (Eligible Members, Information & QR Code)
+         ======================================================== */}
+      <Page size={[CARD_WIDTH, CARD_HEIGHT]} style={s.page}>
+        <View style={s.cardFrame}>
+          {/* Header */}
+          <View style={s.backHeader}>
+            {dhqEmblem ? (
+              // eslint-disable-next-line jsx-a11y/alt-text
+              <Image src={dhqEmblem} style={{ width: 18, height: 18 }} />
+            ) : (
+              <View style={{ width: 18, height: 18 }} />
+            )}
 
-      {/* ---------- Eligible members layout ---------- */}
-      <Page size="A5" style={s.memberPage}>
-        <Text style={s.memberOrg}>MUFTI MEHMOOD MEMORIAL MEDICAL TEACHING INSTITUTION, DERA ISMAIL KHAN</Text>
-        <Text style={s.memberTitle}>Eligible Beneficiaries Record</Text>
-        <View style={{ borderWidth: 1, borderColor: "#cbd5e1", borderRadius: 4, overflow: "hidden", marginTop: 8 }}>
-          <View style={s.tableHead}>
-            <Text style={{ width: 22, fontWeight: "bold", fontSize: 7 }}>S#</Text>
-            <Text style={{ flex: 2, fontWeight: "bold", fontSize: 7 }}>Full Name</Text>
-            <Text style={{ flex: 1.2, fontWeight: "bold", fontSize: 7 }}>Relation</Text>
-            <Text style={{ flex: 1.8, fontWeight: "bold", fontSize: 7 }}>CNIC / B-Form</Text>
-            <Text style={{ flex: 1.2, fontWeight: "bold", fontSize: 7 }}>DOB / Age</Text>
-            <Text style={{ flex: 1.2, fontWeight: "bold", fontSize: 7 }}>Status</Text>
+            <View style={s.backHeaderCenter}>
+              <View style={s.badgeRed}>
+                <Text style={s.badgeText}>SHUHADA-E-DERAJAT</Text>
+              </View>
+              <Text style={s.familyHealthCardTitle}>FAMILY HEALTH CARD</Text>
+              <Text style={s.subSlogan}>HEALTH  |  SERVICE  |  COMPASSION</Text>
+              <Text style={s.subSlogan}>FOR A STRONGER PAKISTAN</Text>
+            </View>
+
+            <View style={s.backRightSlogan}>
+              <Text style={s.sloganSacrifice}>Their sacrifices</Text>
+              <Text style={s.sloganResponsibility}>will not go in vain</Text>
+            </View>
           </View>
-          {members.map((m: any, idx: number) => (
-            <View key={idx} style={s.tableRow}>
-              <Text style={{ width: 22, fontSize: 7 }}>{idx + 1}</Text>
-              <Text style={{ flex: 2, fontSize: 7, fontWeight: "bold" }}>{m?.name ?? "—"}</Text>
-              <Text style={{ flex: 1.2, fontSize: 7 }}>{m?.relationship ?? "—"}</Text>
-              <Text style={{ flex: 1.8, fontSize: 7 }}>{m?.cnicBForm ?? "—"}</Text>
-              <Text style={{ flex: 1.2, fontSize: 7 }}>{m?.dobAge ?? "—"}</Text>
-              <Text style={{ flex: 1.2, fontSize: 7, color: GREEN }}>{m?.cardStatus ?? "Active"}</Text>
-            </View>
-          ))}
-          {members.length === 0 && (
-            <View style={s.tableRow}>
-              <Text style={{ fontSize: 7, color: "#64748b" }}>No eligible beneficiaries recorded.</Text>
-            </View>
-          )}
-        </View>
 
-        <View style={s.terms}>
-          <Text style={{ fontSize: 7, fontWeight: "bold", color: "#1e3a8a", marginBottom: 2 }}>NOTES:</Text>
-          <Text style={{ fontSize: 6.5, lineHeight: 1.4, color: "#334155" }}>
-            1. Non-transferable. Valid only for authorized healthcare facilitation through DSFHI Health Desks across DHQ, MMMTH, and Derajat Women &amp; Children Hospital.
-          </Text>
-          <Text style={{ fontSize: 6.5, lineHeight: 1.4, color: "#334155" }}>
-            2. Misuse, alteration, or unauthorized transfer may lead to immediate suspension and administrative cancellation.
-          </Text>
-          <Text style={{ fontSize: 6.5, lineHeight: 1.4, color: "#334155" }}>
-            3. Report lost or damaged cards immediately to the nearest facilitation desk for reissuance and token revocation.
-          </Text>
-          <Text style={{ fontSize: 6.5, lineHeight: 1.4, color: RED, fontWeight: "bold", marginTop: 2 }}>
-            4. In a medical emergency, clinical assessment and life-saving care shall NOT be delayed solely for routine card verification.
-          </Text>
+          {/* Blue Section Banner */}
+          <View style={s.blueBanner}>
+            <Text style={s.blueBannerText}>ELIGIBLE FAMILY MEMBERS</Text>
+          </View>
+
+          {/* Table */}
+          <View style={s.tableContainer}>
+            <View style={s.tableHeaderRow}>
+              <Text style={[s.tableHeaderCell, { width: "40%", borderRightWidth: 0.8, borderRightColor: DARK_BLUE }]}>Name</Text>
+              <Text style={[s.tableHeaderCell, { width: "26%", borderRightWidth: 0.8, borderRightColor: DARK_BLUE }]}>Relation</Text>
+              <Text style={[s.tableHeaderCell, { width: "34%" }]}>CNIC/B-Form No.</Text>
+            </View>
+
+            {cardMembers.map((m: any, idx: number) => (
+              <View key={idx} style={[s.tableDataRow, idx === cardMembers.length - 1 ? { borderBottomWidth: 0 } : {}]}>
+                <Text style={s.tableCellName}>{m?.name || "—"}</Text>
+                <Text style={s.tableCellRelation}>{m?.relationship || "—"}</Text>
+                <Text style={s.tableCellCnic}>{m?.cnicBForm || "—"}</Text>
+              </View>
+            ))}
+
+            {cardMembers.length === 0 && (
+              <View style={s.tableDataRow}>
+                <Text style={[s.tableCellName, { width: "100%", textAlign: "center", borderRightWidth: 0, color: "#64748b" }]}>
+                  No family members recorded
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {/* Bottom Area: Important Information + QR Code */}
+          <View style={s.backBottomRow}>
+            <View style={s.importantInfoBox}>
+              <Text style={s.importantInfoTitle}>IMPORTANT INFORMATION</Text>
+              <Text style={s.bulletPoint}>• Valid for eligible family members as per institutional policy.</Text>
+              <Text style={s.bulletPoint}>• Non-transferable.</Text>
+              <Text style={s.bulletPoint}>• Misuse may lead to cancellation.</Text>
+              <Text style={s.bulletPoint}>• Report loss immediately.</Text>
+            </View>
+
+            {/* QR Code placed directly on the back card face */}
+            <View style={s.qrCodeBox}>
+              {/* eslint-disable-next-line jsx-a11y/alt-text */}
+              <Image src={qrSrc} style={s.qrImage} />
+              <Text style={s.qrVerifyText}>Scan to Verify</Text>
+            </View>
+          </View>
         </View>
       </Page>
     </Document>

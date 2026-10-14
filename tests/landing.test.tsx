@@ -10,7 +10,7 @@ describe("Landing page", () => {
       "One Family Record. Three Hospitals. One Coordinated Healthcare Pathway.",
       "Three Hospitals, One Institutional Commitment",
       "Scope of Healthcare Facilitation",
-      "Derajat Shuhada Family Health Card",
+      "Shuhada-e-Derajat Family Health Card",
       "Eligible Family Members",
       "Our Core Principles",
       "Grievance and Feedback",
@@ -54,7 +54,7 @@ describe("Landing page", () => {
 
   it("hero buttons link to /verify and /login", () => {
     render(<Home />);
-    const hero = screen.getByText("Derajat Shuhada Family Healthcare Initiative").closest("section")!;
+    const hero = screen.getByText("Shuhada-e-Derajat Family Healthcare Initiative").closest("section")!;
     const links = within(hero as HTMLElement).getAllByRole("link");
     const hrefs = links.map((l) => l.getAttribute("href"));
     expect(hrefs).toContain("/verify");

@@ -39,11 +39,11 @@ export function HealthCardShowcase() {
             </div>
 
             <h2 className="mt-2 font-heading text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Derajat Shuhada Family Health Card
+              Shuhada-e-Derajat Family Health Card
             </h2>
 
             <p className="mt-4 text-base leading-relaxed text-slate-700">
-              The Derajat Shuhada Health Card enables authorized hospital staff to instantly verify the
+              The Shuhada-e-Derajat Health Card enables authorized hospital staff to instantly verify the
               family record and connect beneficiaries to services. It serves as an official credential of
               honor and healthcare facilitation across all three network hospitals.
             </p>
@@ -115,7 +115,7 @@ export function HealthCardShowcase() {
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-slate-200 shadow-xl bg-slate-900">
               <Image
                 src="/images/health-card.jpg"
-                alt="Derajat Shuhada Family Health Card"
+                alt="Shuhada-e-Derajat Family Health Card"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

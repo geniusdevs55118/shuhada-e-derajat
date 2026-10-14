@@ -12,7 +12,7 @@ import { ProcessSteps } from "@/components/public/process-steps";
 import { ImpactStats } from "@/components/public/impact-stats";
 
 export const metadata = {
-  title: "Derajat Shuhada Family Healthcare Initiative | Mufti Mehmood Memorial MTI",
+  title: "Shuhada-e-Derajat Family Healthcare Initiative | Mufti Mehmood Memorial MTI",
   description:
     "A coordinated, dignified healthcare facilitation pathway for verified families of Shuhada across DHQ Hospital, Mufti Mehmood Memorial Hospital, and Derajat Women & Children Hospital in Dera Ismail Khan.",
 };

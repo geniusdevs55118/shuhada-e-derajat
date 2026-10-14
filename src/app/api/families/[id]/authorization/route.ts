@@ -6,6 +6,7 @@ import { AuthorizationDecision } from "@prisma/client";
 
 const AUTHORIZATION_DECISION_MAP: Record<string, AuthorizationDecision> = {
   "Approved for Registration": "APPROVED_FOR_REGISTRATION",
+  "Approved for Shuhada-e-Derajat Family Health Card": "APPROVED_FOR_HEALTH_CARD",
   "Approved for Derajat Shuhada Family Health Card": "APPROVED_FOR_HEALTH_CARD",
   "Returned for Completion / Further Verification": "RETURNED_FOR_COMPLETION",
 };
@@ -36,7 +37,10 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       { status: 400 },
     );
   }
-  if (values.authorizationDecision === "Approved for Derajat Shuhada Family Health Card") {
+  if (
+    values.authorizationDecision === "Approved for Shuhada-e-Derajat Family Health Card" ||
+    values.authorizationDecision === "Approved for Derajat Shuhada Family Health Card"
+  ) {
     const allowedForCard = ["VERIFIED_ELIGIBLE", "PROVISIONALLY_VERIFIED"];
     if (!allowedForCard.includes(family.verificationStatus)) {
       return NextResponse.json(

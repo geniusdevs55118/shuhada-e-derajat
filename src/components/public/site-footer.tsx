@@ -96,7 +96,7 @@ export function SiteFooter() {
               <div className="size-11 rounded-xl bg-emerald-900/80 border border-emerald-700/60 p-1.5 flex items-center justify-center">
                 <Image
                   src="/images/logo.svg"
-                  alt="Derajat Shuhada Logo"
+                  alt="Shuhada-e-Derajat Logo"
                   width={34}
                   height={34}
                   className="object-contain"
@@ -104,7 +104,7 @@ export function SiteFooter() {
               </div>
               <div>
                 <span className="font-heading text-lg font-bold text-white block leading-tight">
-                  Derajat Shuhada
+                  Shuhada-e-Derajat
                 </span>
                 <span className="text-[0.66rem] font-bold uppercase tracking-wider text-emerald-400">
                   Family Healthcare Initiative

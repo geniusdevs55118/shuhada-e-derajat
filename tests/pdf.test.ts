@@ -75,7 +75,8 @@ describe.skipIf(!dbUp)("Phase 17: PDF Export", () => {
       PDFParse: new (opts: { data: Buffer }) => { getText: () => Promise<{ text: string }> };
     };
     const { text } = await new PDFParse({ data: buf }).getText();
-    expect(text).toContain("DERAJAT SHUHADA FAMILY HEALTH CARD");
+    expect(text).toContain("SHUHADA-E-DERAJAT");
+    expect(text).toContain("FAMILY HEALTH CARD");
     expect(text).toContain("Valid for healthcare facilitation");
     expect(text).toContain("Eligible Beneficiaries Record");
   });

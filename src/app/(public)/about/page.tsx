@@ -54,9 +54,9 @@ const commitment = [
 ];
 
 export const metadata = {
-  title: "About the Initiative | Derajat Shuhada Healthcare",
+  title: "About the Initiative | Shuhada-e-Derajat Healthcare",
   description:
-    "Learn about the mission, rationale, institutional commitments, and leadership message behind the Derajat Shuhada Family Healthcare Initiative.",
+    "Learn about the mission, rationale, institutional commitments, and leadership message behind the Shuhada-e-Derajat Family Healthcare Initiative.",
 };
 
 export default function AboutPage() {
@@ -81,7 +81,7 @@ export default function AboutPage() {
               A Dignified, Coordinated Healthcare Pathway for Families
             </h3>
             <p className="mt-4 text-base leading-relaxed text-slate-700">
-              The Derajat Shuhada Family Healthcare Initiative brings together hospital teams, medical leadership,
+              The Shuhada-e-Derajat Family Healthcare Initiative brings together hospital teams, medical leadership,
               and welfare desks across Mufti Mehmood Memorial MTI, Dera Ismail Khan, into one unified, structured, and compassionate system.
             </p>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">

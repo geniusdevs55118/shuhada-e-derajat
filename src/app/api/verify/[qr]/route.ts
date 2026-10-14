@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ qr: string 
       familyRegistrationId: card.familyRegistrationNo,
       allowedHospitals: [card.accessDHQ && "DHQ", card.accessMMMTH && "MMMTH", card.accessWC && "Derajat Women & Children Hospital"].filter(Boolean),
       valid: false,
-      message: card.status === "UNDER_VERIFICATION" ? "This card is still under verification. Please visit a Family Health Desk." : "This card is temporarily suspended / no longer valid. Please visit the nearest Derajat Shuhada Family Health Desk.",
+      message: card.status === "UNDER_VERIFICATION" ? "This card is still under verification. Please visit a Family Health Desk." : "This card is temporarily suspended / no longer valid. Please visit the nearest Shuhada-e-Derajat Family Health Desk.",
     });
   }
 

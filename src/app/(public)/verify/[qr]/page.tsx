@@ -116,7 +116,7 @@ function VerifyQrInner({ params }: { params: Promise<{ qr: string }> }) {
                 </div>
                 <div>
                   <h1 className="font-heading text-lg font-bold text-white leading-tight">
-                    Derajat Shuhada Family Health Card
+                    Shuhada-e-Derajat Family Health Card
                   </h1>
                   <p className="text-[0.68rem] font-bold uppercase tracking-wider text-emerald-300">
                     Mufti Mehmood Memorial MTI • Official Digital Credential

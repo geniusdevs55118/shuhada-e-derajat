@@ -70,7 +70,7 @@ const REQUIRED_DOCS = [
 ];
 
 export const metadata = {
-  title: "Family Eligibility Guidelines | Derajat Shuhada Healthcare",
+  title: "Family Eligibility Guidelines | Shuhada-e-Derajat Healthcare",
   description:
     "Review eligibility categories, required documentation, and verification criteria for families of Shuhada under the healthcare initiative.",
 };
@@ -104,7 +104,7 @@ export default function EligibilityPage() {
             </p>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">
               The categories outlined below represent authorized relationships that may be considered for
-              inclusion in the Derajat Shuhada Family Health Record.
+              inclusion in the Shuhada-e-Derajat Family Health Record.
             </p>
           </div>
 

@@ -124,9 +124,9 @@ export function DashboardShell({
       {/* Fixed brand header at the top of the sidebar */}
       <div className="p-3.5 pb-2.5 shrink-0 border-b border-slate-100">
         <Link href="/" className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-100">
-          <Image src="/images/logo.svg" alt="Derajat Shuhada Portal" width={38} height={38} className="shrink-0 drop-shadow-sm" />
+          <Image src="/images/logo.svg" alt="Shuhada-e-Derajat Portal" width={38} height={38} className="shrink-0 drop-shadow-sm" />
           <div className="min-w-0">
-            <p className="font-heading text-sm font-bold leading-tight text-blue-950 truncate">Derajat Shuhada</p>
+            <p className="font-heading text-sm font-bold leading-tight text-blue-950 truncate">Shuhada-e-Derajat</p>
             <p className="text-[10px] font-medium uppercase tracking-wider text-emerald-700">Staff Portal</p>
           </div>
         </Link>
@@ -214,7 +214,7 @@ export function DashboardShell({
         <div className="bg-[#01411c] px-3 py-1 text-center text-white border-b border-amber-500/40 flex items-center justify-between text-[11px] shrink-0">
           <span className="text-amber-300 font-serif">★</span>
           <span className="font-semibold tracking-wider uppercase text-[10px] sm:text-[11px] text-emerald-100 truncate">
-            Derajat Shuhada Family Healthcare Initiative • Honouring Sacrifice Through Care
+            Shuhada-e-Derajat Family Healthcare Initiative • Honouring Sacrifice Through Care
           </span>
           <span className="hidden md:inline font-serif text-[11px] text-amber-200" dir="rtl">
             شہید کی جو موت ہے، وہ قوم کی حیات ہے

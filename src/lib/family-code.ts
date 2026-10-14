@@ -1,6 +1,6 @@
 /**
  * Utility functions for generating and formatting unique Family Codes
- * for Shuhada (Martyrs') families under the Derajat Shuhada Family Healthcare Initiative.
+ * for Shuhada (Martyrs') families under the Shuhada-e-Derajat Family Healthcare Initiative.
  */
 
 export function extractFamilyCode(family?: {

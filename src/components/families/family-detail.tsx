@@ -181,6 +181,7 @@ export function FamilyDetail({
     !family.healthCardNo &&
     (family.authorizationDecision === "APPROVED_FOR_HEALTH_CARD" ||
       family.authorizationDecision === "APPROVED_FOR_REGISTRATION" ||
+      family.authorizationDecision === "Approved for Shuhada-e-Derajat Family Health Card" ||
       family.authorizationDecision === "Approved for Derajat Shuhada Family Health Card" ||
       family.authorizationDecision === "Approved for Registration");
 
@@ -391,7 +392,7 @@ export function FamilyDetail({
       </Section>
 
       <Section title="F. Family Health Card Registration">
-        <RowNR label="Derajat Shuhada Family Health Card No." value={family.healthCardNo} />
+        <RowNR label="Shuhada-e-Derajat Family Health Card No." value={family.healthCardNo} />
         <RowNR label="Family Registration ID" value={family.cardRegistrationId} />
         <RowNR label="QR / Digital Verification ID" value={family.cardQrVerificationId} />
         <RowNR label="Date of Issue" value={family.cardDateOfIssue ? new Date(family.cardDateOfIssue).toLocaleDateString() : null} />
@@ -525,6 +526,7 @@ export function FamilyDetail({
                 <SelectTrigger><SelectValue placeholder="Select decision" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Approved for Registration">Approved for Registration</SelectItem>
+                  <SelectItem value="Approved for Shuhada-e-Derajat Family Health Card">Approved for Shuhada-e-Derajat Family Health Card</SelectItem>
                   <SelectItem value="Approved for Derajat Shuhada Family Health Card">Approved for Derajat Shuhada Family Health Card</SelectItem>
                   <SelectItem value="Returned for Completion / Further Verification">Returned for Completion / Further Verification</SelectItem>
                 </SelectContent>

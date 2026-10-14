@@ -55,7 +55,7 @@ export function ShuhadaTribute() {
             <div className="relative aspect-[16/10] overflow-hidden rounded-3xl shadow-2xl border-2 border-emerald-900/20 bg-slate-950">
               <Image
                 src="/images/derajat-shuhada-banner.jpg"
-                alt="Derajat Shuhada Family Healthcare Initiative official tribute banner"
+                alt="Shuhada-e-Derajat Family Healthcare Initiative official tribute banner"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

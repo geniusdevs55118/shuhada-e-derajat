@@ -61,7 +61,7 @@ test("2. complete family lifecycle", async ({ page }) => {
 
   await login(page, "addl.director");
   const auth = await page.request.put(`/api/families/${familyId}/authorization`, {
-    data: { authorizationDecision: "Approved for Derajat Shuhada Family Health Card", authorizedOfficer: "ADDL", authorizedDesignation: "AD", authorizedSignature: true },
+    data: { authorizationDecision: "Approved for Shuhada-e-Derajat Family Health Card", authorizedOfficer: "ADDL", authorizedDesignation: "AD", authorizedSignature: true },
   });
   expect(auth.status()).toBe(200);
   logout(page);

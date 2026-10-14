@@ -15,7 +15,7 @@ export default function PublicLoading() {
         <div className="relative size-16 rounded-2xl bg-emerald-950 p-2.5 shadow-xl border border-emerald-800 flex items-center justify-center animate-pulse">
           <Image
             src="/images/logo.svg"
-            alt="Loading Derajat Shuhada Healthcare"
+            alt="Loading Shuhada-e-Derajat Healthcare"
             width={40}
             height={40}
             className="object-contain"
@@ -31,7 +31,7 @@ export default function PublicLoading() {
         </div>
 
         <p className="mt-1 text-xs text-slate-500 font-medium">
-          Derajat Shuhada Family Healthcare Initiative
+          Shuhada-e-Derajat Family Healthcare Initiative
         </p>
       </div>
 

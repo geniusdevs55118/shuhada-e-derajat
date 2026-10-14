@@ -43,7 +43,7 @@ const SLIDES: CarouselSlide[] = [
   {
     id: 1,
     kicker: "Mufti Mehmood Memorial Medical Teaching Institution",
-    title: "Derajat Shuhada Family Healthcare Initiative",
+    title: "Shuhada-e-Derajat Family Healthcare Initiative",
     urduMotto: "شہداء کی عزت میں ان کے اہل خانہ کی خدمت • ان کی قربانی، ہماری ذمہ داری",
     tagline: "Honouring the Shuhada by Caring for Their Families with Dignity & Respect.",
     description:
@@ -157,7 +157,7 @@ export function HeroCarousel() {
       onMouseLeave={() => setIsPaused(false)}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Derajat Shuhada Healthcare Highlights"
+      aria-label="Shuhada-e-Derajat Healthcare Highlights"
     >
       {/* Slides Container */}
       <div className="relative min-h-[540px] sm:min-h-[580px] md:min-h-[620px] lg:min-h-[660px]">

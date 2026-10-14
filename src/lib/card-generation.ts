@@ -92,6 +92,7 @@ export async function generateHealthCardTransaction(
     const validAuthorizations = [
       "APPROVED_FOR_HEALTH_CARD",
       "APPROVED_FOR_REGISTRATION",
+      "Approved for Shuhada-e-Derajat Family Health Card",
       "Approved for Derajat Shuhada Family Health Card",
       "Approved for Registration",
     ];

@@ -43,9 +43,9 @@ const TERMS_OF_REFERENCE = [
 ];
 
 export const metadata = {
-  title: "Working Group Governance | Derajat Shuhada Healthcare",
+  title: "Working Group Governance | Shuhada-e-Derajat Healthcare",
   description:
-    "Review the mandate, membership, and terms of reference of the institutional Working Group overseeing the Derajat Shuhada Healthcare Initiative.",
+    "Review the mandate, membership, and terms of reference of the institutional Working Group overseeing the Shuhada-e-Derajat Healthcare Initiative.",
 };
 
 export default function WorkingGroupPage() {

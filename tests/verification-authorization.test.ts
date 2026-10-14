@@ -75,7 +75,7 @@ describe.skipIf(!dbUp)("Phase 13: Verification & Authorisation API", () => {
   it("Section I: additional_director can authorize verified family for Health Card", async () => {
     const token = await tokenFor("addl.director");
     const payload = {
-      authorizationDecision: "Approved for Derajat Shuhada Family Health Card",
+      authorizationDecision: "Approved for Shuhada-e-Derajat Family Health Card",
       authorizedOfficer: "Additional Hospital Director",
       authorizedDesignation: "Convener / Authorised Officer",
       authorizedSignature: true,
@@ -105,7 +105,7 @@ describe.skipIf(!dbUp)("Phase 13: Verification & Authorisation API", () => {
     const addlToken = await tokenFor("addl.director");
     const res = await authorizationPUT(
       req(`http://localhost/api/families/${testFamilyId}/authorization`, addlToken, {
-        authorizationDecision: "Approved for Derajat Shuhada Family Health Card",
+        authorizationDecision: "Approved for Shuhada-e-Derajat Family Health Card",
         authorizedOfficer: "Authorised Officer",
         authorizedDesignation: "Convener",
         authorizedSignature: true,

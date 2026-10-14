@@ -22,7 +22,7 @@ const STEPS = [
     step: "02",
     title: "Family Card Issued",
     urdu: "فیملی ہیلتھ کارڈ کا اجراء",
-    desc: "A secure Derajat Shuhada Family Health Card is provided with an encrypted QR token for seamless identification.",
+    desc: "A secure Shuhada-e-Derajat Family Health Card is provided with an encrypted QR token for seamless identification.",
     icon: CreditCard,
   },
   {

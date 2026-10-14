@@ -3,7 +3,7 @@ import { PublicPageIntro } from "@/components/public/page-intro";
 import { PublicContactDetails } from "@/components/public/public-contact-details";
 
 export const metadata = {
-  title: "Contact & Health Desk Locations | Derajat Shuhada Healthcare",
+  title: "Contact & Health Desk Locations | Shuhada-e-Derajat Healthcare",
   description:
     "Contact information, institutional addresses, and Family Health Desk locations across DHQ, MMMTH, and DWCH hospitals.",
 };

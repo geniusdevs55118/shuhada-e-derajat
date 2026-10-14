@@ -21,7 +21,7 @@ export function PdfHeader({ title }: { title: string }) {
     <>
       <View style={pdfStyles.header}>
         <Text style={pdfStyles.headerOrg}>MUFTI MEHMOOD MEMORIAL MEDICAL TEACHING INSTITUTION DERA ISMAIL KHAN</Text>
-        <Text style={pdfStyles.headerSub}>Derajat Shuhada Family Healthcare Initiative</Text>
+        <Text style={pdfStyles.headerSub}>Shuhada-e-Derajat Family Healthcare Initiative</Text>
       </View>
       <Text style={pdfStyles.title}>{title}</Text>
     </>

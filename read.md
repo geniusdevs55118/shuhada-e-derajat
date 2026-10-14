@@ -1,4 +1,4 @@
-# Derajat Shuhada Family Healthcare Initiative (DSFHI) - Project Spec
+# Shuhada-e-Derajat Family Healthcare Initiative (DSFHI) - Project Spec
 
 > For any AI coding tool: read this fully before coding. Build every module listed. Use only the stack below. Ask before adding any package.
 

@@ -75,7 +75,7 @@ const HOSPITALS = [
   },
   {
     code: "DSFHI",
-    name: "Derajat Shuhada Healthcare Directorate",
+    name: "Shuhada-e-Derajat Healthcare Directorate",
     subtitle: "Central Shuhada Facilitation & Health Desk Authority",
     categoryLabel: "Central Shuhada Coordination",
     logo: "/images/logo-dsfhi.svg",

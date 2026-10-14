@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Derajat Shuhada Family Healthcare Initiative",
+    default: "Shuhada-e-Derajat Family Healthcare Initiative",
     template: "%s | DSFHI",
   },
-  description: "Derajat Shuhada Family Healthcare Initiative",
+  description: "Shuhada-e-Derajat Family Healthcare Initiative",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

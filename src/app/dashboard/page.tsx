@@ -107,7 +107,7 @@ async function DashboardContent() {
           <div className="relative min-h-44 lg:min-h-0 border-t lg:border-t-0 lg:border-l border-amber-500/30">
             <Image
               src="/images/derajat-shuhada-banner.jpg"
-              alt="Derajat Shuhada Memorial Artwork"
+              alt="Shuhada-e-Derajat Memorial Artwork"
               fill
               sizes="(max-width: 1024px) 100vw, 320px"
               className="object-cover"

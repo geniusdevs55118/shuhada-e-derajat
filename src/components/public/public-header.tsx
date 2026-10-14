@@ -155,7 +155,7 @@ export function PublicHeader() {
             <span className="text-amber-300 font-serif text-sm">★</span>
             <span className="font-semibold tracking-wide text-white truncate text-[11px] sm:text-xs">
               <span className="hidden sm:inline">Mufti Mehmood Memorial MTI • </span>
-              Derajat Shuhada Family Healthcare Initiative
+              Shuhada-e-Derajat Family Healthcare Initiative
             </span>
           </div>
 
@@ -193,7 +193,7 @@ export function PublicHeader() {
           <div className="relative size-10 sm:size-11 rounded-xl bg-emerald-950 p-1.5 shadow-sm border border-emerald-800 flex items-center justify-center shrink-0">
             <Image
               src="/images/logo.svg"
-              alt="Derajat Shuhada Healthcare Emblem"
+              alt="Shuhada-e-Derajat Healthcare Emblem"
               width={34}
               height={34}
               priority
@@ -202,7 +202,7 @@ export function PublicHeader() {
           </div>
           <div className="min-w-0">
             <span className="block font-heading text-base sm:text-lg font-bold leading-tight tracking-tight text-slate-900 group-hover:text-emerald-900 transition-colors truncate">
-              Derajat Shuhada
+              Shuhada-e-Derajat
             </span>
             <span className="block text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-800 leading-tight mt-0.5 truncate">
               Healthcare Initiative
@@ -275,7 +275,7 @@ export function PublicHeader() {
                   </div>
                   <div>
                     <span className="font-heading text-base font-bold text-white block leading-tight">
-                      Derajat Shuhada
+                      Shuhada-e-Derajat
                     </span>
                     <span className="block text-[0.62rem] font-bold uppercase tracking-wider text-emerald-300 mt-0.5">
                       Healthcare Initiative
