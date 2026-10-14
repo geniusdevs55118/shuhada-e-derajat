@@ -93,8 +93,8 @@ export const MATRIX: Record<Resource, Partial<Record<Action, Role[]>>> = {
   },
   visit: {
     read: ALL_ROLES,
-    create: HEALTH_DESK,
-    edit: HEALTH_DESK,
+    create: [...HEALTH_DESK, "super_admin", ...DIRECTORS, "medical_superintendent"],
+    edit: [...HEALTH_DESK, "super_admin", ...DIRECTORS, "medical_superintendent"],
   },
   sehat_claim: {
     read: ALL_ROLES,

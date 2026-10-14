@@ -28,20 +28,20 @@ const DEMO_USERS: {
   name: string;
   designation: string;
 }[] = [
-  { username: "director123", role: "hospital_director", name: "Demo Hospital Director", designation: "Hospital Director" },
-  { username: "ms123", role: "medical_superintendent", hospitalCode: "DHQ", name: "Demo Medical Superintendent", designation: "Medical Superintendent" },
-  { username: "helpdesk123", role: "health_desk_officer", hospitalCode: "DHQ", name: "Demo Health Desk Officer", designation: "Health Desk Focal Person" },
-  { username: "deskmmmth123", role: "health_desk_officer", hospitalCode: "MMMTH", name: "Demo MMMTH Health Desk Officer", designation: "Health Desk Focal Person" },
-  { username: "deskwc123", role: "health_desk_officer", hospitalCode: "WC", name: "Demo W&C Health Desk Officer", designation: "Health Desk Focal Person" },
-  { username: "admin123", role: "admin_finance_rep", name: "Demo Administration Officer", designation: "Administration / Finance Representative" },
-  { username: "sehat123", role: "sehat_card_desk", name: "Demo Sehat Card Officer", designation: "Sehat Card Plus Representative" },
-  { username: "pharmacy123", role: "pharmacy_rep", name: "Demo Pharmacy Officer", designation: "Pharmacy Representative" },
-  { username: "diagnostics123", role: "diagnostics_rep", name: "Demo Diagnostics Officer", designation: "Diagnostics / Radiology Representative" },
-  { username: "nursing123", role: "nursing_rep", name: "Demo Nursing Officer", designation: "Nursing Representative" },
-  { username: "it123", role: "it_mis_rep", name: "Demo IT Officer", designation: "IT / MIS Representative" },
-  { username: "addldirector123", role: "additional_director", name: "Demo Additional Director", designation: "Additional Hospital Director" },
-  { username: "superadmin123", role: "super_admin", name: "Demo Super Administrator", designation: "Chief System Administrator" },
-  { username: "member123", role: "working_group_member", name: "Demo Working Group Member", designation: "Working Group General Member" },
+  { username: "director123", role: "hospital_director", name: "Hospital Director", designation: "Hospital Director" },
+  { username: "ms123", role: "medical_superintendent", hospitalCode: "DHQ", name: "Medical Superintendent", designation: "Medical Superintendent" },
+  { username: "helpdesk123", role: "health_desk_officer", hospitalCode: "DHQ", name: "Health Desk Officer (DHQ)", designation: "Health Desk Focal Person" },
+  { username: "deskmmmth123", role: "health_desk_officer", hospitalCode: "MMMTH", name: "Health Desk Officer (MMMTH)", designation: "Health Desk Focal Person" },
+  { username: "deskwc123", role: "health_desk_officer", hospitalCode: "WC", name: "Health Desk Officer (W&C)", designation: "Health Desk Focal Person" },
+  { username: "admin123", role: "admin_finance_rep", name: "Administration & Finance Officer", designation: "Administration / Finance Representative" },
+  { username: "sehat123", role: "sehat_card_desk", name: "Sehat Card Plus Officer", designation: "Sehat Card Plus Representative" },
+  { username: "pharmacy123", role: "pharmacy_rep", name: "Pharmacy Representative", designation: "Pharmacy Representative" },
+  { username: "diagnostics123", role: "diagnostics_rep", name: "Diagnostics & Radiology Representative", designation: "Diagnostics / Radiology Representative" },
+  { username: "nursing123", role: "nursing_rep", name: "Nursing Representative", designation: "Nursing Representative" },
+  { username: "it123", role: "it_mis_rep", name: "IT & MIS Officer", designation: "IT / MIS Representative" },
+  { username: "addldirector123", role: "additional_director", name: "Additional Hospital Director", designation: "Additional Hospital Director" },
+  { username: "superadmin123", role: "super_admin", name: "Chief System Administrator", designation: "Chief System Administrator" },
+  { username: "member123", role: "working_group_member", name: "Working Group General Member", designation: "Working Group General Member" },
 ];
 
 const PEOPLE = [
