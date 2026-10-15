@@ -12,13 +12,19 @@ import { extractFamilyCode } from "@/lib/family-code";
 export const CARD_WIDTH = 242.65;
 export const CARD_HEIGHT = 153.01;
 
-const CARD_BG = "#d7eedf"; // Soft mint/sage green matching reference
-const NAVY = "#0a335c";
-const DARK_BLUE = "#1e3a8a";
-const RED_BADGE = "#d32f2f";
-const MAROON_TEXT = "#b71c1c";
-const BORDER_COLOR = "#0f4a24";
+// Pakistan Flag Green & White Theme
+// Deep Pakistan Green (#01411C - official flag green) & Pure White (#FFFFFF)
+const CARD_BG = "#ffffff";
+const PAK_GREEN = "#01411c";
+const PAK_GREEN_MID = "#065f46";
+const PAK_GREEN_LIGHT = "#f0fdf4";
+const BORDER_COLOR = "#01411c";
 const TEXT_DARK = "#0f172a";
+
+const NAVY = PAK_GREEN;
+const DARK_BLUE = PAK_GREEN;
+const RED_BADGE = PAK_GREEN;
+const MAROON_TEXT = PAK_GREEN_MID;
 
 function getLocalAssetBase64(filename: string): string {
   try {
@@ -41,7 +47,7 @@ const s = StyleSheet.create({
   },
   cardFrame: {
     flex: 1,
-    borderWidth: 0.8,
+    borderWidth: 1,
     borderColor: BORDER_COLOR,
     borderRadius: 4,
     padding: 4,
@@ -144,7 +150,7 @@ const s = StyleSheet.create({
     width: 44,
     height: 52,
     borderWidth: 0.8,
-    borderColor: "#94a3b8",
+    borderColor: PAK_GREEN,
     borderRadius: 2,
     overflow: "hidden",
     backgroundColor: "#ffffff",
@@ -166,7 +172,7 @@ const s = StyleSheet.create({
   },
   directorLabel: {
     fontSize: 4.5,
-    color: TEXT_DARK,
+    color: PAK_GREEN,
     textAlign: "center",
     marginTop: -1,
   },
@@ -229,7 +235,7 @@ const s = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 0.8,
     borderBottomColor: DARK_BLUE,
-    backgroundColor: "#ffffff",
+    backgroundColor: PAK_GREEN_LIGHT,
   },
   tableHeaderCell: {
     fontSize: 4.5,
@@ -401,7 +407,7 @@ export function HealthCardPdf({
 
               <View style={s.infoRow}>
                 <Text style={s.infoLabel}>Family Code:</Text>
-                <Text style={[s.infoValue, { color: "#166534" }]}>#{extractFamilyCode(family)}</Text>
+                <Text style={[s.infoValue, { color: PAK_GREEN }]}>#{extractFamilyCode(family)}</Text>
               </View>
 
               <View style={s.infoRow}>
@@ -433,7 +439,7 @@ export function HealthCardPdf({
                   // eslint-disable-next-line jsx-a11y/alt-text
                   <Image src={signature} style={s.signatureImg} />
                 ) : (
-                  <View style={{ width: 46, height: 1, backgroundColor: "#0f172a", marginTop: 8 }} />
+                  <View style={{ width: 46, height: 1, backgroundColor: PAK_GREEN, marginTop: 8 }} />
                 )}
                 <Text style={s.directorLabel}>Hospital Director</Text>
               </View>
@@ -471,7 +477,7 @@ export function HealthCardPdf({
             </View>
           </View>
 
-          {/* Blue Section Banner */}
+          {/* Green Section Banner */}
           <View style={s.blueBanner}>
             <Text style={s.blueBannerText}>ELIGIBLE FAMILY MEMBERS</Text>
           </View>
@@ -479,8 +485,8 @@ export function HealthCardPdf({
           {/* Table */}
           <View style={s.tableContainer}>
             <View style={s.tableHeaderRow}>
-              <Text style={[s.tableHeaderCell, { width: "40%", borderRightWidth: 0.8, borderRightColor: DARK_BLUE }]}>Name</Text>
-              <Text style={[s.tableHeaderCell, { width: "26%", borderRightWidth: 0.8, borderRightColor: DARK_BLUE }]}>Relation</Text>
+              <Text style={[s.tableHeaderCell, { width: "40%", borderRightWidth: 0.8, borderRightColor: PAK_GREEN }]}>Name</Text>
+              <Text style={[s.tableHeaderCell, { width: "26%", borderRightWidth: 0.8, borderRightColor: PAK_GREEN }]}>Relation</Text>
               <Text style={[s.tableHeaderCell, { width: "34%" }]}>CNIC/B-Form No.</Text>
             </View>
 
