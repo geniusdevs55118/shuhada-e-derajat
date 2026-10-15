@@ -5,7 +5,7 @@ export const LANG_KEY = "dsfhi_lang";
 export const dict: Record<string, { en: string; ur: string }> = {
   heroTitle: {
     en: "Shuhada-e-Derajat Family Healthcare Initiative",
-    ur: "شہدائے درجات فیملی ہیلتھ کیئر انیشی ایٹو",
+    ur: "شہدائے ڈیراجات فیملی ہیلتھ کیئر انیشی ایٹو",
   },
   heroTagline: {
     en: "Honouring the Shuhada by Caring for Their Families.",

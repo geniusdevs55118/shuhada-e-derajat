@@ -60,7 +60,7 @@ const HOSPITALS = [
     code: "DWCH",
     anchor: "dwch",
     name: "Derajat Women & Children Hospital",
-    urduName: "درجات ویمن اینڈ چلڈرن ہسپتال، ڈیرہ اسماعیل خان",
+    urduName: "ڈیراجات ویمن اینڈ چلڈرن ہسپتال، ڈیرہ اسماعیل خان",
     type: "Comprehensive Maternal, Gynaecological & Paediatric Center",
     image: "/images/dwch.jpg",
     city: "Dera Ismail Khan",
