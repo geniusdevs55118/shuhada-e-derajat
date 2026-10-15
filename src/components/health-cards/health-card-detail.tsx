@@ -135,10 +135,16 @@ export function HealthCardDetail({ card, family, role, canProposeStatus, canAuth
 
       <div className="flex flex-wrap gap-2">
         <a
-          href={`/api/health-cards/${card.id}/pdf`}
+          href={`/api/health-cards/${card.id}/pdf?lang=en`}
           className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-800 px-3 text-sm font-medium text-white hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
         >
-          Download Card PDF
+          Download Card (English)
+        </a>
+        <a
+          href={`/api/health-cards/${card.id}/pdf?lang=ur`}
+          className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-700 px-3 text-sm font-medium text-white hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+        >
+          Download Card (Urdu)
         </a>
         {(canProposeStatus || canAuthorizeStatus) && <Button variant="outline" onClick={() => setDialog("status")}>Change Status</Button>}
         {(canProposeLost || canAuthorizeLost) && <Button variant="outline" onClick={() => setDialog("lost")}>Report Lost/Damaged</Button>}

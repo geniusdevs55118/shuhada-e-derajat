@@ -47,13 +47,22 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
   const hospital = await prisma.hospital.findFirst({ where: { id: family?.hospitalId ?? -1 }, select: { healthDeskContact: true } }).catch(() => null);
   const healthDeskContact = hospital?.healthDeskContact ?? card.issuedBy ?? null;
 
+  const lang = req.nextUrl.searchParams.get("lang") || "en";
+
   const buffer = await renderToBuffer(
-    <HealthCardPdf card={card} family={family} qrSrc={qrDataUrl} photoSrc={photo?.secureUrl ?? null} healthDeskContact={healthDeskContact} />
+    <HealthCardPdf
+      card={card}
+      family={family}
+      qrSrc={qrDataUrl}
+      photoSrc={photo?.secureUrl ?? null}
+      healthDeskContact={healthDeskContact}
+      lang={lang}
+    />
   );
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="HealthCard-${card.cardNo}.pdf"`,
+      "Content-Disposition": `attachment; filename="HealthCard-${card.cardNo}${lang === "ur" ? "-Urdu" : ""}.pdf"`,
     },
   });
 }

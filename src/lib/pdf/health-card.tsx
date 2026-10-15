@@ -102,6 +102,12 @@ const s = StyleSheet.create({
     textAlign: "center",
     marginTop: 1,
   },
+  urduCardTitle: {
+    width: 95,
+    height: 8.7,
+    marginTop: 1,
+    alignSelf: "center",
+  },
   mottoText: {
     fontSize: 3.8,
     color: MAROON_TEXT,
@@ -325,12 +331,14 @@ export function HealthCardPdf({
   family,
   qrSrc,
   photoSrc,
+  lang = "en",
 }: {
   card: any;
   family: any;
   qrSrc: string;
   photoSrc?: string | null;
   healthDeskContact?: string | null;
+  lang?: string;
 }) {
   const members: any[] = Array.isArray(family?.members) && family.members.length > 0 ? family.members : [];
   const cardMembers = members.slice(0, 4);
@@ -340,6 +348,7 @@ export function HealthCardPdf({
   const dhqEmblem = getLocalAssetBase64("card-emblem-dhq.png");
   const signature = getLocalAssetBase64("card-signature.png");
   const fallbackPhoto = getLocalAssetBase64("card-photo-placeholder.png");
+  const urduTitleImg = getLocalAssetBase64("card-urdu-title.png");
 
   const effectivePhoto = photoSrc || fallbackPhoto;
 
@@ -369,7 +378,12 @@ export function HealthCardPdf({
                 <Text style={s.badgeText}>SHUHADA-E-DERAJAT</Text>
               </View>
 
-              <Text style={s.familyHealthCardTitle}>FAMILY HEALTH CARD</Text>
+              {lang === "ur" && urduTitleImg ? (
+                // eslint-disable-next-line jsx-a11y/alt-text
+                <Image src={urduTitleImg} style={s.urduCardTitle} />
+              ) : (
+                <Text style={s.familyHealthCardTitle}>FAMILY HEALTH CARD</Text>
+              )}
               <Text style={s.mottoText}>"Honouring the Shuhda by Caring for Their Families"</Text>
             </View>
 
@@ -466,7 +480,12 @@ export function HealthCardPdf({
               <View style={s.badgeRed}>
                 <Text style={s.badgeText}>SHUHADA-E-DERAJAT</Text>
               </View>
-              <Text style={s.familyHealthCardTitle}>FAMILY HEALTH CARD</Text>
+              {lang === "ur" && urduTitleImg ? (
+                // eslint-disable-next-line jsx-a11y/alt-text
+                <Image src={urduTitleImg} style={s.urduCardTitle} />
+              ) : (
+                <Text style={s.familyHealthCardTitle}>FAMILY HEALTH CARD</Text>
+              )}
               <Text style={s.subSlogan}>HEALTH  |  SERVICE  |  COMPASSION</Text>
               <Text style={s.subSlogan}>FOR A STRONGER PAKISTAN</Text>
             </View>
