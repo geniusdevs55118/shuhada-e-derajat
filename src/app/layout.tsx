@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
@@ -13,6 +13,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   title: {
     default: "Shuhada-e-Derajat Family Healthcare Initiative",
@@ -25,9 +31,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en" suppressHydrationWarning={true}
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${geistMono.variable} h-full antialiased overflow-x-hidden`}
     >
-      <body className="min-h-full flex flex-col" suppressHydrationWarning={true}>{children}<Toaster richColors /></body>
+      <body className="min-h-full flex flex-col w-full max-w-full overflow-x-hidden" suppressHydrationWarning={true}>
+        {children}
+        <Toaster richColors />
+      </body>
     </html>
   );
 }

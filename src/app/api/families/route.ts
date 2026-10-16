@@ -37,21 +37,47 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const search = searchParams.get("search")?.trim();
   const status = searchParams.get("status")?.trim();
+  const category = searchParams.get("category")?.trim();
   const page = Math.max(1, Number(searchParams.get("page") ?? 1));
   const pageSize = 10;
 
-  const where: Record<string, unknown> = {};
-  if (search) {
-    where.OR = [
-      { shaheedName: { contains: search } },
-      { shaheedCnic: { contains: search } },
-      { contactCnic: { contains: search } },
-      { registrationNo: { contains: search } },
-      { healthCardNo: { contains: search } },
-      { contactMobile: { contains: search } },
-    ];
+  const andConditions: Record<string, unknown>[] = [];
+
+  if (category === "ghazi") {
+    andConditions.push({
+      OR: [
+        { registrationNo: { contains: "GZ" } },
+        { healthCardNo: { contains: "DG" } },
+        { specialDependencyDisability: { contains: "Ghazi" } },
+      ],
+    });
+  } else if (category === "shuhada") {
+    andConditions.push({
+      NOT: [
+        { registrationNo: { contains: "GZ" } },
+        { healthCardNo: { contains: "DG" } },
+      ],
+    });
   }
-  if (status && status !== "all") where.verificationStatus = status;
+
+  if (status && status !== "all") {
+    andConditions.push({ verificationStatus: status });
+  }
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        { shaheedName: { contains: search } },
+        { shaheedCnic: { contains: search } },
+        { contactCnic: { contains: search } },
+        { registrationNo: { contains: search } },
+        { healthCardNo: { contains: search } },
+        { contactMobile: { contains: search } },
+      ],
+    });
+  }
+
+  const where = andConditions.length > 0 ? { AND: andConditions } : {};
 
   const [total, families] = await Promise.all([
     prisma.family.count({ where }),

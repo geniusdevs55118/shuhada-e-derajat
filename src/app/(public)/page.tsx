@@ -1,6 +1,7 @@
 import { HeroCarousel } from "@/components/public/hero-carousel";
 import { QuickActionStrip } from "@/components/public/quick-action-strip";
 import { ShuhadaTribute } from "@/components/public/shuhada-tribute";
+import { GhazisTribute } from "@/components/public/ghazis-tribute";
 import { HospitalsSlider } from "@/components/public/hospitals-slider";
 import { ServicesSlider } from "@/components/public/services-slider";
 import { HealthCardShowcase } from "@/components/public/health-card-showcase";
@@ -28,6 +29,9 @@ export default function HomePage() {
 
       {/* Section 1: Why it exists & Shuhada Tribute */}
       <ShuhadaTribute />
+
+      {/* Section 1B: Living Valor - Derajat Ghazis Tribute */}
+      <GhazisTribute />
 
       {/* Section 2: Hospital Network Slider */}
       <HospitalsSlider />

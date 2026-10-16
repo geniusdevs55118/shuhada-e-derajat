@@ -21,21 +21,46 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const search = searchParams.get("search")?.trim();
   const hospitalId = searchParams.get("hospitalId");
+  const category = searchParams.get("category")?.trim();
   const emergencyOnly = searchParams.get("emergency") === "true";
   const page = Math.max(1, Number(searchParams.get("page") ?? 1));
   const pageSize = 10;
 
-  const where: Record<string, unknown> = { ...hospitalScope(session, "visit") };
-  if (hospitalId && hospitalId !== "all") where.hospitalId = Number(hospitalId);
-  if (search) {
-    where.OR = [
-      { visitNo: { contains: search } },
-      { beneficiaryName: { contains: search } },
-      { beneficiaryCnicBForm: { contains: search } },
-      { familyRegistrationNo: { contains: search } },
-      { healthCardNo: { contains: search } },
-    ];
+  const andConditions: Record<string, unknown>[] = [];
+  const scope = hospitalScope(session, "visit");
+  if (Object.keys(scope).length > 0) andConditions.push(scope);
+  if (hospitalId && hospitalId !== "all") andConditions.push({ hospitalId: Number(hospitalId) });
+
+  if (category === "ghazi") {
+    andConditions.push({
+      OR: [
+        { familyRegistrationNo: { contains: "GZ" } },
+        { healthCardNo: { contains: "DG" } },
+        { natureOther: { contains: "Ghazi" } },
+      ],
+    });
+  } else if (category === "shuhada") {
+    andConditions.push({
+      NOT: [
+        { familyRegistrationNo: { contains: "GZ" } },
+        { healthCardNo: { contains: "DG" } },
+      ],
+    });
   }
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        { visitNo: { contains: search } },
+        { beneficiaryName: { contains: search } },
+        { beneficiaryCnicBForm: { contains: search } },
+        { familyRegistrationNo: { contains: search } },
+        { healthCardNo: { contains: search } },
+      ],
+    });
+  }
+
+  const where = andConditions.length > 0 ? { AND: andConditions } : {};
 
   const [total, visits] = await Promise.all([
     prisma.visit.count({ where }),

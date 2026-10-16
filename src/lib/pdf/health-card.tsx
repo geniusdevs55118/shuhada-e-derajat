@@ -4,11 +4,6 @@ import fs from "fs";
 import path from "path";
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 import { extractFamilyCode } from "@/lib/family-code";
-
-// Standard Pakistani CNIC / Smart ID Card Dimensions:
-// 85.60 mm x 53.98 mm (ISO/IEC 7810 ID-1 standard)
-// In PostScript points (72 DPI): 242.65 pt (width) x 153.01 pt (height)
-// HORIZONTAL / LANDSCAPE ORIENTATION
 export const CARD_WIDTH = 242.65;
 export const CARD_HEIGHT = 153.01;
 
@@ -340,7 +335,9 @@ export function HealthCardPdf({
   family,
   qrSrc,
   photoSrc,
+  healthDeskContact,
   lang = "en",
+  category,
 }: {
   card: any;
   family: any;
@@ -348,9 +345,21 @@ export function HealthCardPdf({
   photoSrc?: string | null;
   healthDeskContact?: string | null;
   lang?: string;
+  category?: "shaheed" | "ghazi";
 }) {
   const members: any[] = Array.isArray(family?.members) && family.members.length > 0 ? family.members : [];
   const cardMembers = members.slice(0, 4);
+
+  const isGhazi =
+    category === "ghazi" ||
+    card?.category === "ghazi" ||
+    family?.category === "ghazi" ||
+    card?.cardNo?.toUpperCase().includes("GZ") ||
+    card?.cardNo?.toUpperCase().includes("DG") ||
+    family?.registrationNo?.toUpperCase().includes("GZ") ||
+    family?.registrationNo?.toUpperCase().includes("DG") ||
+    (typeof family?.specialDependencyDisability === "string" &&
+      family.specialDependencyDisability.toLowerCase().includes("ghazi"));
 
   // Asset base64 URLs
   const dhqEmblem = getLocalAssetBase64("card-emblem-dhq.png");
@@ -369,9 +378,9 @@ export function HealthCardPdf({
       })()
     : "12/2030";
 
-  const cardNoDisplay = card?.cardNo?.startsWith("DS")
+  const cardNoDisplay = card?.cardNo?.startsWith("DS") || card?.cardNo?.startsWith("DG")
     ? card.cardNo
-    : `DS${card?.cardNo || "0123456789"}`;
+    : `${isGhazi ? "DG" : "DS"}${card?.cardNo || "0123456789"}`;
 
   return (
     <Document>
@@ -383,8 +392,8 @@ export function HealthCardPdf({
           {/* Top Header Banner */}
           <View style={s.topBanner}>
             <View>
-              <Text style={s.topTitleEn1}>DERAJAT SHUHADA</Text>
-              <Text style={s.topTitleEn2}>FAMILY HEALTH CARD</Text>
+              <Text style={s.topTitleEn1}>{isGhazi ? "DERAJAT GHAZIS" : "DERAJAT SHUHADA"}</Text>
+              <Text style={s.topTitleEn2}>{isGhazi ? "HONOUR & HEALTH CARD" : "FAMILY HEALTH CARD"}</Text>
             </View>
             {urduTitleWhite ? (
               // eslint-disable-next-line jsx-a11y/alt-text
@@ -409,20 +418,20 @@ export function HealthCardPdf({
                 </View>
               </View>
 
-              <Text style={s.holderLabel}>HOLDER&apos;S NAME</Text>
+              <Text style={s.holderLabel}>{isGhazi ? "GHAZI'S NAME" : "HOLDER'S NAME"}</Text>
               <Text style={s.holderName}>{family?.shaheedName || "—"}</Text>
 
               <View style={s.detailsList}>
                 <View style={s.detailRow}>
-                  <Text style={s.detailLabel}>Shaheed CNIC:</Text>
+                  <Text style={s.detailLabel}>{isGhazi ? "Ghazi CNIC:" : "Shaheed CNIC:"}</Text>
                   <Text style={s.detailValue}>{family?.shaheedCnic || "—"}</Text>
                 </View>
                 <View style={s.detailRow}>
-                  <Text style={s.detailLabel}>Organization:</Text>
+                  <Text style={s.detailLabel}>{isGhazi ? "Force / Dept:" : "Organization:"}</Text>
                   <Text style={s.detailValue}>{family?.shaheedDepartment || "Police"}</Text>
                 </View>
                 <View style={s.detailRow}>
-                  <Text style={s.detailLabel}>Family Code:</Text>
+                  <Text style={s.detailLabel}>{isGhazi ? "Veteran Code:" : "Family Code:"}</Text>
                   <Text style={[s.detailValue, { color: PAK_GREEN }]}>#{extractFamilyCode(family)}</Text>
                 </View>
                 <View style={s.detailRow}>
@@ -443,7 +452,7 @@ export function HealthCardPdf({
                 )}
               </View>
               <Text style={s.rightHolderName}>{family?.shaheedName || "—"}</Text>
-              <Text style={s.rightIdText}>ID: DS-FHC-{extractFamilyCode(family)}</Text>
+              <Text style={s.rightIdText}>ID: {isGhazi ? "DG" : "DS"}-FHC-{extractFamilyCode(family)}</Text>
 
               <View style={s.signatureBox}>
                 {signature ? (
@@ -476,8 +485,8 @@ export function HealthCardPdf({
           {/* Top Header Banner */}
           <View style={s.topBanner}>
             <View>
-              <Text style={s.topTitleEn1}>DERAJAT SHUHADA</Text>
-              <Text style={s.topTitleEn2}>FAMILY HEALTH CARD</Text>
+              <Text style={s.topTitleEn1}>{isGhazi ? "DERAJAT GHAZIS" : "DERAJAT SHUHADA"}</Text>
+              <Text style={s.topTitleEn2}>{isGhazi ? "HONOUR & HEALTH CARD" : "FAMILY HEALTH CARD"}</Text>
             </View>
             {urduTitleWhite ? (
               // eslint-disable-next-line jsx-a11y/alt-text
@@ -490,7 +499,7 @@ export function HealthCardPdf({
           <View style={s.backBody}>
             {/* Green Section Banner */}
             <View style={s.backBanner}>
-              <Text style={s.backBannerText}>ELIGIBLE FAMILY MEMBERS</Text>
+              <Text style={s.backBannerText}>{isGhazi ? "GHAZI BENEFICIARIES / FAMILY" : "ELIGIBLE FAMILY MEMBERS"}</Text>
             </View>
 
             {/* Table */}
@@ -535,7 +544,7 @@ export function HealthCardPdf({
               <View style={s.importantInfoBox}>
                 <Text style={s.importantInfoTitle}>IMPORTANT INFORMATION</Text>
                 <Text style={s.bulletPoint}>• Valid across all participating teaching hospitals.</Text>
-                <Text style={s.bulletPoint}>• Non-transferable. Present at Shuhada Facilitation Desk.</Text>
+                <Text style={s.bulletPoint}>• Non-transferable. Present at {isGhazi ? "Ghazis / Shuhada" : "Shuhada"} Facilitation Desk.</Text>
                 <Text style={s.bulletPoint}>• Report loss immediately to Hospital Director office.</Text>
               </View>
 

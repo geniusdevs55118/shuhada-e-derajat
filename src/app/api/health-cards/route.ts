@@ -17,27 +17,52 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const search = searchParams.get("search")?.trim();
   const status = searchParams.get("status")?.trim();
+  const category = searchParams.get("category")?.trim();
   const page = Math.max(1, Number(searchParams.get("page") ?? 1));
   const pageSize = 10;
 
-  const where: Record<string, unknown> = {
-    ...hospitalScope(session, "card"),
-  };
+  const andConditions: Record<string, unknown>[] = [
+    hospitalScope(session, "card"),
+  ];
+
+  if (category === "ghazi") {
+    andConditions.push({
+      OR: [
+        { cardNo: { contains: "DG" } },
+        { cardNo: { contains: "GZ" } },
+        { familyRegistrationNo: { contains: "GZ" } },
+        { familyRegistrationNo: { contains: "DG" } },
+      ],
+    });
+  } else if (category === "shuhada") {
+    andConditions.push({
+      NOT: [
+        { cardNo: { contains: "DG" } },
+        { cardNo: { contains: "GZ" } },
+        { familyRegistrationNo: { contains: "GZ" } },
+        { familyRegistrationNo: { contains: "DG" } },
+      ],
+    });
+  }
 
   if (search) {
     const famMatches = await prisma.family.findMany({
       where: { shaheedName: { contains: search } },
       select: { registrationNo: true },
     });
-    where.OR = [
-      { cardNo: { contains: search } },
-      { familyRegistrationNo: { contains: search } },
-      { familyRegistrationNo: { in: famMatches.map((f) => f.registrationNo) } },
-    ];
+    andConditions.push({
+      OR: [
+        { cardNo: { contains: search } },
+        { familyRegistrationNo: { contains: search } },
+        { familyRegistrationNo: { in: famMatches.map((f) => f.registrationNo) } },
+      ],
+    });
   }
   if (status && status !== "all") {
-    where.status = status;
+    andConditions.push({ status });
   }
+
+  const where = { AND: andConditions };
 
   const [total, cards] = await Promise.all([
     prisma.healthCard.count({ where }),

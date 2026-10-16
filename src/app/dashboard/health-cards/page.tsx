@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { maskCnic } from "@/lib/cnic";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ExportExcelButton } from "@/components/dashboard/export-excel-button";
+import { Shield, Award } from "lucide-react";
 
 
 type CardRow = {
@@ -31,7 +33,10 @@ const BADGE: Record<string, string> = {
   CLOSED: "bg-gray-200 text-gray-700",
 };
 
-export default function HealthCardsPage() {
+function HealthCardsContent() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams?.get("category") ?? "all";
+  const [category, setCategory] = useState<string>(initialCategory);
   const [cards, setCards] = useState<CardRow[]>([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
@@ -44,12 +49,13 @@ export default function HealthCardsPage() {
     const params = new URLSearchParams({ page: String(page) });
     if (search) params.set("search", search);
     if (status !== "all") params.set("status", status);
+    if (category && category !== "all") params.set("category", category);
     const res = await fetch(`/api/health-cards?${params.toString()}`);
     const data = await res.json();
     setCards(data.data ?? []);
     setTotal(data.total ?? 0);
     setLoading(false);
-  }, [search, status, page]);
+  }, [search, status, category, page]);
 
   useEffect(() => {
     const t = setTimeout(load, 250);
@@ -61,18 +67,70 @@ export default function HealthCardsPage() {
 
   return (
     <div className="space-y-4">
+      {/* Category Filter Tabs: All | Shuhada | Ghazis */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/90 bg-white p-2.5 shadow-2xs">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 pl-1">
+            Card Category:
+          </span>
+          <div className="inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200">
+            {[
+              { id: "all", label: "All Health Cards" },
+              { id: "shuhada", label: "Shuhada Cards" },
+              { id: "ghazi", label: "🎖️ Derajat Ghazi Cards" },
+            ].map((tab) => {
+              const active = category === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => {
+                    setCategory(tab.id);
+                    setPage(1);
+                  }}
+                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold transition-all ${
+                    active
+                      ? tab.id === "ghazi"
+                        ? "bg-amber-600 text-white shadow-xs"
+                        : "bg-[#01411c] text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <span className="text-xs font-semibold text-slate-500 pr-1">
+          {category === "ghazi"
+            ? "🎖️ Showing Derajat Ghazis Cards (Wounded Veterans)"
+            : category === "shuhada"
+            ? "🛡️ Showing Shuhada Family Cards"
+            : "Total Cards: " + total}
+        </span>
+      </div>
+
       {/* Page header with illustration */}
       <div className="dashboard-page-heading">
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-200 mb-1">Annexure-C</p>
-          <h1 className="text-xl sm:text-2xl font-bold text-white">Shuhada Health Cards</h1>
-          <p className="text-sm text-blue-100/80 mt-0.5">Verify Once · Record Securely · Facilitate Consistently</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-blue-200 mb-1">
+          {category === "ghazi" ? "🎖️ Derajat Ghazis Welfare" : "Annexure-C"}
+        </p>
+        <h1 className="text-xl sm:text-2xl font-bold text-white">
+          {category === "ghazi" ? "Derajat Ghazis Health Cards" : "Shuhada Health Cards"}
+        </h1>
+        <p className="text-sm text-blue-100/80 mt-0.5">
+          {category === "ghazi"
+            ? "Official Recognition & Healthcare Cards for Wounded Veterans (Police, Army, FC, Levies)"
+            : "Verify Once · Record Securely · Facilitate Consistently"}
+        </p>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-3">
 <input
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          placeholder="Search Card No, Reg No, or Shaheed Name"
+          placeholder={category === "ghazi" ? "Search Card No, Reg No, or Ghazi Name" : "Search Card No, Reg No, or Shaheed Name"}
           className="rounded-md border px-3 py-2 text-sm flex-1 min-w-[240px]"
         />
         <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="rounded-md border px-3 py-2 text-sm">
@@ -97,16 +155,16 @@ export default function HealthCardsPage() {
           )}
         </div>
       )}
-      <div className="hidden overflow-x-auto rounded-xl border bg-white shadow-sm md:block">
+      <div className="custom-scrollbar hidden overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs md:block">
         <table className="w-full text-sm">
-          <thead className="bg-blue-50 text-left text-blue-900">
+          <thead className="bg-[#01411c] text-left text-white">
             <tr>
-              <th className="p-3">Card No</th>
-              <th className="p-3">Reg No</th>
-              <th className="p-3">Shaheed Name</th>
-              <th className="p-3">CNIC</th>
-              <th className="p-3">Status</th>
-              <th className="p-3">Issued</th>
+              <th className="p-3 text-white font-bold text-xs uppercase tracking-wider">Card No</th>
+              <th className="p-3 text-white font-bold text-xs uppercase tracking-wider">Reg No</th>
+              <th className="p-3 text-white font-bold text-xs uppercase tracking-wider">{category === "ghazi" ? "Ghazi Name" : "Shaheed Name"}</th>
+              <th className="p-3 text-white font-bold text-xs uppercase tracking-wider">CNIC</th>
+              <th className="p-3 text-white font-bold text-xs uppercase tracking-wider">Status</th>
+              <th className="p-3 text-white font-bold text-xs uppercase tracking-wider">Issued</th>
             </tr>
           </thead>
           <tbody>
@@ -120,15 +178,15 @@ export default function HealthCardsPage() {
               </tr>
             ) : (
               cards.map((c) => (
-                <tr key={c.id} className="border-t hover:bg-blue-50/40">
-                  <td className="p-3 font-medium">
-                    <Link href={`/dashboard/health-cards/${c.id}`} className="text-blue-700 underline">{c.cardNo}</Link>
+                <tr key={c.id} className="border-t border-slate-100 hover:bg-emerald-50/50 transition-colors">
+                  <td className="p-3 font-semibold font-mono">
+                    <Link href={`/dashboard/health-cards/${c.id}`} className="text-[#01411c] hover:text-emerald-700 underline font-bold">{c.cardNo}</Link>
                   </td>
-                  <td className="p-3">{c.familyRegistrationNo}</td>
-                  <td className="p-3">{c.shaheedName ?? "—"}</td>
-                  <td className="p-3">{maskCnic(c.contactCnic)}</td>
-                  <td className="p-3"><span className={`rounded px-2 py-0.5 text-xs font-medium ${BADGE[c.status] ?? "bg-gray-100"}`}>{STATUS_LABELS[c.status] ?? c.status}</span></td>
-                  <td className="p-3">{c.dateOfCardIssue ? new Date(c.dateOfCardIssue).toLocaleDateString() : "—"}</td>
+                  <td className="p-3 font-mono text-xs text-slate-700">{c.familyRegistrationNo}</td>
+                  <td className="p-3 font-semibold text-slate-900">{c.shaheedName ?? "—"}</td>
+                  <td className="p-3 font-mono text-xs text-slate-500">{maskCnic(c.contactCnic)}</td>
+                  <td className="p-3"><span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${BADGE[c.status] ?? "bg-gray-100"}`}>{STATUS_LABELS[c.status] ?? c.status}</span></td>
+                  <td className="p-3 text-xs text-slate-600">{c.dateOfCardIssue ? new Date(c.dateOfCardIssue).toLocaleDateString() : "—"}</td>
                 </tr>
               ))
             )}
@@ -143,17 +201,25 @@ export default function HealthCardsPage() {
           <EmptyState src="/images/empty-health-card.jpg" alt="Health card illustration" title="No health cards found" />
         ) : (
           cards.map((c) => (
-            <Link key={c.id} href={`/dashboard/health-cards/${c.id}`} className="rounded-xl border bg-white p-4 shadow-xs">
+            <Link key={c.id} href={`/dashboard/health-cards/${c.id}`} className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs hover:border-emerald-600 transition-colors">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-blue-900">{c.cardNo}</span>
-                <span className={`rounded px-2 py-0.5 text-xs font-medium ${BADGE[c.status] ?? "bg-gray-100"}`}>{STATUS_LABELS[c.status] ?? c.status}</span>
+                <span className="font-bold text-[#01411c] font-mono">{c.cardNo}</span>
+                <span className={`rounded px-2 py-0.5 text-xs font-semibold ${BADGE[c.status] ?? "bg-gray-100"}`}>{STATUS_LABELS[c.status] ?? c.status}</span>
               </div>
-              <p className="mt-1 text-sm text-gray-800 font-medium">{c.shaheedName ?? "—"}</p>
-              <p className="text-xs text-gray-500">Reg: {c.familyRegistrationNo} · CNIC: {maskCnic(c.contactCnic)}</p>
+              <p className="mt-1 text-sm text-slate-900 font-semibold">{c.shaheedName ?? "—"}</p>
+              <p className="text-xs text-slate-500">Reg: {c.familyRegistrationNo} · CNIC: {maskCnic(c.contactCnic)}</p>
             </Link>
           ))
         )}
       </div>
     </div>
+  );
+}
+
+export default function HealthCardsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-sm text-slate-500">Loading cards…</div>}>
+      <HealthCardsContent />
+    </Suspense>
   );
 }

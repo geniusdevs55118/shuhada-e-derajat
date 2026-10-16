@@ -10,7 +10,7 @@ export const instant = false;
 export default async function FamiliesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; status?: string; page?: string; pageSize?: string }>;
+  searchParams: Promise<{ search?: string; status?: string; page?: string; pageSize?: string; category?: string }>;
 }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
@@ -18,21 +18,47 @@ export default async function FamiliesPage({
   const params = await searchParams;
   const search = params.search?.trim() ?? "";
   const status = params.status ?? "all";
+  const category = params.category ?? "all";
   const page = Math.max(1, Number(params.page ?? 1) || 1);
   const pageSize = Math.min(100, Math.max(5, Number(params.pageSize ?? 10) || 10));
 
-  const where: Record<string, unknown> = {};
-  if (search) {
-    where.OR = [
-      { shaheedName: { contains: search } },
-      { shaheedCnic: { contains: search } },
-      { contactCnic: { contains: search } },
-      { registrationNo: { contains: search } },
-      { healthCardNo: { contains: search } },
-      { contactMobile: { contains: search } },
-    ];
+  const andConditions: Record<string, unknown>[] = [];
+
+  if (category === "ghazi") {
+    andConditions.push({
+      OR: [
+        { registrationNo: { contains: "GZ" } },
+        { healthCardNo: { contains: "DG" } },
+        { specialDependencyDisability: { contains: "Ghazi" } },
+      ],
+    });
+  } else if (category === "shuhada") {
+    andConditions.push({
+      NOT: [
+        { registrationNo: { contains: "GZ" } },
+        { healthCardNo: { contains: "DG" } },
+      ],
+    });
   }
-  if (status && status !== "all") where.verificationStatus = status;
+
+  if (status && status !== "all") {
+    andConditions.push({ verificationStatus: status });
+  }
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        { shaheedName: { contains: search } },
+        { shaheedCnic: { contains: search } },
+        { contactCnic: { contains: search } },
+        { registrationNo: { contains: search } },
+        { healthCardNo: { contains: search } },
+        { contactMobile: { contains: search } },
+      ],
+    });
+  }
+
+  const where: Record<string, unknown> = andConditions.length > 0 ? { AND: andConditions } : {};
 
   let rows: Parameters<typeof FamiliesView>[0]["rows"] = [];
   let total = 0;
@@ -80,6 +106,7 @@ export default async function FamiliesPage({
       status={status}
       canCreate={canCreate}
       error={error}
+      category={category}
     />
   );
 }

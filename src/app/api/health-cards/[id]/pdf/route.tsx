@@ -48,6 +48,8 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
   const healthDeskContact = hospital?.healthDeskContact ?? card.issuedBy ?? null;
 
   const lang = req.nextUrl.searchParams.get("lang") || "en";
+  const categoryParam = req.nextUrl.searchParams.get("category");
+  const category = categoryParam === "ghazi" ? "ghazi" : categoryParam === "shaheed" ? "shaheed" : undefined;
 
   const buffer = await renderToBuffer(
     <HealthCardPdf
@@ -57,6 +59,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       photoSrc={photo?.secureUrl ?? null}
       healthDeskContact={healthDeskContact}
       lang={lang}
+      category={category}
     />
   );
   return new NextResponse(new Uint8Array(buffer), {

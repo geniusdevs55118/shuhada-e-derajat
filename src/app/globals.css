@@ -105,18 +105,18 @@
   --card-foreground: #263431;
   --popover: #ffffff;
   --popover-foreground: #263431;
-  --primary: #28565a;
+  --primary: #01411c;
   --primary-foreground: #ffffff;
   --secondary: #e7eeeb;
-  --secondary-foreground: #294b4b;
+  --secondary-foreground: #01411c;
   --muted: #edf1ee;
   --muted-foreground: #66736f;
-  --accent: #5d7868;
+  --accent: #046a38;
   --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
   --border: #d9e1dc;
   --input: #cbd5cf;
-  --ring: #5d8580;
+  --ring: #01411c;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -125,13 +125,12 @@
   --radius: 0.125rem;
   --sidebar: #f8faf8;
   --sidebar-foreground: #263431;
-  --sidebar-primary: #28565a;
+  --sidebar-primary: #01411c;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #e8efeb;
-  --sidebar-accent-foreground: #234b49;
+  --sidebar-accent-foreground: #01411c;
   --sidebar-border: #dce4df;
-  --sidebar-ring: #5d8580;
-
+  --sidebar-ring: #01411c;
 }
 
 .dark {
@@ -172,8 +171,37 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Custom visible styled scrollbars for data tables */
+  .custom-scrollbar {
+    overflow-x: auto !important;
+    scrollbar-width: thin;
+    scrollbar-color: #046a38 #e2e8f0;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #046a38;
+    border-radius: 9999px;
+    border: 1px solid #f1f5f9;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #01411c;
   }
   /* Pointer cursor on everything clickable (Tailwind v4 resets buttons to default) */
   button,
@@ -219,15 +247,33 @@
     letter-spacing: -0.025em;
   }
   ::selection {
-    background: #c6d9d3;
-    color: #142d32;
+    background: #01411c !important;
+    color: #ffffff !important;
+  }
+  ::-moz-selection {
+    background: #01411c !important;
+    color: #ffffff !important;
+  }
+  input,
+  select,
+  textarea,
+  [contenteditable] {
+    caret-color: #01411c;
+    color: #172a24;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #01411c;
+    box-shadow: 0 0 0 2px rgba(1, 65, 28, 0.18);
   }
   table {
     border-collapse: separate;
     border-spacing: 0;
   }
   thead {
-    color: #52625c;
+    color: #172a24;
   }
   thead th {
     border-bottom: 1px solid #d9e1dc;
@@ -241,11 +287,6 @@
   }
   tbody td {
     color: #35423e;
-  }
-  input,
-  select,
-  textarea {
-    color: #263431;
   }
 
   a[href],
@@ -338,11 +379,32 @@
     line-height: 1.65;
   }
   .dashboard-page-heading {
-    border-left: 3px solid #81a58d;
-    border-radius: 0.25rem;
-    background: #142d32;
-    padding: 1rem 1.25rem;
-    box-shadow: none;
+    border-left: 4px solid #c5a059 !important;
+    border-radius: 0.85rem !important;
+    background: linear-gradient(135deg, #01411c 0%, #035a27 55%, #013817 100%) !important;
+    padding: 1.25rem 1.5rem !important;
+    box-shadow: 0 4px 14px -2px rgba(1, 65, 28, 0.22) !important;
+    color: #ffffff !important;
+  }
+  .dashboard-page-heading p:first-child,
+  .dashboard-page-heading .text-blue-200,
+  .dashboard-page-heading .text-blue-300 {
+    color: #fde047 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+  }
+  .dashboard-page-heading h1 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+  }
+  .dashboard-page-heading p:last-child,
+  .dashboard-page-heading .text-blue-100,
+  .dashboard-page-heading .text-blue-100\/80 {
+    color: #ecfdf5 !important;
+  }
+  .dashboard-page-heading a {
+    color: #fef08a !important;
+    font-weight: 600 !important;
   }
 }
 

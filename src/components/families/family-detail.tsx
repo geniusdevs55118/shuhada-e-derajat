@@ -271,7 +271,9 @@ export function FamilyDetail({
                 FAMILY CODE: #{extractFamilyCode(family)}
               </span>
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
-                Martyr Family Master Record
+                {family.registrationNo?.includes("GZ") || family.registrationNo?.includes("DG") || family.healthCardNo?.includes("DG")
+                  ? "Derajat Ghazi Veteran Master Record"
+                  : "Martyr Family Master Record"}
               </span>
             </div>
             <h1 className="text-2xl font-bold text-slate-900">{family.registrationNo}</h1>
@@ -290,31 +292,41 @@ export function FamilyDetail({
         </div>
       </div>
 
-      <Section title="A. Particulars of Shaheed">
-        <Row label="Full Name" value={family.shaheedName} />
-        <Row label="Father's Name" value={family.shaheedFatherName} />
-        <Row label="CNIC No." value={family.shaheedCnic} />
-        <Row label="Service / Personal No." value={family.shaheedServiceNo} />
-        <Row label="Rank / Designation" value={family.shaheedRank} />
-        <Row label="Department / Force / Organization" value={family.shaheedDepartment} />
-        <Row label="Unit / Formation / Office" value={family.shaheedUnit} />
-        <Row label="Date of Shahadat" value={family.shaheedDateOfShahadat ? new Date(family.shaheedDateOfShahadat).toLocaleDateString() : null} />
-        <Row label="Place / District of Shahadat" value={family.shaheedPlaceOfShahadat} />
-        <Row label="Permanent District / Domicile" value={family.shaheedPermanentDistrict} />
-        <Row label="Permanent Address" value={family.shaheedPermanentAddress} />
-        <Row label="Shahadat Certificate / Official Verification No." value={family.shahadatCertificateNo} />
-        <Row label="Issuing / Verifying Authority" value={family.shahadatIssuingAuthority} />
-      </Section>
+      {(() => {
+        const isGhazi =
+          family.registrationNo?.includes("GZ") ||
+          family.registrationNo?.includes("DG") ||
+          family.healthCardNo?.includes("DG");
+        return (
+          <>
+            <Section title={isGhazi ? "A. Particulars of Ghazi Veteran" : "A. Particulars of Shaheed"}>
+              <Row label="Full Name" value={family.shaheedName} />
+              <Row label="Father's Name" value={family.shaheedFatherName} />
+              <Row label="CNIC No." value={family.shaheedCnic} />
+              <Row label="Service / Personal No." value={family.shaheedServiceNo} />
+              <Row label="Rank / Designation" value={family.shaheedRank} />
+              <Row label="Department / Force / Organization" value={family.shaheedDepartment} />
+              <Row label="Unit / Formation / Office" value={family.shaheedUnit} />
+              <Row label={isGhazi ? "Date of Injury / Incident" : "Date of Shahadat"} value={family.shaheedDateOfShahadat ? new Date(family.shaheedDateOfShahadat).toLocaleDateString() : null} />
+              <Row label={isGhazi ? "Place / District of Incident" : "Place / District of Shahadat"} value={family.shaheedPlaceOfShahadat} />
+              <Row label="Permanent District / Domicile" value={family.shaheedPermanentDistrict} />
+              <Row label="Permanent Address" value={family.shaheedPermanentAddress} />
+              <Row label={isGhazi ? "Disability / Verification Certificate No." : "Shahadat Certificate / Official Verification No."} value={family.shahadatCertificateNo} />
+              <Row label="Issuing / Verifying Authority" value={family.shahadatIssuingAuthority} />
+            </Section>
 
-      <Section title="B. Primary Family Contact">
-        <Row label="Name" value={family.contactName} />
-        <Row label="Relationship with Shaheed" value={family.contactRelationship} />
-        <Row label="CNIC No." value={family.contactCnic} />
-        <Row label="Mobile No." value={family.contactMobile} />
-        <Row label="Alternative Contact" value={family.contactAltContact} />
-        <Row label="Present Address" value={family.contactPresentAddress} />
-        <Row label="District" value={family.contactDistrict} />
-      </Section>
+            <Section title={isGhazi ? "B. Primary Contact & Facilitation" : "B. Primary Family Contact"}>
+              <Row label="Name" value={family.contactName} />
+              <Row label={isGhazi ? "Relationship with Ghazi" : "Relationship with Shaheed"} value={family.contactRelationship} />
+              <Row label="CNIC No." value={family.contactCnic} />
+              <Row label="Mobile No." value={family.contactMobile} />
+              <Row label="Alternative Contact" value={family.contactAltContact} />
+              <Row label="Present Address" value={family.contactPresentAddress} />
+              <Row label="District" value={family.contactDistrict} />
+            </Section>
+          </>
+        );
+      })()}
 
       <section className="rounded-xl border bg-white p-5 shadow-sm">
         <h2 className="text-lg font-bold text-blue-900">C. Eligible Family Members</h2>

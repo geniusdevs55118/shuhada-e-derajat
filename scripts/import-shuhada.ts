@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, HospitalCode, Role } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -308,18 +309,82 @@ function parseDate(str: string): Date {
   return new Date();
 }
 
+const HOSPITALS: { code: HospitalCode; name: string }[] = [
+  { code: "DHQ", name: "District Headquarters Teaching Hospital, Dera Ismail Khan" },
+  { code: "MMMTH", name: "Mufti Mehmood Memorial Teaching Hospital" },
+  { code: "WC", name: "Derajat Women & Children Hospital" },
+];
+
+const DEMO_DOMAIN = "@demo.dsfhi.local";
+const DEMO_USERS: {
+  username: string;
+  role: Role;
+  hospitalCode?: HospitalCode;
+  name: string;
+  designation: string;
+}[] = [
+  { username: "director123", role: "hospital_director", name: "Hospital Director", designation: "Hospital Director" },
+  { username: "ms123", role: "medical_superintendent", hospitalCode: "DHQ", name: "Medical Superintendent", designation: "Medical Superintendent" },
+  { username: "helpdesk123", role: "health_desk_officer", hospitalCode: "DHQ", name: "Health Desk Officer (DHQ)", designation: "Health Desk Focal Person" },
+  { username: "deskmmmth123", role: "health_desk_officer", hospitalCode: "MMMTH", name: "Health Desk Officer (MMMTH)", designation: "Health Desk Focal Person" },
+  { username: "deskwc123", role: "health_desk_officer", hospitalCode: "WC", name: "Health Desk Officer (W&C)", designation: "Health Desk Focal Person" },
+  { username: "admin123", role: "admin_finance_rep", name: "Administration & Finance Officer", designation: "Administration / Finance Representative" },
+  { username: "sehat123", role: "sehat_card_desk", name: "Sehat Card Plus Officer", designation: "Sehat Card Plus Representative" },
+  { username: "pharmacy123", role: "pharmacy_rep", name: "Pharmacy Representative", designation: "Pharmacy Representative" },
+  { username: "diagnostics123", role: "diagnostics_rep", name: "Diagnostics & Radiology Representative", designation: "Diagnostics / Radiology Representative" },
+  { username: "nursing123", role: "nursing_rep", name: "Nursing Representative", designation: "Nursing Representative" },
+  { username: "it123", role: "it_mis_rep", name: "IT & MIS Officer", designation: "IT / MIS Representative" },
+  { username: "addldirector123", role: "additional_director", name: "Additional Hospital Director", designation: "Additional Hospital Director" },
+  { username: "superadmin123", role: "super_admin", name: "Chief System Administrator", designation: "Chief System Administrator" },
+  { username: "member123", role: "working_group_member", name: "Working Group General Member", designation: "Working Group General Member" },
+];
+
 async function main() {
-  console.log(`Starting migration with ${SHUHADA_RECORDS.length} Shuhada records...`);
+  console.log(`Starting migration into new database with ${SHUHADA_RECORDS.length} Shuhada records...`);
 
-  // Ensure default hospital exists
-  const defaultHospital = await prisma.hospital.findFirst({
-    where: { code: "DHQ" }
-  }) || await prisma.hospital.findFirst();
+  // Step 1: Ensure 3 Hospitals exist
+  console.log("Upserting the 3 network hospitals (DHQ, MMMTH, WC)...");
+  const hospitalMap: Record<string, number> = {};
+  for (const h of HOSPITALS) {
+    const row = await prisma.hospital.upsert({
+      where: { code: h.code },
+      update: { name: h.name },
+      create: { code: h.code, name: h.name },
+    });
+    hospitalMap[h.code] = row.id;
+  }
 
-  const hospitalId = defaultHospital ? defaultHospital.id : null;
+  // Step 2: Ensure default staff users exist for portal logins
+  console.log("Upserting portal user accounts...");
+  for (const user of DEMO_USERS) {
+    const email = user.username + DEMO_DOMAIN;
+    const userPasswordHash = await bcrypt.hash(user.username, 10);
+    await prisma.user.upsert({
+      where: { email },
+      update: {
+        name: user.name,
+        role: user.role,
+        passwordHash: userPasswordHash,
+        hospitalId: user.hospitalCode ? hospitalMap[user.hospitalCode] : null,
+        designation: user.designation,
+        isActive: true,
+        mustChangePassword: false,
+      },
+      create: {
+        name: user.name,
+        email,
+        passwordHash: userPasswordHash,
+        role: user.role,
+        hospitalId: user.hospitalCode ? hospitalMap[user.hospitalCode] : null,
+        designation: user.designation,
+        isActive: true,
+        mustChangePassword: false,
+      },
+    });
+  }
 
-  // Step 1: Clean all application records except users and hospitals
-  console.log("Cleaning old application data while preserving users and hospitals...");
+  // Step 3: Clean all application records (families, cards, visits, etc.)
+  console.log("Cleaning old application data...");
   await prisma.actionTracker.deleteMany();
   await prisma.monthlyReport.deleteMany();
   await prisma.sehatClaim.deleteMany();
@@ -335,14 +400,12 @@ async function main() {
   await prisma.family.deleteMany();
   await prisma.auditLog.deleteMany();
 
-  console.log("Old data cleaned. Now importing 269 Shuhada...");
+  console.log("Old data cleaned. Now importing all 269 Shuhada families with exactly 1 test card...");
 
   let imported = 0;
 
   for (const item of SHUHADA_RECORDS) {
     const regNo = `SH-DIK-${String(item.sNo).padStart(3, "0")}`;
-    const cardNo = `HC-DIK-${String(item.sNo).padStart(3, "0")}`;
-    const qrId = `QR-DIK-${String(item.sNo).padStart(3, "0")}`;
     const dateShahadat = parseDate(item.dateOfShahadat);
 
     // Extract district if mentioned in residency or unit
@@ -370,7 +433,12 @@ async function main() {
       serviceNo = match[1];
     }
 
-    const family = await prisma.family.create({
+    // ONLY S# 1 gets a Health Card; all other 268 families have no card yet
+    const isSingleCard = item.sNo === 1;
+    const cardNo = isSingleCard ? "DSFHC-000001" : null;
+    const qrId = isSingleCard ? "DSFQR-000001" : null;
+
+    await prisma.family.create({
       data: {
         registrationNo: regNo,
         dateOfRegistration: dateShahadat,
@@ -400,17 +468,17 @@ async function main() {
         verifiedBy: "Focal Person Shuhada Desk",
         verifiedByDesignation: "Incharge Shuhada Desk, D.I. Khan",
         verifiedSignatureDate: "2026-08-04",
-        cardRegistrationId: `REG-${String(item.sNo).padStart(3, "0")}`,
+        cardRegistrationId: isSingleCard ? regNo : null,
         cardQrVerificationId: qrId,
-        cardDateOfIssue: dateShahadat,
-        cardPhysicalIssued: true,
-        cardDigitalRecordCreated: true,
-        cardBeneficiariesLinked: true,
-        cardSystemUpdated: true,
+        cardDateOfIssue: isSingleCard ? dateShahadat : null,
+        cardPhysicalIssued: isSingleCard,
+        cardDigitalRecordCreated: isSingleCard,
+        cardBeneficiariesLinked: isSingleCard,
+        cardSystemUpdated: isSingleCard,
         hospitalAccessDHQ: true,
         hospitalAccessMMMTH: true,
         hospitalAccessWC: true,
-        hospitalId: hospitalId,
+        hospitalId: hospitalMap["DHQ"] || null,
         authorizationDecision: "APPROVED_FOR_HEALTH_CARD",
         authorizedOfficer: "Hospital Director / Medical Superintendent",
         authorizedDesignation: "Designated Healthcare Authority",
@@ -423,48 +491,52 @@ async function main() {
               cnicBForm: `12101-${String(item.sNo).padStart(7, "0")}-1`,
               mobile: item.contactNo,
               status: "Active",
-              beneficiaryId: `BEN-DIK-${String(item.sNo).padStart(3, "0")}-01`,
-              cardStatus: "ACTIVE",
+              beneficiaryId: isSingleCard ? `${regNo}-01` : null,
+              cardStatus: isSingleCard ? "ACTIVE" : "NOT_ISSUED",
             }
           ]
         },
       }
     });
 
-    // Also create matching active HealthCard record
-    await prisma.healthCard.create({
-      data: {
-        familyRegistrationNo: regNo,
-        cardNo: cardNo,
-        qrDigitalVerificationId: qrId,
-        dateOfRegistration: dateShahadat,
-        dateOfCardIssue: dateShahadat,
-        status: "ACTIVE",
-        specialFlags: ["Police Shuhada Family", "Priority Healthcare Access"],
-        controlFlags: ["Valid Health Card", "Verified via District Police Shuhada Cell"],
-        issuedBy: "Health Desk Focal Person",
-        issuedByDesignation: "Focal Person DSFHI",
-        accessDHQ: true,
-        accessMMMTH: true,
-        accessWC: true,
-        reviewFlags: ["Verified"],
-        authorisedOfficer: "Medical Superintendent",
-        authorisedDesignation: "Hospital Director",
-      }
-    });
+    // ONLY create 1 HealthCard in the healthCard table
+    if (isSingleCard) {
+      await prisma.healthCard.create({
+        data: {
+          familyRegistrationNo: regNo,
+          cardNo: "DSFHC-000001",
+          qrDigitalVerificationId: "DSFQR-000001",
+          dateOfRegistration: dateShahadat,
+          dateOfCardIssue: dateShahadat,
+          status: "ACTIVE",
+          specialFlags: ["Police Shuhada Family", "Priority Healthcare Access"],
+          controlFlags: ["Valid Health Card", "Verified via District Police Shuhada Cell"],
+          issuedBy: "Health Desk Focal Person",
+          issuedByDesignation: "Focal Person DSFHI",
+          accessDHQ: true,
+          accessMMMTH: true,
+          accessWC: true,
+          reviewFlags: ["Verified"],
+          authorisedOfficer: "Medical Superintendent",
+          authorisedDesignation: "Hospital Director",
+        }
+      });
+    }
 
     imported++;
   }
 
   const finalCount = await prisma.family.count();
   const cardCount = await prisma.healthCard.count();
+  const hospitalCount = await prisma.hospital.count();
   const userCount = await prisma.user.count();
 
-  console.log("\n=== IMPORT COMPLETED SUCCESSFULLY ===");
-  console.log(`Imported records: ${imported}`);
+  console.log("\n=== MIGRATION COMPLETED SUCCESSFULLY ===");
+  console.log(`Imported families: ${imported}`);
   console.log(`Total Families in DB: ${finalCount}`);
   console.log(`Total Health Cards in DB: ${cardCount}`);
-  console.log(`Total Users preserved: ${userCount}`);
+  console.log(`Total Hospitals in DB: ${hospitalCount}`);
+  console.log(`Total Users in DB: ${userCount}`);
 }
 
 main()

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +33,7 @@ export function VisitsView({
   hospitals,
   canCreate,
   emergencyOnly,
+  category = "all",
 }: {
   rows: VisitRow[];
   total: number;
@@ -42,13 +44,28 @@ export function VisitsView({
   hospitals: { id: number; code: string; name: string }[];
   canCreate: boolean;
   emergencyOnly: string;
+  category?: string;
 }) {
   const router = useRouter();
   const params = useSearchParams();
+  const [searchInput, setSearchInput] = useState(search);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
   const go = (p: number) => {
     const sp = new URLSearchParams(params.toString());
     sp.set("page", String(p));
+    router.push(`/dashboard/visits?${sp.toString()}`);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const sp = new URLSearchParams(params.toString());
+    if (searchInput.trim()) {
+      sp.set("search", searchInput.trim());
+    } else {
+      sp.delete("search");
+    }
+    sp.set("page", "1");
     router.push(`/dashboard/visits?${sp.toString()}`);
   };
 
@@ -70,57 +87,113 @@ export function VisitsView({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-end justify-between gap-3"><form className="flex flex-wrap items-end gap-3" method="get">
-        <div>
-          <label className="text-xs text-gray-600">Search</label>
-          <Input name="search" defaultValue={search} placeholder="Name, CNIC, Visit No..." className="w-56" />
+      {/* Operational Category Filter Tabs: All | Shuhada | Ghazis */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/90 bg-white p-2.5 shadow-2xs">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 pl-1">
+            Category Filter:
+          </span>
+          <div className="inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200">
+            {[
+              { id: "all", label: "All Facilitation Visits" },
+              { id: "shuhada", label: "Shuhada Families" },
+              { id: "ghazi", label: "🎖️ Derajat Ghazis" },
+            ].map((tab) => {
+              const active = (category || "all") === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => {
+                    const sp = new URLSearchParams(params.toString());
+                    if (tab.id === "all") sp.delete("category");
+                    else sp.set("category", tab.id);
+                    sp.set("page", "1");
+                    router.push(`/dashboard/visits?${sp.toString()}`);
+                  }}
+                  className={`rounded-md px-3 py-1.5 text-xs font-bold transition-all ${
+                    active
+                      ? tab.id === "ghazi"
+                        ? "bg-amber-600 text-white shadow-xs"
+                        : "bg-[#01411c] text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
-        <div>
-          <label className="text-xs text-gray-600">Hospital</label>
-          <Select defaultValue={hospitalId} onValueChange={(v) => { const sp = new URLSearchParams(params.toString()); sp.set("hospitalId", v ?? "all"); router.push(`/dashboard/visits?${sp}`); }}>
-            <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Hospitals</SelectItem>
-              {hospitals.map((h) => (
-                <SelectItem key={h.id} value={String(h.id)}>{h.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="text-xs font-semibold text-slate-500 pr-1">
+          {category === "ghazi"
+            ? "Showing Ghazis visits records"
+            : category === "shuhada"
+            ? "Showing Shuhada families visits"
+            : "Showing all visits"}
         </div>
-        <div>
-          <label className="text-xs text-gray-600">Emergency Only</label>
-          <Select defaultValue={emergencyOnly} onValueChange={(v) => { const sp = new URLSearchParams(params.toString()); sp.set("emergency", v ?? ""); router.push(`/dashboard/visits?${sp}`); }}>
-            <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All</SelectItem>
-              <SelectItem value="true">Emergency</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <Button type="submit" variant="outline">Apply</Button>
-      </form><ExportExcelButton filename="dsfhi-visits" rows={rows.map((row) => ({ visitNo: row.visitNo, dateTime: row.dateTime, beneficiary: row.beneficiaryName, familyRegistrationNo: row.familyRegistrationNo, healthCardNo: row.healthCardNo, hospital: row.hospitalCode, emergency: row.isEmergency, status: row.finalStatus ?? "In progress" }))} /></div>
+      </div>
 
-      <div className="hidden overflow-x-auto rounded-xl border bg-white shadow-sm md:block">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <form onSubmit={handleSearch} className="flex flex-wrap items-end gap-3">
+          <div>
+            <label className="text-xs text-gray-600">Search</label>
+            <Input
+              name="search"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder={category === "ghazi" ? "Ghazi Name, CNIC, Visit No..." : "Name, CNIC, Visit No..."}
+              className="w-56"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-gray-600">Hospital</label>
+            <Select defaultValue={hospitalId} onValueChange={(v) => { const sp = new URLSearchParams(params.toString()); sp.set("hospitalId", v ?? "all"); router.push(`/dashboard/visits?${sp}`); }}>
+              <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Hospitals</SelectItem>
+                {hospitals.map((h) => (
+                  <SelectItem key={h.id} value={String(h.id)}>{h.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-xs text-gray-600">Emergency Only</label>
+            <Select defaultValue={emergencyOnly} onValueChange={(v) => { const sp = new URLSearchParams(params.toString()); sp.set("emergency", v ?? ""); router.push(`/dashboard/visits?${sp}`); }}>
+              <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All</SelectItem>
+                <SelectItem value="true">Emergency</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button type="submit" variant="outline">Apply</Button>
+        </form>
+        <ExportExcelButton filename="dsfhi-visits" rows={rows.map((row) => ({ visitNo: row.visitNo, dateTime: row.dateTime, beneficiary: row.beneficiaryName, familyRegistrationNo: row.familyRegistrationNo, healthCardNo: row.healthCardNo, hospital: row.hospitalCode, emergency: row.isEmergency, status: row.finalStatus ?? "In progress" }))} />
+      </div>
+
+      <div className="custom-scrollbar hidden overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-xs md:block">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b bg-slate-50 text-left text-gray-600">
-              <th className="px-4 py-2">Visit No</th>
-              <th className="px-4 py-2">Date</th>
-              <th className="px-4 py-2">Beneficiary</th>
-              <th className="px-4 py-2">Family Reg</th>
-              <th className="px-4 py-2">Hospital</th>
-              <th className="px-4 py-2">Type</th>
-              <th className="px-4 py-2">Status</th>
+            <tr className="border-b bg-[#01411c] text-left text-white">
+              <th className="px-4 py-3 text-white font-bold text-xs uppercase tracking-wider">Visit No</th>
+              <th className="px-4 py-3 text-white font-bold text-xs uppercase tracking-wider">Date</th>
+              <th className="px-4 py-3 text-white font-bold text-xs uppercase tracking-wider">{category === "ghazi" ? "Ghazi / Beneficiary" : "Beneficiary"}</th>
+              <th className="px-4 py-3 text-white font-bold text-xs uppercase tracking-wider">Family Reg</th>
+              <th className="px-4 py-3 text-white font-bold text-xs uppercase tracking-wider">Hospital</th>
+              <th className="px-4 py-3 text-white font-bold text-xs uppercase tracking-wider">Type</th>
+              <th className="px-4 py-3 text-white font-bold text-xs uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((v) => (
-              <tr key={v.id} className="border-b last:border-0 hover:bg-slate-50">
-                <td className="px-4 py-2"><Link className="text-blue-700 hover:underline" href={`/dashboard/visits/${v.id}`}>{v.visitNo}</Link></td>
-                <td className="px-4 py-2">{new Date(v.dateTime).toLocaleString()}</td>
-                <td className="px-4 py-2">{v.beneficiaryName}</td>
-                <td className="px-4 py-2">{v.familyRegistrationNo}</td>
-                <td className="px-4 py-2">{v.hospitalCode}</td>
+              <tr key={v.id} className="border-b border-slate-100 last:border-0 hover:bg-emerald-50/50 transition-colors">
+                <td className="px-4 py-2 font-mono font-semibold"><Link className="text-[#01411c] hover:underline" href={`/dashboard/visits/${v.id}`}>{v.visitNo}</Link></td>
+                <td className="px-4 py-2 text-xs text-slate-600">{new Date(v.dateTime).toLocaleString()}</td>
+                <td className="px-4 py-2 font-medium text-slate-900">{v.beneficiaryName}</td>
+                <td className="px-4 py-2 font-mono text-xs text-slate-700">{v.familyRegistrationNo}</td>
+                <td className="px-4 py-2 text-xs font-semibold text-slate-700">{v.hospitalCode}</td>
                 <td className="px-4 py-2">{v.isEmergency ? <Badge className="bg-red-600">EMERGENCY</Badge> : <Badge variant="secondary">Routine</Badge>}</td>
                 <td className="px-4 py-2">{v.finalStatus ?? "In progress"}</td>
               </tr>

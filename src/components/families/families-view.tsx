@@ -99,6 +99,7 @@ export function FamiliesView({
   status,
   canCreate,
   error,
+  category = "all",
 }: {
   rows: FamilyListRow[];
   total: number;
@@ -108,6 +109,7 @@ export function FamiliesView({
   status: string;
   canCreate: boolean;
   error?: string;
+  category?: string;
 }) {
   const router = useRouter();
   const [searchInput, setSearchInput] = useState(search);
@@ -117,15 +119,17 @@ export function FamiliesView({
   const fromRecord = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const toRecord = Math.min(page * pageSize, total);
 
-  const makeQueryString = (overrides: { page?: number; pageSize?: number; search?: string; status?: string }) => {
+  const makeQueryString = (overrides: { page?: number; pageSize?: number; search?: string; status?: string; category?: string }) => {
     const p = overrides.page !== undefined ? overrides.page : page;
     const ps = overrides.pageSize !== undefined ? overrides.pageSize : pageSize;
     const s = overrides.search !== undefined ? overrides.search : search;
     const st = overrides.status !== undefined ? overrides.status : status;
+    const cat = overrides.category !== undefined ? overrides.category : category;
 
     const params = new URLSearchParams();
     if (s.trim()) params.set("search", s.trim());
     if (st && st !== "all") params.set("status", st);
+    if (cat && cat !== "all") params.set("category", cat);
     if (ps !== 10) params.set("pageSize", String(ps));
     if (p > 1) params.set("page", String(p));
 
@@ -164,20 +168,65 @@ export function FamiliesView({
 
   return (
     <div className="space-y-5">
+      {/* Category Filter Tabs: All | Shuhada | Ghazis */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/90 bg-white p-2.5 shadow-2xs">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 pl-1">
+            Registry Category:
+          </span>
+          <div className="inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200">
+            {[
+              { id: "all", label: "All Registries" },
+              { id: "shuhada", label: "Shuhada Families" },
+              { id: "ghazi", label: "🎖️ Derajat Ghazis" },
+            ].map((tab) => {
+              const active = (category || "all") === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => {
+                    router.push(makeQueryString({ category: tab.id, page: 1 }));
+                  }}
+                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold transition-all ${
+                    active
+                      ? tab.id === "ghazi"
+                        ? "bg-amber-600 text-white shadow-xs"
+                        : "bg-[#01411c] text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <span className="text-xs font-semibold text-slate-500 pr-1">
+          {category === "ghazi"
+            ? "🎖️ Showing Derajat Ghazis Directory"
+            : category === "shuhada"
+            ? "🛡️ Showing Shuhada Families Database"
+            : `Showing all records (${total})`}
+        </span>
+      </div>
+
       {/* Page Header */}
       <div className="relative overflow-hidden rounded-2xl border-l-4 border-emerald-400 bg-gradient-to-r from-blue-950 via-slate-900 to-blue-950 p-6 text-white shadow-sm">
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
               <span className="rounded-sm bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-emerald-300 border border-emerald-500/30">
-                Official Registry · Annexure-A
+                {category === "ghazi" ? "🎖️ Ghazis Directory · Annexure-A" : "Official Registry · Annexure-A"}
               </span>
             </div>
             <h1 className="mt-1 font-heading text-xl sm:text-2xl font-bold tracking-tight text-white">
-              Shuhada Families Database
+              {category === "ghazi" ? "Derajat Ghazis & Veterans Directory" : "Shuhada Families Database"}
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-blue-100/80 max-w-xl">
-              One unified digital family registry connecting Shuhada families across DHQ Hospital, Mufti Mehmood Memorial Hospital, and Women & Children Hospital.
+              {category === "ghazi"
+                ? "Unified digital registry for wounded, disabled, and blast-surviving personnel from Police, Army, Levies, and FC across the 3 network teaching hospitals."
+                : "One unified digital family registry connecting Shuhada families across DHQ Hospital, Mufti Mehmood Memorial Hospital, and Women & Children Hospital."}
             </p>
           </div>
 
@@ -186,7 +235,7 @@ export function FamiliesView({
               <Link href="/dashboard/families/new">
                 <Button className="h-9 gap-1.5 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-xs">
                   <Plus className="size-4" />
-                  Register New Family
+                  {category === "ghazi" ? "Register New Ghazi" : "Register New Family"}
                 </Button>
               </Link>
             )}
@@ -219,7 +268,7 @@ export function FamiliesView({
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Search by Shaheed name, CNIC, Reg. No., or Card No..."
+                placeholder={category === "ghazi" ? "Search by Ghazi name, CNIC, Reg. No., or Card No..." : "Search by Shaheed name, CNIC, Reg. No., or Card No..."}
                 className="h-9.5 pl-9 pr-8 text-xs sm:text-sm rounded-xl border-slate-200 focus-visible:ring-blue-600"
               />
               {searchInput && (
@@ -232,7 +281,7 @@ export function FamiliesView({
                 </button>
               )}
             </div>
-            <Button type="submit" size="sm" className="h-9.5 px-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
+            <Button type="submit" size="sm" className="h-9.5 px-3.5 bg-[#01411c] hover:bg-emerald-800 text-white font-bold rounded-xl shadow-xs transition-colors">
               Search
             </Button>
           </form>
@@ -329,33 +378,33 @@ export function FamiliesView({
       {/* Main Table (Desktop / Tablet) - Protected against text stretching and data theft */}
       {rows.length > 0 && (
         <>
-          <div className="protect-data select-none hidden md:block overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xs">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[960px] border-collapse text-left text-xs sm:text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                    <th scope="col" className="px-4 py-3.5 w-44">
+          <div className="protect-data select-none hidden md:block rounded-2xl border border-slate-200/90 bg-white shadow-xs w-full max-w-full overflow-hidden">
+            <div className="custom-scrollbar w-full overflow-x-auto max-h-[calc(100vh-260px)] overflow-y-auto">
+              <table className="w-full min-w-[940px] border-collapse text-left text-xs">
+                <thead className="sticky top-0 z-10 shadow-xs">
+                  <tr className="border-b bg-[#01411c] text-white text-[11px] font-bold uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-3.5 w-32 text-white whitespace-nowrap">
                       Family Reg. No.
                     </th>
-                    <th scope="col" className="px-4 py-3.5 min-w-[190px]">
-                      Shaheed Particulars
+                    <th scope="col" className="px-4 py-3.5 w-56 text-white whitespace-nowrap">
+                      {category === "ghazi" ? "Ghazi Particulars" : "Shaheed Particulars"}
                     </th>
-                    <th scope="col" className="px-4 py-3.5 min-w-[200px]">
+                    <th scope="col" className="px-4 py-3.5 w-52 text-white whitespace-nowrap">
                       Primary Contact
                     </th>
-                    <th scope="col" className="px-4 py-3.5 w-24 text-center">
+                    <th scope="col" className="px-3 py-3.5 w-20 text-center text-white whitespace-nowrap">
                       Members
                     </th>
-                    <th scope="col" className="px-4 py-3.5 w-44">
+                    <th scope="col" className="px-4 py-3.5 w-40 text-white whitespace-nowrap">
                       Verification Status
                     </th>
-                    <th scope="col" className="px-4 py-3.5 w-36">
+                    <th scope="col" className="px-3 py-3.5 w-28 text-white whitespace-nowrap">
                       Card Status
                     </th>
-                    <th scope="col" className="px-4 py-3.5 w-32">
+                    <th scope="col" className="px-3 py-3.5 w-28 text-white whitespace-nowrap">
                       Reg. Date
                     </th>
-                    <th scope="col" className="px-4 py-3.5 w-24 text-right">
+                    <th scope="col" className="px-4 py-3.5 w-20 text-right text-white whitespace-nowrap">
                       Action
                     </th>
                   </tr>
@@ -367,6 +416,10 @@ export function FamiliesView({
                     const cardConfig =
                       (f.cardStatus && CARD_STATUS_CONFIG[f.cardStatus]) || null;
                     const VerIcon = verification ? verification.icon : Clock;
+                    const isGhaziRow =
+                      category === "ghazi" ||
+                      f.registrationNo?.includes("GZ") ||
+                      f.registrationNo?.includes("DG");
 
                     return (
                       <tr
@@ -374,32 +427,34 @@ export function FamiliesView({
                         className="group transition-colors hover:bg-blue-50/40"
                       >
                         {/* Registration No & Family Code */}
-                        <td className="px-4 py-3.5">
+                        <td className="px-4 py-3.5 whitespace-nowrap">
                           <div className="flex flex-col gap-1">
                             <span className="inline-block w-fit rounded bg-emerald-100 text-[#01411c] text-[10px] font-mono font-bold px-1.5 py-0.5 border border-emerald-300">
                               Code: #{extractFamilyCode(f)}
                             </span>
                             <Link
                               href={`/dashboard/families/${f.id}`}
-                              className="inline-flex items-center gap-1.5 font-bold font-mono text-xs text-blue-700 hover:text-blue-900 hover:underline"
+                              className="inline-flex items-center gap-1.5 font-bold font-mono text-xs text-[#01411c] hover:text-emerald-800 hover:underline"
                             >
-                              <FileText className="size-3.5 text-blue-500 shrink-0" />
+                              <FileText className="size-3.5 text-emerald-700 shrink-0" />
                               <span>{f.registrationNo}</span>
                             </Link>
                           </div>
                         </td>
 
-                        {/* Shaheed Name */}
+                        {/* Shaheed / Ghazi Name */}
                         <td className="px-4 py-3.5">
                           <div className="flex items-center gap-2">
-                            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">
+                            <span className={`flex size-6 shrink-0 items-center justify-center rounded-full ${isGhaziRow ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"}`}>
                               <Award className="size-3.5" />
                             </span>
                             <div className="min-w-0">
                               <p className="font-semibold text-slate-900 truncate" title={f.shaheedName}>
                                 {f.shaheedName}
                               </p>
-                              <p className="text-[10px] text-emerald-700 font-medium">Honorable Shaheed</p>
+                              <p className={`text-[10px] font-medium ${isGhaziRow ? "text-amber-700" : "text-emerald-700"}`}>
+                                {isGhaziRow ? "Honorable Ghazi Veteran" : "Honorable Shaheed"}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -417,7 +472,7 @@ export function FamiliesView({
                         </td>
 
                         {/* Members count */}
-                        <td className="px-4 py-3.5 text-center">
+                        <td className="px-3 py-3.5 text-center">
                           <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
                             <Users className="size-3 text-slate-500" />
                             {f.membersCount}
@@ -425,12 +480,12 @@ export function FamiliesView({
                         </td>
 
                         {/* Verification Status */}
-                        <td className="px-4 py-3.5">
+                        <td className="px-4 py-3.5 whitespace-nowrap">
                           {verification ? (
                             <span
-                              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium whitespace-nowrap ${verification.badgeClass}`}
+                              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap ${verification.badgeClass}`}
                             >
-                              <VerIcon className="size-3.5 shrink-0" />
+                              <VerIcon className="size-3 shrink-0" />
                               <span>{verification.label}</span>
                             </span>
                           ) : (
@@ -441,7 +496,7 @@ export function FamiliesView({
                         </td>
 
                         {/* Card Status */}
-                        <td className="px-4 py-3.5">
+                        <td className="px-4 py-3.5 whitespace-nowrap">
                           {cardConfig ? (
                             <span
                               className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap shadow-2xs ${cardConfig.badgeClass}`}
@@ -466,7 +521,7 @@ export function FamiliesView({
                         </td>
 
                         {/* Action Link */}
-                        <td className="px-4 py-3.5 text-right">
+                        <td className="px-4 py-3.5 text-right whitespace-nowrap">
                           <Link
                             href={`/dashboard/families/${f.id}`}
                             className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 transition-colors shadow-2xs"
@@ -491,6 +546,10 @@ export function FamiliesView({
               const cardConfig =
                 (f.cardStatus && CARD_STATUS_CONFIG[f.cardStatus]) || null;
               const VerIcon = verification ? verification.icon : Clock;
+              const isGhaziRowMobile =
+                category === "ghazi" ||
+                f.registrationNo?.includes("GZ") ||
+                f.registrationNo?.includes("DG");
 
               return (
                 <div
@@ -515,10 +574,15 @@ export function FamiliesView({
 
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">
+                      <span className={`flex size-5 shrink-0 items-center justify-center rounded-full ${isGhaziRowMobile ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"}`}>
                         <Award className="size-3" />
                       </span>
                       <p className="font-semibold text-sm text-slate-900 truncate">{f.shaheedName}</p>
+                      {isGhaziRowMobile && (
+                        <span className="rounded bg-amber-100 px-1.5 py-0.2 text-[9px] font-bold text-amber-800">
+                          Ghazi
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-slate-600 pl-7">
                       Contact: <strong className="text-slate-800">{f.contactName}</strong> ·{" "}

@@ -24,6 +24,7 @@ export const dict: Record<string, { en: string; ur: string }> = {
   verify: { en: "Verify Card", ur: "کارڈ تصدیق" },
   about: { en: "About", ur: "تعارف" },
   contact: { en: "Contact", ur: "رابطہ" },
+  info: { en: "Information", ur: "معلومات" },
   verifyCardCta: { en: "Verify Card", ur: "کارڈ تصدیق" },
   staffLogin: { en: "Staff Portal", ur: "عملہ پورٹل" },
   oneFamilyRecord: {
@@ -37,6 +38,14 @@ export const dict: Record<string, { en: string; ur: string }> = {
   grievanceFeedback: {
     en: "Grievance and Feedback",
     ur: "شکایت اور رائے",
+  },
+  ghazis: {
+    en: "Derajat Ghazis",
+    ur: "غازیانِ ڈیرہ جات",
+  },
+  ghazisGuide: {
+    en: "Ghazis Guide",
+    ur: "غازی گائیڈ",
   },
 };
 

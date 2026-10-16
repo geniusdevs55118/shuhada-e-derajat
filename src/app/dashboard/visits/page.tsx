@@ -3,32 +3,52 @@ import { getCurrentUser } from "@/lib/auth";
 import { can, hospitalScope } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import { VisitsView, type VisitRow } from "@/components/visits/visits-view";
-
 export const instant = false;
-
-export default async function VisitsPage({ searchParams }: { searchParams: Promise<{ search?: string; hospitalId?: string; page?: string; emergency?: string }> }) {
+export default async function VisitsPage({ searchParams }: { searchParams: Promise<{ search?: string; hospitalId?: string; page?: string; emergency?: string; category?: string }> }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
   const session = { id: user.id, role: user.role, hospitalId: user.hospitalId };
   if (!can(session, "visit", "read")) redirect("/dashboard");
-
   const params = await searchParams;
   const search = params.search?.trim() ?? "";
   const hospitalId = params.hospitalId ?? "all";
   const emergency = params.emergency ?? "";
+  const category = params.category ?? "all";
   const page = Math.max(1, Number(params.page ?? 1) || 1);
   const pageSize = 10;
-
-  const where: Record<string, unknown> = { ...hospitalScope(session, "visit") };
-  if (hospitalId !== "all") where.hospitalId = Number(hospitalId);
-  if (search) {
-    where.OR = [
-      { visitNo: { contains: search } },
-      { beneficiaryName: { contains: search } },
-      { beneficiaryCnicBForm: { contains: search } },
-      { familyRegistrationNo: { contains: search } },
-    ];
+  const andConditions: Record<string, unknown>[] = [];
+  const scope = hospitalScope(session, "visit");
+  if (Object.keys(scope).length > 0) andConditions.push(scope);
+  if (hospitalId !== "all") andConditions.push({ hospitalId: Number(hospitalId) });
+  if (category === "ghazi") {
+    andConditions.push({
+      OR: [
+        { familyRegistrationNo: { contains: "GZ" } },
+        { healthCardNo: { contains: "DG" } },
+        { natureOther: { contains: "Ghazi" } },
+      ],
+    });
+  } else if (category === "shuhada") {
+    andConditions.push({
+      NOT: [
+        { familyRegistrationNo: { contains: "GZ" } },
+        { healthCardNo: { contains: "DG" } },
+      ],
+    });
   }
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        { visitNo: { contains: search } },
+        { beneficiaryName: { contains: search } },
+        { beneficiaryCnicBForm: { contains: search } },
+        { familyRegistrationNo: { contains: search } },
+      ],
+    });
+  }
+
+  const where: Record<string, unknown> = andConditions.length > 0 ? { AND: andConditions } : {};
 
   const [total, visits] = await Promise.all([
     prisma.visit.count({ where }),
@@ -67,6 +87,7 @@ export default async function VisitsPage({ searchParams }: { searchParams: Promi
       hospitals={allHospitals}
       canCreate={can(session, "visit", "create")}
       emergencyOnly={emergency}
+      category={category}
     />
   );
 }
