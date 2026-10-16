@@ -53,6 +53,15 @@ const s = StyleSheet.create({
     padding: 4,
     backgroundColor: CARD_BG,
     justifyContent: "space-between",
+    position: "relative",
+  },
+  cardBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: 232.65,
+    height: 143.01,
+    borderRadius: 3.5,
   },
 
   // FRONT: Header
@@ -349,6 +358,7 @@ export function HealthCardPdf({
   const signature = getLocalAssetBase64("card-signature.png");
   const fallbackPhoto = getLocalAssetBase64("card-photo-placeholder.png");
   const urduTitleImg = getLocalAssetBase64("card-urdu-title.png");
+  const cardBgTemplate = getLocalAssetBase64("card-bg-template.png");
 
   const effectivePhoto = photoSrc || fallbackPhoto;
 
@@ -360,6 +370,10 @@ export function HealthCardPdf({
          ======================================================== */}
       <Page size={[CARD_WIDTH, CARD_HEIGHT]} style={s.page}>
         <View style={s.cardFrame}>
+          {cardBgTemplate ? (
+            // eslint-disable-next-line jsx-a11y/alt-text
+            <Image src={cardBgTemplate} style={s.cardBackground} />
+          ) : null}
           {/* Header */}
           <View style={s.frontHeader}>
             {kpkEmblem ? (
@@ -467,6 +481,10 @@ export function HealthCardPdf({
          ======================================================== */}
       <Page size={[CARD_WIDTH, CARD_HEIGHT]} style={s.page}>
         <View style={s.cardFrame}>
+          {cardBgTemplate ? (
+            // eslint-disable-next-line jsx-a11y/alt-text
+            <Image src={cardBgTemplate} style={s.cardBackground} />
+          ) : null}
           {/* Header */}
           <View style={s.backHeader}>
             {dhqEmblem ? (
