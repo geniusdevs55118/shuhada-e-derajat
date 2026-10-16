@@ -25,6 +25,13 @@ export const metadata: Metadata = {
     template: "%s | DSFHI",
   },
   description: "Shuhada-e-Derajat Family Healthcare Initiative",
+  icons: {
+    icon: [
+      { url: "/images/logo.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/images/logo.svg",
+    apple: "/images/logo.svg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
