@@ -18,7 +18,7 @@ export function MonthlyReportAnnexureDPdf({ report }: { report: Record<string, u
         <PdfHeader title={`Annexure-D: Monthly Monitoring, Evaluation & Facilitation Report - ${r.month}/${r.year}`} />
         <Row label="Report No" value={r.reportNo} />
         <Row label="Hospital" value={r.isConsolidated ? "Consolidated (All Hospitals)" : r.hospitalName ?? String(r.hospitalId ?? "")} />
-        <Row label="Health Desk Focal Person" value={r.healthDeskFocalPerson} />
+        <Row label="Help Desk Representative" value={r.healthDeskFocalPerson} />
         <SectionTitle>B. Registration / Verification</SectionTitle>
         <Row label="Total Families Registered" value={sb.totalFamiliesRegistered != null ? String(sb.totalFamiliesRegistered) : null} />
         <Row label="New This Month" value={sb.newFamiliesThisMonth != null ? String(sb.newFamiliesThisMonth) : null} />
@@ -82,7 +82,7 @@ export function MonthlyReportAnnexureDPdf({ report }: { report: Record<string, u
         <Row label="Chairman Comments" value={r.chairmanComments} />
         <Row label="Director Directions" value={r.directorDirectionsSignature} />
         <View style={pdfStyles.sigRow}>
-          <Text style={pdfStyles.sig}>Health Desk Focal Person</Text>
+          <Text style={pdfStyles.sig}>Help Desk Representative</Text>
           <Text style={pdfStyles.sig}>Hospital Representative</Text>
           <Text style={pdfStyles.sig}>Hospital Director</Text>
         </View>

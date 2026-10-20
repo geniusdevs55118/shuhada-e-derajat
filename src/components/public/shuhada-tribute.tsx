@@ -21,22 +21,23 @@ export function ShuhadaTribute() {
               <Star className="size-3.5 fill-amber-300 text-amber-300" />
             </div>
 
+            {/* English Official Quote from Poster */}
+            <div className="max-w-3xl mx-auto">
+              <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-300 leading-snug drop-shadow-md">
+                &ldquo;A Shahid&apos;s death is the nation&apos;s life;
+                <br className="hidden sm:inline" /> A Shahid&apos;s blood is the nation&apos;s zakat.&rdquo;
+              </p>
+              <p className="mt-2 text-xs sm:text-sm font-semibold tracking-wide text-emerald-200">
+                — Maulana Abdul Majeed Salik —
+              </p>
+            </div>
+
             {/* Urdu Couplet from Official Poster */}
             <p
               dir="rtl"
-              className="font-serif text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-300 leading-relaxed drop-shadow-md"
+              className="mt-4 font-serif text-lg sm:text-xl font-bold text-amber-200/90 leading-relaxed"
             >
-              شہید کی جو موت ہے، وہ قوم کی حیات ہے
-              <br />
-              لہو جو ہے شہید کا، وہ قوم کی زکوٰۃ ہے
-            </p>
-            <p className="mt-2 text-xs sm:text-sm font-semibold text-emerald-200">
-              — مولانا عبدالمجید سالک —
-            </p>
-
-            {/* English Translation */}
-            <p className="mt-3 text-sm sm:text-base md:text-lg italic font-medium text-slate-100 max-w-2xl mx-auto">
-              &ldquo;A martyr&apos;s death is the nation&apos;s life; A martyr&apos;s blood is the nation&apos;s zakat.&rdquo;
+              شہید کی جو موت ہے، وہ قوم کی حیات ہے • لہو جو ہے شہید کا، وہ قوم کی زکوٰۃ ہے
             </p>
 
             {/* Golden Ribbon Quote */}

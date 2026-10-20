@@ -13,11 +13,12 @@ import {
 } from "lucide-react";
 
 const MEMBERS = [
+  { role: "Patron / Executive", title: "Hospital Director", dept: "Hospital Chief Executive Leadership" },
   { role: "Convener", title: "Additional Hospital Director", dept: "Executive Administration" },
-  { role: "Member", title: "Medical Superintendent (DHQ)", dept: "Clinical Hospital Leadership" },
-  { role: "Member", title: "Medical Superintendent (MMMTH)", dept: "Clinical Hospital Leadership" },
-  { role: "Member", title: "Medical Superintendent (DWCH)", dept: "Maternal & Child Hospital Leadership" },
-  { role: "Focal Person", title: "Family Health Desk Incharge", dept: "Beneficiary Care Coordination" },
+  { role: "Member", title: "Medical Director (DHQ)", dept: "Clinical Hospital Leadership" },
+  { role: "Member", title: "Medical Director (MMMTH)", dept: "Clinical Hospital Leadership" },
+  { role: "Member", title: "Medical Director (DWCH)", dept: "Maternal & Child Hospital Leadership" },
+  { role: "Focal Person", title: "Help Desk Representative", dept: "Beneficiary Care Coordination" },
   { role: "Member", title: "Administration & Finance Representative", dept: "Institutional Accounts" },
   { role: "Member", title: "Sehat Card Plus Institutional Officer", dept: "Government Financing Desk" },
   { role: "Member", title: "Director / Incharge Pharmacy", dept: "Medicines & Formulary" },

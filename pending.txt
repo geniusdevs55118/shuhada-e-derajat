@@ -1,9 +1,3 @@
-# TODO / PENDING FEATURES LIST
-
-1. In-Browser Excel Bulk Import
-   - Add an "Upload Excel" button on the /dashboard/families page.
-   - Allow uploading Excel sheets (same format as 'Shuhada e DIKhan Excell File.xlsx') to automatically parse and insert/update Shuhada and Warsa directly from the dashboard without using the command line.
-
 2. Incomplete / Missing Data Filter
    - Add an "Incomplete / Needs Attention" filter tab on /dashboard/families.
    - 1-click filter to display all families with missing Warsa CNIC, empty mobile numbers, or missing required fields so staff can update them easily.

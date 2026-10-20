@@ -66,7 +66,7 @@ export function VisitAnnexureBPdf({ visit }: { visit: Record<string, unknown> })
         <Row label="Officer" value={v.certOfficer} />
         <Row label="Designation" value={v.certDesignation} />
         <View style={pdfStyles.sigRow}>
-          <Text style={pdfStyles.sig}>Health Desk Focal Person</Text>
+          <Text style={pdfStyles.sig}>Help Desk Representative</Text>
           <Text style={pdfStyles.sig}>Beneficiary</Text>
           <Text style={pdfStyles.sig}>Hospital Representative</Text>
         </View>

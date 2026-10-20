@@ -12,8 +12,8 @@ const VERIFICATION_STATUS_MAP: Record<string, VerificationStatus> = {
 };
 
 const VERIFIED_BY_DESIGNATION: Record<string, string> = {
-  health_desk_officer: "Focal Person Health Desk / Family Facilitation",
-  medical_superintendent: "Medical Superintendent",
+  health_desk_officer: "Help Desk Representative",
+  medical_superintendent: "Medical Director",
   hospital_director: "Hospital Director",
   additional_director: "Additional Hospital Director",
   super_admin: "Super Admin",
@@ -48,7 +48,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       verificationAuthority: values.verificationAuthority,
       verificationRemarks: values.verificationRemarks || null,
       verifiedBy: session.email ?? "unknown",
-      verifiedByDesignation: VERIFIED_BY_DESIGNATION[session.role] ?? "Focal Person Health Desk / Family Facilitation",
+      verifiedByDesignation: VERIFIED_BY_DESIGNATION[session.role] ?? "Help Desk Representative",
       verifiedSignatureDate,
       // Editing Section E clears Section I authorization
       authorizationDecision: null,

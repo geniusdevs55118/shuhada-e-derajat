@@ -93,7 +93,7 @@ const SERVICE_POINTS = [
   "Sehat Card Plus Facilitation Desks",
   "Ambulance Dispatch & Transit",
   "Tertiary Referral Liaison",
-  "Hospital Administration & Medical Superintendent Offices",
+  "Hospital Administration & Medical Director Offices",
 ];
 
 export const metadata = {

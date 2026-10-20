@@ -55,8 +55,8 @@ export function GrievanceAnnexureEPdf({ grievance }: { grievance: Record<string,
         <Row label="Closed By" value={g.closedBy} />
         <Row label="Date" value={g.closureDate} />
         <View style={pdfStyles.sigRow}>
-          <Text style={pdfStyles.sig}>Health Desk Focal Person</Text>
-          <Text style={pdfStyles.sig}>Medical Superintendent</Text>
+          <Text style={pdfStyles.sig}>Help Desk Representative</Text>
+          <Text style={pdfStyles.sig}>Medical Director</Text>
           <Text style={pdfStyles.sig}>Hospital Director</Text>
         </View>
         <PdfFooter />

@@ -324,10 +324,10 @@ const DEMO_USERS: {
   designation: string;
 }[] = [
   { username: "director123", role: "hospital_director", name: "Hospital Director", designation: "Hospital Director" },
-  { username: "ms123", role: "medical_superintendent", hospitalCode: "DHQ", name: "Medical Superintendent", designation: "Medical Superintendent" },
-  { username: "helpdesk123", role: "health_desk_officer", hospitalCode: "DHQ", name: "Health Desk Officer (DHQ)", designation: "Health Desk Focal Person" },
-  { username: "deskmmmth123", role: "health_desk_officer", hospitalCode: "MMMTH", name: "Health Desk Officer (MMMTH)", designation: "Health Desk Focal Person" },
-  { username: "deskwc123", role: "health_desk_officer", hospitalCode: "WC", name: "Health Desk Officer (W&C)", designation: "Health Desk Focal Person" },
+  { username: "ms123", role: "medical_superintendent", hospitalCode: "DHQ", name: "Medical Director", designation: "Medical Director" },
+  { username: "helpdesk123", role: "health_desk_officer", hospitalCode: "DHQ", name: "Help Desk Representative (DHQ)", designation: "Help Desk Representative" },
+  { username: "deskmmmth123", role: "health_desk_officer", hospitalCode: "MMMTH", name: "Help Desk Representative (MMMTH)", designation: "Help Desk Representative" },
+  { username: "deskwc123", role: "health_desk_officer", hospitalCode: "WC", name: "Help Desk Representative (W&C)", designation: "Help Desk Representative" },
   { username: "admin123", role: "admin_finance_rep", name: "Administration & Finance Officer", designation: "Administration / Finance Representative" },
   { username: "sehat123", role: "sehat_card_desk", name: "Sehat Card Plus Officer", designation: "Sehat Card Plus Representative" },
   { username: "pharmacy123", role: "pharmacy_rep", name: "Pharmacy Representative", designation: "Pharmacy Representative" },

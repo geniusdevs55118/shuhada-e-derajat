@@ -49,9 +49,9 @@ export function getMenuForRole(role: Role, hospitalId: number | null): MenuEntry
 export const ROLE_LABELS: Record<Role, string> = {
   super_admin: "Super Admin",
   hospital_director: "Hospital Director",
-  additional_director: "Addl. Hospital Director",
-  medical_superintendent: "Medical Superintendent",
-  health_desk_officer: "Health Desk Focal",
+  additional_director: "Additional Hospital Director",
+  medical_superintendent: "Medical Director",
+  health_desk_officer: "Help Desk Representative",
   sehat_card_desk: "Sehat Card Plus Desk",
   pharmacy_rep: "Pharmacy",
   diagnostics_rep: "Diagnostics / Radiology",

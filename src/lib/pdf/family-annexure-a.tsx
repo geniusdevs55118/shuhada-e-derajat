@@ -64,7 +64,7 @@ export function FamilyRegistrationPdf({ family }: { family: any }) {
         <Row label="Date" value={family.authorizationDate ? new Date(family.authorizationDate).toLocaleDateString() : null} />
 
         <View style={pdfStyles.sigRow}>
-          <Text style={pdfStyles.sig}>Health Desk Focal Person</Text>
+          <Text style={pdfStyles.sig}>Help Desk Representative</Text>
           <Text style={pdfStyles.sig}>Additional Hospital Director</Text>
           <Text style={pdfStyles.sig}>Applicant / Next of Kin</Text>
         </View>
