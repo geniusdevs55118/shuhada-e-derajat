@@ -69,11 +69,11 @@ function HealthCardsContent() {
     <div className="space-y-4">
       {/* Category Filter Tabs: All | Shuhada | Ghazis */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/90 bg-white p-2.5 shadow-2xs">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-500 pl-1">
             Card Category:
           </span>
-          <div className="inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200">
+          <div className="grid grid-cols-3 gap-1 sm:gap-0 w-full sm:w-auto sm:inline-flex rounded-lg bg-slate-100 p-1 border border-slate-200">
             {[
               { id: "all", label: "All Health Cards" },
               { id: "shuhada", label: "Shuhada Cards" },
@@ -88,7 +88,7 @@ function HealthCardsContent() {
                     setCategory(tab.id);
                     setPage(1);
                   }}
-                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold transition-all ${
+                  className={`flex items-center justify-center text-center leading-tight gap-1.5 rounded-md px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold transition-all ${
                     active
                       ? tab.id === "ghazi"
                         ? "bg-amber-600 text-white shadow-xs"
