@@ -136,16 +136,16 @@ export default function HospitalsPage() {
       </section>
 
       {/* Hospital Campus Profiles */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 space-y-16">
+      <section className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-8 sm:space-y-16">
         {HOSPITALS.map((hospital, idx) => (
           <div
             key={hospital.code}
             id={hospital.anchor}
-            className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
+            className="overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md w-full max-w-full min-w-0"
           >
-            <div className="grid lg:grid-cols-12 gap-0">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
               {/* Hospital Photo */}
-              <div className="relative aspect-[16/10] lg:aspect-auto lg:col-span-5 bg-slate-950 min-h-[280px]">
+              <div className="relative aspect-[16/10] lg:aspect-auto lg:col-span-5 bg-slate-950 min-h-[220px] sm:min-h-[280px]">
                 <Image
                   src={hospital.image}
                   alt={hospital.name}
@@ -155,77 +155,77 @@ export default function HospitalsPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent lg:hidden" />
                 
-                <div className="absolute top-4 left-4">
-                  <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-950/90 px-3 py-1.5 text-xs font-extrabold uppercase tracking-widest text-emerald-300 backdrop-blur-md border border-emerald-500/30">
-                    <ShieldCheck className="size-4 text-emerald-400" />
+                <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                  <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-950/90 px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-extrabold uppercase tracking-widest text-emerald-300 backdrop-blur-md border border-emerald-500/30">
+                    <ShieldCheck className="size-3.5 sm:size-4 text-emerald-400" />
                     {hospital.code} Campus
                   </span>
                 </div>
 
-                <div className="absolute bottom-4 left-4 flex items-center gap-1.5 text-xs font-semibold text-white">
-                  <MapPin className="size-4 text-emerald-400" />
+                <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-white">
+                  <MapPin className="size-3.5 sm:size-4 text-emerald-400" />
                   <span>{hospital.city}</span>
                 </div>
               </div>
 
               {/* Hospital Details */}
-              <div className="p-6 sm:p-8 lg:col-span-7 flex flex-col justify-between">
+              <div className="p-4 sm:p-6 lg:p-8 lg:col-span-7 flex flex-col justify-between min-w-0">
                 <div>
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-xs font-bold uppercase tracking-widest text-emerald-800">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-emerald-800">
                       Campus 0{idx + 1}
                     </span>
-                    <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 border border-emerald-200">
+                    <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] sm:text-xs font-semibold text-emerald-800 border border-emerald-200">
                       Participating Hospital
                     </span>
                   </div>
 
-                  <h3 className="mt-2 font-heading text-2xl font-bold text-slate-900 sm:text-3xl">
+                  <h3 className="mt-2 font-heading text-lg sm:text-2xl lg:text-3xl font-bold text-slate-900 break-words leading-tight sm:leading-snug">
                     {hospital.name}
                   </h3>
-                  <p dir="rtl" className="mt-1 font-serif text-sm font-semibold text-emerald-800">
+                  <p dir="rtl" className="mt-1 font-serif text-xs sm:text-sm font-semibold text-emerald-800 break-words leading-relaxed">
                     {hospital.urduName}
                   </p>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <p className="mt-1 text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500 break-words leading-normal">
                     {hospital.code === "DWCH" ? "Maternal, women and child healthcare." : hospital.type}
                   </p>
 
                   {/* 24/7 Emergency Indicator */}
-                  <div className="mt-4 flex items-center gap-2 rounded-xl bg-amber-50 p-3 text-xs font-medium text-amber-950 border border-amber-200">
-                    <Clock className="size-4 text-amber-700 shrink-0" />
-                    <span>{hospital.emergency}</span>
+                  <div className="mt-3.5 sm:mt-4 flex items-start sm:items-center gap-2 rounded-xl bg-amber-50 p-2.5 sm:p-3 text-[11px] sm:text-xs font-medium text-amber-950 border border-amber-200 break-words min-w-0">
+                    <Clock className="size-4 text-amber-700 shrink-0 mt-0.5 sm:mt-0" />
+                    <span className="break-words">{hospital.emergency}</span>
                   </div>
 
                   {/* Shuhada Health Desk Location */}
-                  <div className="mt-3 rounded-xl bg-emerald-50 p-3 text-xs border border-emerald-200">
+                  <div className="mt-2.5 sm:mt-3 rounded-xl bg-emerald-50 p-2.5 sm:p-3 text-[11px] sm:text-xs border border-emerald-200 break-words min-w-0">
                     <div className="flex items-center gap-2 font-bold text-emerald-950">
-                      <ShieldCheck className="size-4 text-emerald-700" />
+                      <ShieldCheck className="size-4 text-emerald-700 shrink-0" />
                       <span>Dedicated Family Health Desk:</span>
                     </div>
-                    <p className="mt-1 text-emerald-900 pl-6">{hospital.healthDesk}</p>
+                    <p className="mt-1 text-emerald-900 pl-6 break-words">{hospital.healthDesk}</p>
                   </div>
 
                   {/* Departments Checklist */}
-                  <div className="mt-6 border-t border-slate-100 pt-4">
-                    <p className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">
+                  <div className="mt-5 sm:mt-6 border-t border-slate-100 pt-3.5 sm:pt-4">
+                    <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5 sm:mb-3">
                       Key Departments & Service Points:
                     </p>
-                    <div className="grid sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
                       {hospital.departments.map((dept) => (
-                        <div key={dept} className="flex items-start gap-2">
+                        <div key={dept} className="flex items-start gap-2 min-w-0">
                           <CheckCircle2 className="size-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>{dept}</span>
+                          <span className="break-words">{dept}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 border-t border-slate-100 pt-4 flex flex-wrap items-center justify-between gap-4">
-                  <span className="text-xs font-medium text-slate-500">{hospital.deskContact}</span>
+                <div className="mt-5 sm:mt-6 border-t border-slate-100 pt-3.5 sm:pt-4 flex flex-wrap items-center justify-between gap-3">
+                  <span className="text-xs font-medium text-slate-500 break-words">{hospital.deskContact}</span>
                   <Link
                     href="/contact"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-600 transition"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-600 transition shrink-0"
                   >
                     <span>Contact Health Desk</span>
                     <ArrowRight className="size-3.5" />

@@ -339,9 +339,9 @@ export function PublicHeader() {
       <div className="bg-[#01411c] text-emerald-100 text-xs border-b border-amber-500/40">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-1 sm:px-6 lg:px-8">
           {/* Left badge */}
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-amber-300 font-serif text-sm">★</span>
-            <span className="font-semibold tracking-wide text-white truncate text-[11px] sm:text-xs">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="text-amber-300 font-serif text-xs sm:text-sm shrink-0">★</span>
+            <span className="font-semibold tracking-wide text-white truncate text-[10px] sm:text-xs">
               <span className="hidden sm:inline">Mufti Mehmood Memorial MTI • </span>
               Shuhada-e-Derajat Family Healthcare Initiative
             </span>

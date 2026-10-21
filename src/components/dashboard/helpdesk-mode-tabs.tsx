@@ -40,27 +40,27 @@ export function HelpdeskModeTabs({ user, counts }: HelpdeskModeTabsProps) {
   return (
     <div className="space-y-5">
       {/* 1. Animated Top Mode Switcher Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200/90 bg-white p-2.5 sm:p-3 shadow-xs">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 rounded-2xl border border-slate-200/90 bg-white p-2.5 sm:p-3 shadow-xs">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-500 hidden sm:inline pl-2">
             Operational Category:
           </span>
-          <div className="relative inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+          <div className="relative grid grid-cols-2 sm:inline-flex w-full sm:w-auto rounded-xl bg-slate-100 p-1 border border-slate-200 gap-1 sm:gap-0">
             {/* Shuhada Tab */}
             <button
               id="btn-tab-shuhada"
               type="button"
               onClick={() => setMode("shuhada")}
-              className={`relative z-10 flex items-center gap-2 rounded-lg px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
+              className={`relative z-10 flex items-center justify-center gap-1.5 sm:gap-2 rounded-lg px-2 sm:px-4 py-2 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-300 cursor-pointer min-w-0 ${
                 mode === "shuhada"
                   ? "bg-[#01411c] text-white shadow-md shadow-[#01411c]/30"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
               }`}
             >
-              <Shield className={`size-4 ${mode === "shuhada" ? "text-amber-300" : "text-slate-500"}`} />
-              <span>Shuhada (شہداء)</span>
+              <Shield className={`size-3.5 sm:size-4 shrink-0 ${mode === "shuhada" ? "text-amber-300" : "text-slate-500"}`} />
+              <span className="text-center leading-tight">Shuhada <span className="block sm:inline">(شہداء)</span></span>
               {mode === "shuhada" && (
-                <span className="rounded-full bg-amber-400 text-slate-950 px-1.5 py-0.2 text-[9px] font-black uppercase">
+                <span className="shrink-0 rounded-full bg-amber-400 text-slate-950 px-1.5 py-0.5 text-[8px] sm:text-[9px] font-black uppercase tracking-wider">
                   Default
                 </span>
               )}
@@ -71,15 +71,15 @@ export function HelpdeskModeTabs({ user, counts }: HelpdeskModeTabsProps) {
               id="btn-tab-ghazi"
               type="button"
               onClick={() => setMode("ghazi")}
-              className={`relative z-10 flex items-center gap-2 rounded-lg px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
+              className={`relative z-10 flex items-center justify-center gap-1.5 sm:gap-2 rounded-lg px-2 sm:px-4 py-2 text-[11px] sm:text-xs md:text-sm font-bold transition-all duration-300 cursor-pointer min-w-0 ${
                 mode === "ghazi"
                   ? "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white shadow-md shadow-amber-700/30"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
               }`}
             >
-              <Award className={`size-4 ${mode === "ghazi" ? "text-amber-300" : "text-amber-600"}`} />
-              <span>Ghazis (غازیانِ وطن)</span>
-              <span className="rounded-full bg-emerald-700 text-emerald-100 px-1.5 py-0.2 text-[9px] font-black uppercase">
+              <Award className={`size-3.5 sm:size-4 shrink-0 ${mode === "ghazi" ? "text-amber-300" : "text-amber-600"}`} />
+              <span className="text-center leading-tight">Ghazis <span className="block sm:inline">(غازیانِ وطن)</span></span>
+              <span className="shrink-0 rounded-full bg-emerald-700 text-emerald-100 px-1.5 py-0.5 text-[8px] sm:text-[9px] font-black uppercase tracking-wider">
                 New
               </span>
             </button>
@@ -87,16 +87,16 @@ export function HelpdeskModeTabs({ user, counts }: HelpdeskModeTabsProps) {
         </div>
 
         {/* Current status tag */}
-        <div className="flex items-center gap-2 pr-1">
-          <span className="hidden md:inline text-xs text-slate-500">Active Desk:</span>
+        <div className="flex items-center justify-between sm:justify-end gap-2 pr-1 w-full sm:w-auto">
+          <span className="text-[11px] sm:text-xs text-slate-500">Active Desk:</span>
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-colors ${
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-colors ${
               mode === "shuhada"
                 ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
                 : "bg-amber-50 text-amber-900 border border-amber-300"
             }`}
           >
-            <span className="size-2 rounded-full animate-pulse bg-current" />
+            <span className="size-1.5 sm:size-2 rounded-full animate-pulse bg-current shrink-0" />
             <span>{mode === "shuhada" ? "Shuhada Families Desk" : "Derajat Ghazis Welfare Desk"}</span>
           </span>
         </div>
@@ -110,10 +110,10 @@ export function HelpdeskModeTabs({ user, counts }: HelpdeskModeTabsProps) {
             : "border-amber-400 bg-gradient-to-r from-[#013817] via-[#064e29] to-[#0f172a]"
         }`}
       >
-        <div className="grid lg:grid-cols-[1fr_20rem] items-stretch">
-          <div className="flex flex-col justify-between p-5 sm:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_20rem] items-stretch">
+          <div className="flex flex-col justify-between p-4 sm:p-6 min-w-0">
             <div>
-              <div className="flex flex-wrap items-center gap-2 mb-2">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2">
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${
                     mode === "shuhada" ? "bg-amber-400 text-slate-950" : "bg-amber-400 text-slate-950"
@@ -121,28 +121,28 @@ export function HelpdeskModeTabs({ user, counts }: HelpdeskModeTabsProps) {
                 >
                   {mode === "shuhada" ? "★ Shuhada Healthcare Portal" : "🎖️ Derajat Ghazis Portal"}
                 </span>
-                <span className="text-xs font-semibold text-emerald-200">
+                <span className="text-[11px] sm:text-xs font-semibold text-emerald-200 break-words">
                   {mode === "shuhada"
                     ? "Mufti Mehmood Memorial MTI • DHQ • DWCH"
                     : "Police • Pakistan Army • Levies • FC Personnel"}
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white transition-all">
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-black tracking-tight text-white transition-all break-words leading-tight">
                 {mode === "shuhada" ? `Welcome, ${user.name}` : `Welcome, ${user.name} (Ghazis Desk)`}
               </h1>
-              <p className="text-xs sm:text-sm text-emerald-100/90 mt-0.5">
+              <p className="text-xs sm:text-sm text-emerald-100/90 mt-0.5 break-words">
                 {user.designation ?? user.role} • {user.hospitalName}
               </p>
             </div>
 
             {/* Poetic Quotation in Urdu & English */}
-            <div className="my-4 rounded-xl border border-amber-400/30 bg-black/30 p-3.5 backdrop-blur-sm transition-all duration-300">
-              <p dir="rtl" className="font-serif text-sm sm:text-base md:text-lg font-bold text-amber-300">
+            <div className="my-3 sm:my-4 rounded-xl border border-amber-400/30 bg-black/30 p-3 sm:p-3.5 backdrop-blur-sm transition-all duration-300">
+              <p dir="rtl" className="font-serif text-xs sm:text-base md:text-lg font-bold text-amber-300 leading-relaxed break-words">
                 {mode === "shuhada"
                   ? "شہید کی جو موت ہے، وہ قوم کی حیات ہے • لہو جو ہے شہید کا، وہ قوم کی زکوٰۃ ہے"
                   : "سلام ان غازیوں کو جن کے جذبوں نے وطن سنبھالا • کٹا کے ہاتھ، کھو کے بازو، وفا کا دیپ جلایا"}
               </p>
-              <p className="mt-1 text-[11px] sm:text-xs text-emerald-100 italic">
+              <p className="mt-1 text-[10px] sm:text-xs text-emerald-100 italic leading-normal break-words">
                 {mode === "shuhada"
                   ? "“Their sacrifice is our enduring responsibility. Honouring the Shuhada by caring for their families.”"
                   : "“Honouring wounded, disabled and blast-surviving heroes who sacrificed limbs and bore scars in service of the nation.”"}

@@ -211,25 +211,25 @@ export function DashboardShell({
       {/* Main View Area */}
       <div className="relative z-10 flex flex-1 flex-col min-w-0 h-full overflow-hidden">
         {/* Subtle Pakistani National Tribute Top Strip - Fixed at top */}
-        <div className="bg-[#01411c] px-3 py-1 text-center text-white border-b border-amber-500/40 flex items-center justify-between text-[11px] shrink-0">
-          <span className="text-amber-300 font-serif">★</span>
-          <span className="font-semibold tracking-wider uppercase text-[10px] sm:text-[11px] text-emerald-100 truncate">
+        <div className="bg-[#01411c] px-2.5 sm:px-3 py-1 text-center text-white border-b border-amber-500/40 flex items-center justify-between text-[11px] shrink-0 gap-2">
+          <span className="text-amber-300 font-serif shrink-0">★</span>
+          <span className="font-semibold tracking-wider uppercase text-[9px] xs:text-[10px] sm:text-[11px] text-emerald-100 truncate min-w-0">
             Shuhada-e-Derajat Family Healthcare Initiative • Honouring Sacrifice Through Care
           </span>
-          <span className="hidden md:inline font-serif text-[11px] text-amber-200" dir="rtl">
+          <span className="hidden md:inline font-serif text-[11px] text-amber-200 shrink-0" dir="rtl">
             شہید کی جو موت ہے، وہ قوم کی حیات ہے
           </span>
-          <span className="text-amber-300 font-serif">★</span>
+          <span className="text-amber-300 font-serif shrink-0">★</span>
         </div>
 
         {/* Top Header - Fixed at top */}
-        <header className="flex flex-wrap items-center justify-between gap-2 border-b bg-white px-3 py-2 sm:px-4 sm:py-2.5 shrink-0 z-10 shadow-xs">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <header className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 border-b bg-white px-2.5 py-1.5 sm:px-4 sm:py-2.5 shrink-0 z-10 shadow-xs">
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
             <Sheet open={open} onOpenChange={setOpen}>
               {open ? null : (
                 <SheetTrigger
                   type="button"
-                  className={`relative inline-flex size-9 cursor-pointer items-center justify-center rounded-[0.375rem] border border-border bg-slate-50 text-blue-950 transition-colors hover:bg-gray-100 md:hidden ${open ? "z-[60]" : "z-0"}`}
+                  className={`relative inline-flex size-8 sm:size-9 cursor-pointer items-center justify-center rounded-[0.375rem] border border-border bg-slate-50 text-blue-950 transition-colors hover:bg-gray-100 md:hidden ${open ? "z-[60]" : "z-0"}`}
                   aria-label={open ? "Close sidebar" : "Open sidebar"}
                   aria-expanded={open}
                 >
@@ -245,12 +245,12 @@ export function DashboardShell({
               Welcome, <strong className="text-gray-900">{user.name}</strong>
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <div className="flex flex-wrap items-center gap-1 sm:gap-2">
             <GlobalSearch />
             <NotificationBell />
-            <Badge variant="secondary" className="rounded-sm text-xs px-2 py-0.5">{user.role}</Badge>
-            <Badge className="rounded-sm bg-[#01411c] text-white text-xs px-2 py-0.5">{user.hospital}</Badge>
-            <Button variant="outline" size="sm" className="h-8 cursor-pointer px-2.5 text-xs" onClick={logout}>
+            <Badge variant="secondary" className="rounded-sm text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5">{user.role}</Badge>
+            <Badge className="rounded-sm bg-[#01411c] text-white text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 shrink-0">{user.hospital}</Badge>
+            <Button variant="outline" size="sm" className="h-7 sm:h-8 cursor-pointer px-2 sm:px-2.5 text-[11px] sm:text-xs shrink-0" onClick={logout}>
               Logout
             </Button>
           </div>

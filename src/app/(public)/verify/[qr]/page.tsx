@@ -193,8 +193,8 @@ function VerifyQrInner({ params }: { params: Promise<{ qr: string }> }) {
                   <span>Authorized Family Beneficiaries</span>
                 </div>
 
-                <div className="overflow-hidden rounded-2xl border border-slate-200">
-                  <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto rounded-2xl border border-slate-200">
+                  <table className="w-full min-w-[480px] text-left text-xs">
                     <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider text-[0.68rem] border-b border-slate-200">
                       <tr>
                         <th className="p-3.5 font-bold">Beneficiary Name</th>
