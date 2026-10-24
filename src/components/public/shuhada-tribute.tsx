@@ -24,8 +24,8 @@ export function ShuhadaTribute() {
             {/* English Official Quote from Poster */}
             <div className="max-w-3xl mx-auto">
               <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-300 leading-snug drop-shadow-md">
-                &ldquo;A Shahid&apos;s death is the nation&apos;s life;
-                <br className="hidden sm:inline" /> A Shahid&apos;s blood is the nation&apos;s zakat.&rdquo;
+                &ldquo;A Shaheed&apos;s death is the nation&apos;s life;
+                <br className="hidden sm:inline" /> A Shaheed&apos;s blood is the nation&apos;s zakat.&rdquo;
               </p>
               <p className="mt-2 text-xs sm:text-sm font-semibold tracking-wide text-emerald-200">
                 — Maulana Abdul Majeed Salik —
