@@ -20,7 +20,7 @@ export function ShuhadaTribute() {
               <span>National Reverence & Sacred Trust</span>
               <Star className="size-3.5 fill-amber-300 text-amber-300" />
             </div>
-
+  
             {/* English Official Quote from Poster */}
             <div className="max-w-3xl mx-auto">
               <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-300 leading-snug drop-shadow-md">

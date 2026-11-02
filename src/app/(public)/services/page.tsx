@@ -258,7 +258,7 @@ export default function ServicesPage() {
       />
 
       {/* Hero Visual Section */}
-      <section className="relative aspect-[16/6] max-h-[24rem] overflow-hidden bg-slate-950">
+      <section className="relative w-full h-56 sm:h-72 md:h-80 lg:h-96 xl:h-[26rem] overflow-hidden bg-slate-950">
         <Image
           src="/images/services.jpg"
           alt="Clinical healthcare services in Dera Ismail Khan"

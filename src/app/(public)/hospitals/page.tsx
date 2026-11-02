@@ -113,7 +113,7 @@ export default function HospitalsPage() {
       />
 
       {/* Hero Photographic Banner */}
-      <section className="relative aspect-[16/6] max-h-[26rem] overflow-hidden bg-slate-950">
+      <section className="relative w-full h-56 sm:h-72 md:h-80 lg:h-96 xl:h-[26rem] overflow-hidden bg-slate-950">
         <Image
           src="/images/hospitals.jpg"
           alt="Hospital network serving families in Dera Ismail Khan"
