@@ -48,7 +48,7 @@ const s = StyleSheet.create({
   page: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    padding: 2,
+    padding: 2.5,
     backgroundColor: "#ffffff",
     fontFamily: "Helvetica",
   },
@@ -56,7 +56,7 @@ const s = StyleSheet.create({
     flex: 1,
     borderWidth: 0.8,
     borderColor: NAVY,
-    borderRadius: 3,
+    borderRadius: 3.5,
     overflow: "hidden",
     position: "relative",
     justifyContent: "space-between",
@@ -65,230 +65,234 @@ const s = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    width: CARD_WIDTH - 4,
-    height: CARD_HEIGHT - 4,
+    width: CARD_WIDTH - 5,
+    height: CARD_HEIGHT - 5,
   },
 
   // ==========================================
-  // FRONT SIDE STYLES
+  // FRONT SIDE STYLES (MATCHING DESIGNER EXACT SCALE)
   // ==========================================
   frontContainer: {
     flex: 1,
-    paddingHorizontal: 6,
-    paddingTop: 4,
-    paddingBottom: 4,
+    paddingHorizontal: 8,
+    paddingTop: 5,
+    paddingBottom: 5,
     justifyContent: "space-between",
   },
   frontHeader: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
   },
   emblemLeft: {
-    width: 28,
-    height: 28,
+    width: 32,
+    height: 32,
   },
   emblemRight: {
-    width: 28,
-    height: 28,
+    width: 32,
+    height: 32,
   },
   headerCenter: {
     flex: 1,
     alignItems: "center",
-    marginHorizontal: 1,
+    marginHorizontal: 2,
+    marginTop: -0.5,
   },
   instTitle1: {
-    fontSize: 5.2,
+    fontSize: 6.8,
     fontWeight: "bold",
     color: NAVY,
-    letterSpacing: 0.2,
+    letterSpacing: 0.25,
     textAlign: "center",
     lineHeight: 1.15,
   },
   instTitle2: {
-    fontSize: 5.2,
+    fontSize: 6.8,
     fontWeight: "bold",
     color: NAVY,
-    letterSpacing: 0.2,
+    letterSpacing: 0.25,
     textAlign: "center",
     lineHeight: 1.15,
   },
   instTitle3: {
-    fontSize: 5.8,
+    fontSize: 7.8,
     fontWeight: "bold",
     color: "#0f172a",
-    letterSpacing: 0.3,
+    letterSpacing: 0.35,
     textAlign: "center",
     lineHeight: 1.15,
   },
   redPill: {
     backgroundColor: RED_PILL,
-    borderRadius: 7,
-    paddingVertical: 1.2,
-    paddingHorizontal: 9,
-    marginTop: 1.2,
+    borderRadius: 8,
+    paddingVertical: 1.5,
+    paddingHorizontal: 12,
+    marginTop: 1.5,
     alignItems: "center",
     justifyContent: "center",
   },
   redPillText: {
     color: "#ffffff",
-    fontSize: 5.8,
+    fontSize: 7.2,
     fontWeight: "bold",
-    letterSpacing: 0.5,
+    letterSpacing: 0.6,
     textAlign: "center",
   },
   familyHealthCardTitle: {
-    fontSize: 6.2,
+    fontSize: 7.8,
     fontWeight: "bold",
     color: NAVY,
-    letterSpacing: 0.4,
+    letterSpacing: 0.5,
     textAlign: "center",
-    marginTop: 1.0,
+    marginTop: 1.5,
   },
   mottoQuote: {
-    fontSize: 4.2,
+    fontSize: 5.2,
     color: RED_PILL,
     fontStyle: "italic",
     textAlign: "center",
-    marginTop: 0.6,
+    marginTop: 0.8,
   },
 
-  // Front Middle / Body Area
+  // Front Middle / Body Area (Properly spaced down to lower half)
   frontBody: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
     flex: 1,
-    marginTop: 1,
+    marginTop: 2,
+    paddingHorizontal: 2,
   },
   leftDataCol: {
-    width: "69%",
-    justifyContent: "center",
-    paddingBottom: 1,
+    width: "68%",
+    justifyContent: "space-around",
+    height: 72,
+    paddingBottom: 2,
   },
   dataRow: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 2.2,
+    alignItems: "baseline",
+    marginBottom: 2.5,
   },
   dataLabel: {
-    width: 64,
-    fontSize: 5.4,
+    width: 72,
+    fontSize: 7.2,
     fontWeight: "bold",
     color: NAVY,
   },
   dataValue: {
     flex: 1,
-    fontSize: 5.4,
+    fontSize: 7.2,
     color: BLACK_TEXT,
     fontWeight: "bold",
   },
 
   // Right Photo & Director Signature
   rightCol: {
-    width: "29%",
+    width: "30%",
     alignItems: "center",
     justifyContent: "flex-end",
   },
   photoBox: {
-    width: 42,
-    height: 48,
+    width: 48,
+    height: 56,
     borderWidth: 0.8,
     borderColor: "#0f172a",
     borderRadius: 2,
     overflow: "hidden",
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",
   },
   photoImg: {
-    width: 42,
-    height: 48,
+    width: 48,
+    height: 56,
     objectFit: "cover",
   },
   directorSignBox: {
     alignItems: "center",
-    marginTop: 0.5,
+    marginTop: 1.5,
   },
   signatureImg: {
-    width: 40,
-    height: 10,
+    width: 46,
+    height: 12,
     objectFit: "contain",
   },
   signLine: {
-    width: 46,
-    height: 0.5,
+    width: 52,
+    height: 0.6,
     backgroundColor: "#0f172a",
-    marginTop: 0.3,
+    marginTop: 0.5,
   },
   directorLabel: {
-    fontSize: 4.0,
+    fontSize: 5.2,
     fontWeight: "bold",
     color: "#0f172a",
     textAlign: "center",
-    marginTop: 0.5,
+    marginTop: 0.8,
   },
 
   // ==========================================
-  // BACK SIDE STYLES (NO QR CODE - EXACT DESIGNER LAYOUT)
+  // BACK SIDE STYLES (EXACT DESIGNER SCALE - NO QR CODE)
   // ==========================================
   backContainer: {
     flex: 1,
-    paddingHorizontal: 6,
-    paddingTop: 4,
-    paddingBottom: 4,
+    paddingHorizontal: 8,
+    paddingTop: 5,
+    paddingBottom: 5,
     justifyContent: "space-between",
   },
   backHeader: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
   },
   backHeaderCenter: {
     flex: 1,
     alignItems: "center",
-    marginHorizontal: 1,
+    marginHorizontal: 2,
   },
   subSlogan1: {
-    fontSize: 3.4,
+    fontSize: 4.4,
+    fontWeight: "bold",
     color: "#334155",
     textAlign: "center",
     letterSpacing: 0.6,
-    marginTop: 0.8,
+    marginTop: 1.0,
   },
   subSlogan2: {
-    fontSize: 3.4,
+    fontSize: 4.4,
     fontWeight: "bold",
     color: NAVY,
     textAlign: "center",
     letterSpacing: 0.6,
-    marginTop: 0.3,
+    marginTop: 0.4,
   },
   sacrificesBox: {
-    width: 52,
+    width: 56,
     alignItems: "flex-start",
     justifyContent: "center",
   },
   sacrificesText: {
-    fontSize: 4.4,
+    fontSize: 5.4,
     fontWeight: "bold",
     color: RED_PILL,
     textAlign: "left",
     lineHeight: 1.15,
-    letterSpacing: 0.2,
+    letterSpacing: 0.25,
   },
 
   // Back Table
   blueBanner: {
     backgroundColor: BLUE_BANNER,
-    paddingVertical: 1.6,
+    paddingVertical: 2.2,
     alignItems: "center",
     borderRadius: 1,
-    marginTop: 1.5,
+    marginTop: 2.5,
   },
   blueBannerText: {
     color: "#ffffff",
-    fontSize: 5.0,
+    fontSize: 6.5,
     fontWeight: "bold",
     letterSpacing: 0.6,
     textAlign: "center",
@@ -304,10 +308,10 @@ const s = StyleSheet.create({
     backgroundColor: "#f8fafc",
     borderBottomWidth: 0.8,
     borderBottomColor: NAVY,
-    paddingVertical: 1.4,
+    paddingVertical: 2.2,
   },
   tableHeaderCell: {
-    fontSize: 4.6,
+    fontSize: 5.8,
     fontWeight: "bold",
     color: NAVY,
     textAlign: "center",
@@ -316,12 +320,12 @@ const s = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 0.5,
     borderBottomColor: "#cbd5e1",
-    paddingVertical: 1.3,
+    paddingVertical: 2.2,
     alignItems: "center",
   },
   tableCellName: {
     width: "40%",
-    fontSize: 4.4,
+    fontSize: 5.6,
     fontWeight: "bold",
     color: BLACK_TEXT,
     paddingLeft: 4,
@@ -330,7 +334,7 @@ const s = StyleSheet.create({
   },
   tableCellRelation: {
     width: "26%",
-    fontSize: 4.4,
+    fontSize: 5.6,
     color: "#334155",
     textAlign: "center",
     borderRightWidth: 0.5,
@@ -338,7 +342,7 @@ const s = StyleSheet.create({
   },
   tableCellCnic: {
     width: "34%",
-    fontSize: 4.2,
+    fontSize: 5.4,
     color: "#334155",
     textAlign: "center",
   },
@@ -347,22 +351,22 @@ const s = StyleSheet.create({
   importantInfoBox: {
     width: "100%",
     alignItems: "center",
-    marginTop: 1.5,
+    marginTop: 2.5,
   },
   importantInfoTitle: {
-    fontSize: 4.6,
+    fontSize: 6.2,
     fontWeight: "bold",
     color: NAVY,
     textAlign: "center",
-    marginBottom: 1,
+    marginBottom: 1.5,
   },
   bulletsContainer: {
-    width: "88%",
+    width: "90%",
   },
   bulletPoint: {
-    fontSize: 3.8,
+    fontSize: 4.8,
     color: "#1e293b",
-    lineHeight: 1.25,
+    lineHeight: 1.3,
     textAlign: "left",
   },
 });
@@ -492,7 +496,7 @@ export function HealthCardPdf({
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <Image src={effectivePhoto} style={s.photoImg} />
                   ) : (
-                    <Text style={{ fontSize: 4.5, color: "#94a3b8" }}>PHOTO</Text>
+                    <Text style={{ fontSize: 5, color: "#94a3b8" }}>PHOTO</Text>
                   )}
                 </View>
 
@@ -501,7 +505,7 @@ export function HealthCardPdf({
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <Image src={signature} style={s.signatureImg} />
                   ) : (
-                    <View style={{ width: 40, height: 10 }} />
+                    <View style={{ width: 46, height: 12 }} />
                   )}
                   <View style={s.signLine} />
                   <Text style={s.directorLabel}>Hospital Director</Text>
@@ -528,18 +532,18 @@ export function HealthCardPdf({
             <View style={s.backHeader}>
               {dhqEmblem ? (
                 // eslint-disable-next-line jsx-a11y/alt-text
-                <Image src={dhqEmblem} style={{ width: 22, height: 22 }} />
+                <Image src={dhqEmblem} style={{ width: 28, height: 28 }} />
               ) : (
-                <View style={{ width: 22, height: 22 }} />
+                <View style={{ width: 28, height: 28 }} />
               )}
 
               <View style={s.backHeaderCenter}>
-                <View style={[s.redPill, { paddingVertical: 1, paddingHorizontal: 8, marginTop: 0 }]}>
-                  <Text style={[s.redPillText, { fontSize: 5.2 }]}>
+                <View style={[s.redPill, { paddingVertical: 1.2, paddingHorizontal: 10, marginTop: 0 }]}>
+                  <Text style={[s.redPillText, { fontSize: 6.8 }]}>
                     {isGhazi ? "DERAJAT GHAZIAN" : "SHUHADA-E-DERAJAT"}
                   </Text>
                 </View>
-                <Text style={[s.familyHealthCardTitle, { fontSize: 5.6, marginTop: 0.8 }]}>
+                <Text style={[s.familyHealthCardTitle, { fontSize: 7.2, marginTop: 1.0 }]}>
                   FAMILY HEALTH CARD
                 </Text>
                 <Text style={s.subSlogan1}>HEATH | SERVICE | COMPASSION</Text>
