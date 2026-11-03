@@ -36,7 +36,7 @@ export function resolvePhotoBase64(photoSrc?: string | null): string {
     const fullPath = path.join(process.cwd(), "public", cleanPath);
     if (fs.existsSync(fullPath)) {
       const ext = path.extname(fullPath).toLowerCase().replace(".", "");
-      const mime = ext === "jpg" || ext === "jpeg" ? "image/jpeg" : ext === "png" ? "image/png" : "image/jpeg";
+      const mime = ext === "jpg" || ext === "jpeg" ? "image/jpeg" : "image/png";
       const b64 = fs.readFileSync(fullPath).toString("base64");
       return `data:${mime};base64,${b64}`;
     }
@@ -48,7 +48,7 @@ const s = StyleSheet.create({
   page: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    padding: 2.5,
+    padding: 2,
     backgroundColor: "#ffffff",
     fontFamily: "Helvetica",
   },
@@ -56,7 +56,7 @@ const s = StyleSheet.create({
     flex: 1,
     borderWidth: 0.8,
     borderColor: NAVY,
-    borderRadius: 3.5,
+    borderRadius: 3,
     overflow: "hidden",
     position: "relative",
     justifyContent: "space-between",
@@ -65,8 +65,8 @@ const s = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    width: CARD_WIDTH - 5,
-    height: CARD_HEIGHT - 5,
+    width: CARD_WIDTH - 4,
+    height: CARD_HEIGHT - 4,
   },
 
   // ==========================================
@@ -74,9 +74,9 @@ const s = StyleSheet.create({
   // ==========================================
   frontContainer: {
     flex: 1,
-    paddingHorizontal: 7,
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingHorizontal: 6,
+    paddingTop: 4,
+    paddingBottom: 4,
     justifyContent: "space-between",
   },
   frontHeader: {
@@ -85,17 +85,17 @@ const s = StyleSheet.create({
     justifyContent: "space-between",
   },
   emblemLeft: {
-    width: 27,
-    height: 27,
+    width: 28,
+    height: 28,
   },
   emblemRight: {
-    width: 27,
-    height: 27,
+    width: 28,
+    height: 28,
   },
   headerCenter: {
     flex: 1,
     alignItems: "center",
-    marginHorizontal: 2,
+    marginHorizontal: 1,
   },
   instTitle1: {
     fontSize: 5.2,
@@ -126,7 +126,7 @@ const s = StyleSheet.create({
     borderRadius: 7,
     paddingVertical: 1.2,
     paddingHorizontal: 9,
-    marginTop: 1.5,
+    marginTop: 1.2,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -143,14 +143,14 @@ const s = StyleSheet.create({
     color: NAVY,
     letterSpacing: 0.4,
     textAlign: "center",
-    marginTop: 1.2,
+    marginTop: 1.0,
   },
   mottoQuote: {
     fontSize: 4.2,
     color: RED_PILL,
     fontStyle: "italic",
     textAlign: "center",
-    marginTop: 0.8,
+    marginTop: 0.6,
   },
 
   // Front Middle / Body Area
@@ -159,40 +159,40 @@ const s = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-end",
     flex: 1,
-    marginTop: 2,
+    marginTop: 1,
   },
   leftDataCol: {
-    width: "68%",
+    width: "69%",
     justifyContent: "center",
-    paddingBottom: 2,
+    paddingBottom: 1,
   },
   dataRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 2.8,
+    marginBottom: 2.2,
   },
   dataLabel: {
-    width: 65,
-    fontSize: 5.5,
+    width: 64,
+    fontSize: 5.4,
     fontWeight: "bold",
     color: NAVY,
   },
   dataValue: {
     flex: 1,
-    fontSize: 5.5,
+    fontSize: 5.4,
     color: BLACK_TEXT,
     fontWeight: "bold",
   },
 
   // Right Photo & Director Signature
   rightCol: {
-    width: "30%",
+    width: "29%",
     alignItems: "center",
     justifyContent: "flex-end",
   },
   photoBox: {
-    width: 44,
-    height: 52,
+    width: 42,
+    height: 48,
     borderWidth: 0.8,
     borderColor: "#0f172a",
     borderRadius: 2,
@@ -202,40 +202,40 @@ const s = StyleSheet.create({
     justifyContent: "center",
   },
   photoImg: {
-    width: 44,
-    height: 52,
+    width: 42,
+    height: 48,
     objectFit: "cover",
   },
   directorSignBox: {
     alignItems: "center",
-    marginTop: 1,
+    marginTop: 0.5,
   },
   signatureImg: {
-    width: 44,
-    height: 11,
+    width: 40,
+    height: 10,
     objectFit: "contain",
   },
   signLine: {
-    width: 50,
-    height: 0.6,
+    width: 46,
+    height: 0.5,
     backgroundColor: "#0f172a",
-    marginTop: 0.5,
+    marginTop: 0.3,
   },
   directorLabel: {
-    fontSize: 4.2,
+    fontSize: 4.0,
     fontWeight: "bold",
     color: "#0f172a",
     textAlign: "center",
-    marginTop: 0.8,
+    marginTop: 0.5,
   },
 
   // ==========================================
-  // BACK SIDE STYLES
+  // BACK SIDE STYLES (NO QR CODE - EXACT DESIGNER LAYOUT)
   // ==========================================
   backContainer: {
     flex: 1,
-    paddingHorizontal: 7,
-    paddingTop: 5,
+    paddingHorizontal: 6,
+    paddingTop: 4,
     paddingBottom: 4,
     justifyContent: "space-between",
   },
@@ -247,7 +247,7 @@ const s = StyleSheet.create({
   backHeaderCenter: {
     flex: 1,
     alignItems: "center",
-    marginHorizontal: 2,
+    marginHorizontal: 1,
   },
   subSlogan1: {
     fontSize: 3.4,
@@ -265,7 +265,7 @@ const s = StyleSheet.create({
     marginTop: 0.3,
   },
   sacrificesBox: {
-    width: 50,
+    width: 52,
     alignItems: "flex-start",
     justifyContent: "center",
   },
@@ -281,10 +281,10 @@ const s = StyleSheet.create({
   // Back Table
   blueBanner: {
     backgroundColor: BLUE_BANNER,
-    paddingVertical: 1.8,
+    paddingVertical: 1.6,
     alignItems: "center",
     borderRadius: 1,
-    marginTop: 2,
+    marginTop: 1.5,
   },
   blueBannerText: {
     color: "#ffffff",
@@ -304,7 +304,7 @@ const s = StyleSheet.create({
     backgroundColor: "#f8fafc",
     borderBottomWidth: 0.8,
     borderBottomColor: NAVY,
-    paddingVertical: 1.5,
+    paddingVertical: 1.4,
   },
   tableHeaderCell: {
     fontSize: 4.6,
@@ -316,7 +316,7 @@ const s = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 0.5,
     borderBottomColor: "#cbd5e1",
-    paddingVertical: 1.4,
+    paddingVertical: 1.3,
     alignItems: "center",
   },
   tableCellName: {
@@ -343,62 +343,46 @@ const s = StyleSheet.create({
     textAlign: "center",
   },
 
-  // Back Bottom Information & QR
-  backBottomRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 2,
-  },
+  // Back Bottom Information (Clean centered layout without QR code)
   importantInfoBox: {
-    width: "74%",
+    width: "100%",
+    alignItems: "center",
+    marginTop: 1.5,
   },
   importantInfoTitle: {
     fontSize: 4.6,
     fontWeight: "bold",
     color: NAVY,
-    marginBottom: 0.8,
+    textAlign: "center",
+    marginBottom: 1,
+  },
+  bulletsContainer: {
+    width: "88%",
   },
   bulletPoint: {
-    fontSize: 3.7,
+    fontSize: 3.8,
     color: "#1e293b",
     lineHeight: 1.25,
-  },
-  qrCodeBox: {
-    width: "24%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  qrImage: {
-    width: 26,
-    height: 26,
-  },
-  qrVerifyText: {
-    fontSize: 3.4,
-    color: NAVY,
-    fontWeight: "bold",
-    marginTop: 0.8,
-    textAlign: "center",
+    textAlign: "left",
   },
 });
 
 export function HealthCardPdf({
   card,
   family,
-  qrSrc,
   photoSrc,
   category,
 }: {
   card: any;
   family: any;
-  qrSrc: string;
+  qrSrc?: string;
   photoSrc?: string | null;
   healthDeskContact?: string | null;
   lang?: string;
   category?: "shaheed" | "ghazi";
 }) {
   const members: any[] = Array.isArray(family?.members) && family.members.length > 0 ? family.members : [];
-  const cardMembers = members.slice(0, 3); // Top 3 eligible members fit cleanly in standard ID card table
+  const cardMembers = members.slice(0, 3); // Top eligible members fit cleanly in standard ID card table
 
   const isGhazi =
     category === "ghazi" ||
@@ -411,7 +395,7 @@ export function HealthCardPdf({
     (typeof family?.specialDependencyDisability === "string" &&
       family.specialDependencyDisability.toLowerCase().includes("ghazi"));
 
-  // Assets
+  // Exact Assets cropped and cleaned from the Designer card
   const kpkEmblem = getLocalAssetBase64("card-emblem-kpk.png");
   const dhqEmblem = getLocalAssetBase64("card-emblem-dhq.png");
   const signature = getLocalAssetBase64("card-signature.png");
@@ -517,7 +501,7 @@ export function HealthCardPdf({
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <Image src={signature} style={s.signatureImg} />
                   ) : (
-                    <View style={{ width: 44, height: 11 }} />
+                    <View style={{ width: 40, height: 10 }} />
                   )}
                   <View style={s.signLine} />
                   <Text style={s.directorLabel}>Hospital Director</Text>
@@ -529,7 +513,7 @@ export function HealthCardPdf({
       </Page>
 
       {/* ========================================================
-          SIDE 2: BACK (Eligible Members Table & Verification)
+          SIDE 2: BACK (Eligible Members Table & Info - NO QR CODE)
          ======================================================== */}
       <Page size={[CARD_WIDTH, CARD_HEIGHT]} style={s.page}>
         <View style={s.cardFrame}>
@@ -558,7 +542,7 @@ export function HealthCardPdf({
                 <Text style={[s.familyHealthCardTitle, { fontSize: 5.6, marginTop: 0.8 }]}>
                   FAMILY HEALTH CARD
                 </Text>
-                <Text style={s.subSlogan1}>HEALTH | SERVICE | COMPASSION</Text>
+                <Text style={s.subSlogan1}>HEATH | SERVICE | COMPASSION</Text>
                 <Text style={s.subSlogan2}>FOR A STRONGER PAKISTAN</Text>
               </View>
 
@@ -612,20 +596,14 @@ export function HealthCardPdf({
               )}
             </View>
 
-            {/* Bottom Row: Important Information & Desk Verification QR */}
-            <View style={s.backBottomRow}>
-              <View style={s.importantInfoBox}>
-                <Text style={s.importantInfoTitle}>IMPORTANT INFORMATION</Text>
+            {/* Bottom Section: Important Information (Centered bullets, exact designer layout, NO QR) */}
+            <View style={s.importantInfoBox}>
+              <Text style={s.importantInfoTitle}>IMPORTANT INFORMATION</Text>
+              <View style={s.bulletsContainer}>
                 <Text style={s.bulletPoint}>• Valid for eligible family members as per institutional policy.</Text>
                 <Text style={s.bulletPoint}>• Non-transferable.</Text>
                 <Text style={s.bulletPoint}>• Misuse may lead to cancellation.</Text>
                 <Text style={s.bulletPoint}>• Report loss immediately.</Text>
-              </View>
-
-              <View style={s.qrCodeBox}>
-                {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                <Image src={qrSrc} style={s.qrImage} />
-                <Text style={s.qrVerifyText}>Scan to Verify</Text>
               </View>
             </View>
           </View>

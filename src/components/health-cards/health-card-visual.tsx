@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Download, Eye, ShieldCheck, Printer } from "lucide-react";
+import { Download, ShieldCheck } from "lucide-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function HealthCardVisual({
@@ -106,7 +106,7 @@ export function HealthCardVisual({
         }`}
       >
         {/* ========================================================
-            CARD FRONT
+            CARD FRONT (Exact Designer PVC Card Layout)
            ======================================================== */}
         {(activeSide === "both" || activeSide === "front") && (
           <div className="space-y-1.5">
@@ -116,16 +116,16 @@ export function HealthCardVisual({
             </div>
 
             <div className="relative aspect-[508/329] w-full rounded-2xl border-[1.5px] border-[#1a365d] shadow-lg overflow-hidden bg-white select-none">
-              {/* Background guilloche security image */}
+              {/* Official Guilloche Security Certificate Background */}
               <div
                 className="absolute inset-0 bg-cover bg-center pointer-events-none"
                 style={{ backgroundImage: `url('/images/card-official-bg.png')` }}
               />
 
-              <div className="relative z-10 flex h-full flex-col justify-between p-3.5 sm:p-4">
+              <div className="relative z-10 flex h-full flex-col justify-between p-2.5 sm:p-3.5">
                 {/* Header Row: KPK Logo | Center Titles & Red Pill | DHQ Logo */}
-                <div className="flex items-start justify-between gap-2">
-                  <div className="relative size-11 sm:size-14 shrink-0">
+                <div className="flex items-start justify-between gap-1.5 sm:gap-2">
+                  <div className="relative size-12 sm:size-14 shrink-0">
                     <Image
                       src="/images/card-emblem-kpk.png"
                       alt="KP Government"
@@ -135,24 +135,24 @@ export function HealthCardVisual({
                   </div>
 
                   <div className="flex-1 text-center -mt-0.5">
-                    <p className="font-extrabold text-[0.62rem] sm:text-xs text-[#1a365d] uppercase tracking-wide leading-tight">
+                    <p className="font-extrabold text-[0.62rem] sm:text-[0.72rem] text-[#1a365d] uppercase tracking-wide leading-tight">
                       MUFTI MEHMOOD MEMORIAL
                     </p>
-                    <p className="font-extrabold text-[0.62rem] sm:text-xs text-[#1a365d] uppercase tracking-wide leading-tight">
+                    <p className="font-extrabold text-[0.62rem] sm:text-[0.72rem] text-[#1a365d] uppercase tracking-wide leading-tight">
                       MEDICAL TEACHING INSTITUTION
                     </p>
-                    <p className="font-black text-[0.68rem] sm:text-sm text-slate-950 uppercase tracking-wider leading-tight">
+                    <p className="font-black text-[0.68rem] sm:text-[0.8rem] text-slate-950 uppercase tracking-wider leading-tight">
                       DERA ISMAIL KHAN
                     </p>
 
                     {/* Red Pill Badge */}
-                    <div className="inline-block rounded-full bg-[#c62828] px-3.5 py-0.5 mt-1 shadow-xs">
-                      <span className="font-extrabold text-[0.68rem] sm:text-xs tracking-wider text-white uppercase">
+                    <div className="inline-block rounded-full bg-[#c62828] px-3.5 py-0.5 mt-0.5 sm:mt-1 shadow-xs">
+                      <span className="font-extrabold text-[0.65rem] sm:text-xs tracking-wider text-white uppercase">
                         {isGhazi ? "DERAJAT GHAZIAN" : "SHUHADA-E-DERAJAT"}
                       </span>
                     </div>
 
-                    <p className="font-black text-[0.72rem] sm:text-xs text-[#1a365d] tracking-wider uppercase mt-1">
+                    <p className="font-black text-[0.68rem] sm:text-[0.8rem] text-[#1a365d] tracking-wider uppercase mt-0.5">
                       FAMILY HEALTH CARD
                     </p>
                     <p className="font-serif italic text-[0.55rem] sm:text-[0.65rem] text-[#c62828] font-bold">
@@ -162,7 +162,7 @@ export function HealthCardVisual({
                     </p>
                   </div>
 
-                  <div className="relative size-11 sm:size-14 shrink-0">
+                  <div className="relative size-12 sm:size-14 shrink-0">
                     <Image
                       src="/images/card-emblem-dhq.png"
                       alt="DHQ Hospital Dera Ismail Khan"
@@ -173,40 +173,40 @@ export function HealthCardVisual({
                 </div>
 
                 {/* Body: Left Fields | Right Photo & Director Signature */}
-                <div className="flex items-end justify-between gap-3 mt-1">
-                  <div className="flex-1 space-y-1.5 sm:space-y-2 text-left pb-1">
+                <div className="flex items-end justify-between gap-2 sm:gap-3 mt-1 pb-0.5">
+                  <div className="flex-1 space-y-1 sm:space-y-1.5 text-left pb-1">
                     <div className="flex items-baseline">
-                      <span className="w-28 sm:w-32 font-bold text-xs sm:text-sm text-[#1a365d] shrink-0">
+                      <span className="w-26 sm:w-32 font-bold text-[0.72rem] sm:text-sm text-[#1a365d] shrink-0">
                         {isGhazi ? "Name of Ghazi:" : "Name of Shaheed:"}
                       </span>
-                      <span className="font-bold text-xs sm:text-sm text-slate-950 truncate">
+                      <span className="font-bold text-[0.72rem] sm:text-sm text-slate-950 truncate">
                         {personName}
                       </span>
                     </div>
 
                     <div className="flex items-baseline">
-                      <span className="w-28 sm:w-32 font-bold text-xs sm:text-sm text-[#1a365d] shrink-0">
+                      <span className="w-26 sm:w-32 font-bold text-[0.72rem] sm:text-sm text-[#1a365d] shrink-0">
                         Organization:
                       </span>
-                      <span className="font-bold text-xs sm:text-sm text-slate-900 truncate">
+                      <span className="font-bold text-[0.72rem] sm:text-sm text-slate-900 truncate">
                         {orgName}
                       </span>
                     </div>
 
                     <div className="flex items-baseline">
-                      <span className="w-28 sm:w-32 font-bold text-xs sm:text-sm text-[#1a365d] shrink-0">
+                      <span className="w-26 sm:w-32 font-bold text-[0.72rem] sm:text-sm text-[#1a365d] shrink-0">
                         CNIC:
                       </span>
-                      <span className="font-bold text-xs sm:text-sm text-slate-900 truncate">
+                      <span className="font-bold text-[0.72rem] sm:text-sm text-slate-900 truncate">
                         {cnicValue}
                       </span>
                     </div>
 
                     <div className="flex items-baseline">
-                      <span className="w-28 sm:w-32 font-bold text-xs sm:text-sm text-[#1a365d] shrink-0">
+                      <span className="w-26 sm:w-32 font-bold text-[0.72rem] sm:text-sm text-[#1a365d] shrink-0">
                         District:
                       </span>
-                      <span className="font-bold text-xs sm:text-sm text-slate-900 truncate">
+                      <span className="font-bold text-[0.72rem] sm:text-sm text-slate-900 truncate">
                         {districtValue}
                       </span>
                     </div>
@@ -214,7 +214,7 @@ export function HealthCardVisual({
 
                   {/* Right Column: Photo & Signature */}
                   <div className="flex flex-col items-center shrink-0">
-                    <div className="relative w-16 h-20 sm:w-20 sm:h-24 rounded border border-slate-900 overflow-hidden bg-slate-100 shadow-xs">
+                    <div className="relative w-14 h-17 sm:w-16 sm:h-20 rounded border border-slate-900 overflow-hidden bg-slate-100 shadow-xs">
                       <Image
                         src={photoSrc}
                         alt={personName}
@@ -224,8 +224,8 @@ export function HealthCardVisual({
                       />
                     </div>
 
-                    <div className="flex flex-col items-center mt-1">
-                      <div className="relative w-20 h-5 sm:w-24 sm:h-6">
+                    <div className="flex flex-col items-center mt-0.5 sm:mt-1">
+                      <div className="relative w-18 h-4 sm:w-22 sm:h-5">
                         <Image
                           src="/images/card-signature.png"
                           alt="Hospital Director Signature"
@@ -233,8 +233,8 @@ export function HealthCardVisual({
                           className="object-contain"
                         />
                       </div>
-                      <div className="w-24 border-b border-slate-950 mt-0.5" />
-                      <span className="font-extrabold text-[0.55rem] sm:text-[0.62rem] text-slate-950 uppercase tracking-tight mt-0.5">
+                      <div className="w-20 sm:w-24 border-b border-slate-950 mt-0.5" />
+                      <span className="font-extrabold text-[0.52rem] sm:text-[0.62rem] text-slate-950 uppercase tracking-tight mt-0.5">
                         Hospital Director
                       </span>
                     </div>
@@ -246,7 +246,7 @@ export function HealthCardVisual({
         )}
 
         {/* ========================================================
-            CARD BACK
+            CARD BACK (Exact Designer PVC Card Layout - NO QR CODE)
            ======================================================== */}
         {(activeSide === "both" || activeSide === "back") && (
           <div className="space-y-1.5">
@@ -262,10 +262,10 @@ export function HealthCardVisual({
                 style={{ backgroundImage: `url('/images/card-official-bg.png')` }}
               />
 
-              <div className="relative z-10 flex h-full flex-col justify-between p-3.5 sm:p-4">
+              <div className="relative z-10 flex h-full flex-col justify-between p-2.5 sm:p-3.5">
                 {/* Back Header: DHQ Emblem | Center Badges & Titles | Slogan in 4 Lines */}
-                <div className="flex items-start justify-between gap-2">
-                  <div className="relative size-10 sm:size-12 shrink-0">
+                <div className="flex items-start justify-between gap-1.5 sm:gap-2">
+                  <div className="relative size-11 sm:size-13 shrink-0">
                     <Image
                       src="/images/card-emblem-dhq.png"
                       alt="DHQ Hospital"
@@ -276,32 +276,32 @@ export function HealthCardVisual({
 
                   <div className="flex-1 text-center -mt-0.5">
                     <div className="inline-block rounded-full bg-[#c62828] px-3 py-0.5 shadow-xs">
-                      <span className="font-extrabold text-[0.62rem] sm:text-[0.68rem] tracking-wider text-white uppercase">
+                      <span className="font-extrabold text-[0.62rem] sm:text-[0.7rem] tracking-wider text-white uppercase">
                         {isGhazi ? "DERAJAT GHAZIAN" : "SHUHADA-E-DERAJAT"}
                       </span>
                     </div>
-                    <p className="font-black text-[0.68rem] sm:text-xs text-[#1a365d] tracking-wider uppercase mt-0.5">
+                    <p className="font-black text-[0.68rem] sm:text-[0.78rem] text-[#1a365d] tracking-wider uppercase mt-0.5">
                       FAMILY HEALTH CARD
                     </p>
-                    <p className="font-bold text-[0.5rem] sm:text-[0.58rem] text-slate-600 tracking-wider uppercase">
-                      HEALTH | SERVICE | COMPASSION
+                    <p className="font-bold text-[0.52rem] sm:text-[0.62rem] text-slate-600 tracking-wider uppercase">
+                      HEATH | SERVICE | COMPASSION
                     </p>
-                    <p className="font-extrabold text-[0.5rem] sm:text-[0.58rem] text-[#1a365d] tracking-wider uppercase">
+                    <p className="font-extrabold text-[0.52rem] sm:text-[0.62rem] text-[#1a365d] tracking-wider uppercase">
                       FOR A STRONGER PAKISTAN
                     </p>
                   </div>
 
                   <div className="text-right shrink-0 leading-tight">
-                    <p className="font-black text-[0.58rem] sm:text-[0.7rem] text-[#c62828] uppercase tracking-tight">
+                    <p className="font-black text-[0.6rem] sm:text-[0.72rem] text-[#c62828] uppercase tracking-tight">
                       THEIR
                     </p>
-                    <p className="font-black text-[0.58rem] sm:text-[0.7rem] text-[#c62828] uppercase tracking-tight">
+                    <p className="font-black text-[0.6rem] sm:text-[0.72rem] text-[#c62828] uppercase tracking-tight">
                       SACRIFICES
                     </p>
-                    <p className="font-black text-[0.58rem] sm:text-[0.7rem] text-[#c62828] uppercase tracking-tight">
+                    <p className="font-black text-[0.6rem] sm:text-[0.72rem] text-[#c62828] uppercase tracking-tight">
                       WILL NOT GO
                     </p>
-                    <p className="font-black text-[0.58rem] sm:text-[0.7rem] text-[#c62828] uppercase tracking-tight">
+                    <p className="font-black text-[0.6rem] sm:text-[0.72rem] text-[#c62828] uppercase tracking-tight">
                       IN VAIN
                     </p>
                   </div>
@@ -309,7 +309,7 @@ export function HealthCardVisual({
 
                 {/* Table: ELIGIBLE FAMILY MEMBERS */}
                 <div className="my-1">
-                  <div className="rounded-t bg-[#1a365d] py-1 px-2 text-center">
+                  <div className="rounded-t bg-[#1a365d] py-0.5 sm:py-1 px-2 text-center">
                     <h3 className="font-extrabold text-[0.62rem] sm:text-xs text-white uppercase tracking-wider">
                       ELIGIBLE FAMILY MEMBERS
                     </h3>
@@ -349,36 +349,17 @@ export function HealthCardVisual({
                   </div>
                 </div>
 
-                {/* Bottom Row: Important Information & Desk Verification QR */}
-                <div className="flex items-center justify-between gap-3 text-left">
-                  <div className="flex-1 space-y-0.5">
-                    <p className="font-black text-[0.6rem] sm:text-xs text-[#1a365d] uppercase tracking-wide">
-                      IMPORTANT INFORMATION
-                    </p>
-                    <ul className="text-[0.5rem] sm:text-[0.6rem] text-slate-800 space-y-0.5 leading-tight list-disc list-inside">
-                      <li>Valid for eligible family members as per institutional policy.</li>
-                      <li>Non-transferable.</li>
-                      <li>Misuse may lead to cancellation.</li>
-                      <li>Report loss immediately.</li>
-                    </ul>
-                  </div>
-
-                  {/* QR Code */}
-                  <div className="flex flex-col items-center shrink-0">
-                    <div className="p-1 rounded border border-slate-300 bg-white shadow-xs">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-                          `https://mtidikorg.vercel.app/verify/${card.qrDigitalVerificationId || card.cardNo}`
-                        )}`}
-                        alt="Scan to Verify"
-                        className="size-11 sm:size-14"
-                      />
-                    </div>
-                    <span className="font-bold text-[0.48rem] sm:text-[0.58rem] text-[#1a365d] uppercase tracking-tight mt-0.5">
-                      Scan to Verify
-                    </span>
-                  </div>
+                {/* Bottom Section: Important Information (Centered bullets, exact designer layout, NO QR) */}
+                <div className="text-center pb-0.5">
+                  <p className="font-black text-[0.62rem] sm:text-[0.72rem] text-[#1a365d] uppercase tracking-wide">
+                    IMPORTANT INFORMATION
+                  </p>
+                  <ul className="mt-0.5 text-[0.52rem] sm:text-[0.62rem] text-slate-800 space-y-0.5 leading-tight list-disc list-inside inline-block text-left">
+                    <li>Valid for eligible family members as per institutional policy.</li>
+                    <li>Non-transferable.</li>
+                    <li>Misuse may lead to cancellation.</li>
+                    <li>Report loss immediately.</li>
+                  </ul>
                 </div>
               </div>
             </div>

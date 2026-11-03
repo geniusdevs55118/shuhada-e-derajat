@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
-import QRCode from "qrcode";
 import { prisma } from "@/lib/db";
 import { requirePermission, AuthError } from "@/lib/permissions";
 import { HealthCardPdf } from "@/lib/pdf/health-card";
-import { publicVerifyUrl } from "@/lib/qr";
 
 
 export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
@@ -34,12 +32,6 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       { status: 404 }
     );
   }
-  if (!card.qrDigitalVerificationId) {
-    return NextResponse.json({ error: "Card has no QR verification ID" }, { status: 400 });
-  }
-  const verifyUrl = publicVerifyUrl(card.qrDigitalVerificationId);
-  const qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 256 });
-
   // Optional card photo and the Health Desk contact printed on the card face.
   const photo = await prisma.document
     .findFirst({
@@ -68,17 +60,15 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
     <HealthCardPdf
       card={card}
       family={family}
-      qrSrc={qrDataUrl}
       photoSrc={photo?.secureUrl ?? null}
       healthDeskContact={healthDeskContact}
-      lang={lang}
       category={category}
     />
   );
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="HealthCard-${card.cardNo}${lang === "ur" ? "-Urdu" : ""}.pdf"`,
+      "Content-Disposition": `attachment; filename="HealthCard-${card.cardNo}.pdf"`,
     },
   });
 }
