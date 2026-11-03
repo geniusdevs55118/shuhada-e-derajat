@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { MISUSE_CONTROL_FLAGS, PERIODIC_REVIEW_FLAGS } from "@/lib/card-schemas";
 import { extractFamilyCode } from "@/lib/family-code";
+import { HealthCardVisual } from "./health-card-visual";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -66,7 +67,11 @@ export function HealthCardDetail({ card, family, role, canProposeStatus, canAuth
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">{card.cardNo}</h1>
             <p className="text-xs sm:text-sm text-emerald-100/90 mt-1">
-              Shaheed: <strong className="text-white">{family?.shaheedName ?? "Honoured Martyr"}</strong> · Reg: {card.familyRegistrationNo} · Logged in as {role}
+              {family?.registrationNo?.includes("GZ") || family?.registrationNo?.includes("DG") ? "Ghazi" : "Shaheed"}:{" "}
+              <strong className="text-white">
+                {family?.shaheedName ?? (family?.registrationNo?.includes("DG") ? "Honoured Ghazi" : "Honoured Shaheed")}
+              </strong>{" "}
+              · Reg: {card.familyRegistrationNo} · Logged in as {role}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -76,6 +81,11 @@ export function HealthCardDetail({ card, family, role, canProposeStatus, canAuth
           </div>
         </div>
       </div>
+
+      {/* Official Designer PVC Card Visual Preview (Front & Back) */}
+      <section className="rounded-xl border bg-white p-5 shadow-sm">
+        <HealthCardVisual card={card} family={family} />
+      </section>
 
       {family && (
         <section className="rounded-xl border bg-white p-5 shadow-sm">
@@ -135,16 +145,10 @@ export function HealthCardDetail({ card, family, role, canProposeStatus, canAuth
 
       <div className="flex flex-wrap gap-2">
         <a
-          href={`/api/health-cards/${card.id}/pdf?lang=en`}
-          className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-800 px-3 text-sm font-medium text-white hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
+          href={`/api/health-cards/${card.id}/pdf`}
+          className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-800 px-4 text-sm font-bold text-white hover:bg-emerald-700 shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
         >
-          Download Card (English)
-        </a>
-        <a
-          href={`/api/health-cards/${card.id}/pdf?lang=ur`}
-          className="inline-flex h-9 items-center justify-center rounded-lg bg-emerald-700 px-3 text-sm font-medium text-white hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
-        >
-          Download Card (Urdu)
+          Download PVC Health Card (PDF)
         </a>
         {(canProposeStatus || canAuthorizeStatus) && <Button variant="outline" onClick={() => setDialog("status")}>Change Status</Button>}
         {(canProposeLost || canAuthorizeLost) && <Button variant="outline" onClick={() => setDialog("lost")}>Report Lost/Damaged</Button>}

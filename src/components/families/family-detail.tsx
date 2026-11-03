@@ -276,7 +276,7 @@ export function FamilyDetail({
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
                 {family.registrationNo?.includes("GZ") || family.registrationNo?.includes("DG") || family.healthCardNo?.includes("DG")
                   ? "Derajat Ghazi Veteran Master Record"
-                  : "Martyr Family Master Record"}
+                  : "Shuhada Family Master Record"}
               </span>
             </div>
             <h1 className="text-2xl font-bold text-slate-900">{family.registrationNo}</h1>
@@ -284,14 +284,23 @@ export function FamilyDetail({
             <p className="text-sm text-gray-500">Health Card No.: {family.healthCardNo ?? "—"}</p>
             <p className="text-sm text-gray-500">QR / Digital ID: {family.qrDigitalId ?? "—"}</p>
           </div>
-          {canEdit && (
-            <Link href={`/dashboard/families/${family.id}/edit`}>
-              <Button variant="outline">Edit</Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {family.healthCardNo && (
+              <Link href={`/dashboard/health-cards?search=${encodeURIComponent(family.healthCardNo)}`}>
+                <Button className="bg-emerald-800 text-white hover:bg-emerald-700 font-bold shadow-xs">
+                  View Health Card
+                </Button>
+              </Link>
+            )}
+            {canEdit && (
+              <Link href={`/dashboard/families/${family.id}/edit`}>
+                <Button variant="outline">Edit</Button>
+              </Link>
+            )}
+            <Link href={`/api/families/${family.id}/pdf`} target="_blank">
+              <Button variant="outline">Download Registration PDF</Button>
             </Link>
-          )}
-          <Link href={`/api/families/${family.id}/pdf`} target="_blank">
-            <Button variant="outline">Download PDF</Button>
-          </Link>
+          </div>
         </div>
       </div>
 

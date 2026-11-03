@@ -112,15 +112,15 @@ export function HealthCardShowcase() {
 
           {/* Right Column: Card Graphic / Mockup */}
           <div className="relative">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-slate-200 shadow-xl bg-slate-900">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 shadow-xl bg-slate-950 p-2 flex items-center justify-center">
               <Image
                 src="/images/health-card.jpg"
                 alt="Shuhada-e-Derajat Family Health Card"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
+                className="object-contain"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
 
               <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between text-white">
                 <div>

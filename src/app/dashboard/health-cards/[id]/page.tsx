@@ -26,7 +26,10 @@ export default async function HealthCardDetailPage({ params }: { params: Promise
 
   const family = await prisma.family.findFirst({
     where: { registrationNo: card.familyRegistrationNo },
-    include: { members: { orderBy: { serialNo: "asc" } } },
+    include: {
+      members: { orderBy: { serialNo: "asc" } },
+      documents: { orderBy: { createdAt: "asc" } },
+    },
   });
 
   const session = { id: user.id, role: user.role, hospitalId: user.hospitalId };

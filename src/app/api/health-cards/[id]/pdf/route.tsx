@@ -42,7 +42,20 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
 
   // Optional card photo and the Health Desk contact printed on the card face.
   const photo = await prisma.document
-    .findFirst({ where: { familyId: family?.id ?? -1, docType: "photograph" }, orderBy: { createdAt: "asc" } })
+    .findFirst({
+      where: {
+        familyId: family?.id ?? -1,
+        OR: [
+          { docType: "photograph" },
+          { docType: "Beneficiary Photographs" },
+          { resourceType: "image" },
+          { originalFilename: { endsWith: ".jpg" } },
+          { originalFilename: { endsWith: ".jpeg" } },
+          { originalFilename: { endsWith: ".png" } },
+        ],
+      },
+      orderBy: { createdAt: "asc" },
+    })
     .catch(() => null);
   const hospital = await prisma.hospital.findFirst({ where: { id: family?.hospitalId ?? -1 }, select: { healthDeskContact: true } }).catch(() => null);
   const healthDeskContact = hospital?.healthDeskContact ?? card.issuedBy ?? null;
