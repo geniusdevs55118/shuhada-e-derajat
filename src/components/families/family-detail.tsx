@@ -105,12 +105,21 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
-  const hasValue = value !== null && value !== undefined && value !== "";
+  const isProvided =
+    value !== null &&
+    value !== undefined &&
+    (typeof value === "string"
+      ? value.trim() !== "" &&
+        value.trim() !== "—" &&
+        value.trim() !== "-" &&
+        value.trim().toLowerCase() !== "n/a" &&
+        value.trim().toLowerCase() !== "not provided"
+      : true);
   return (
     <div>
       <dt className="text-gray-500">{label}</dt>
-      <dd className={hasValue ? "font-medium text-gray-900" : "font-normal italic text-slate-400"}>
-        {hasValue ? value : `${label} not provided`}
+      <dd className={isProvided ? "font-medium text-gray-900" : "font-normal italic text-slate-400"}>
+        {isProvided ? value : `${label} not provided`}
       </dd>
     </div>
   );

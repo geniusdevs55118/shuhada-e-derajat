@@ -70,13 +70,13 @@ const s = StyleSheet.create({
   },
 
   // ==========================================
-  // FRONT SIDE STYLES (MATCHING DESIGNER EXACT SCALE)
+  // FRONT SIDE STYLES (CALIBRATED & SPACED)
   // ==========================================
   frontContainer: {
     flex: 1,
-    paddingHorizontal: 8,
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingHorizontal: 7,
+    paddingTop: 4,
+    paddingBottom: 4,
     justifyContent: "space-between",
   },
   frontHeader: {
@@ -85,12 +85,12 @@ const s = StyleSheet.create({
     justifyContent: "space-between",
   },
   emblemLeft: {
-    width: 32,
-    height: 32,
+    width: 29,
+    height: 29,
   },
   emblemRight: {
-    width: 32,
-    height: 32,
+    width: 29,
+    height: 29,
   },
   headerCenter: {
     flex: 1,
@@ -99,7 +99,7 @@ const s = StyleSheet.create({
     marginTop: -0.5,
   },
   instTitle1: {
-    fontSize: 6.8,
+    fontSize: 6.2,
     fontWeight: "bold",
     color: NAVY,
     letterSpacing: 0.25,
@@ -107,7 +107,7 @@ const s = StyleSheet.create({
     lineHeight: 1.15,
   },
   instTitle2: {
-    fontSize: 6.8,
+    fontSize: 6.2,
     fontWeight: "bold",
     color: NAVY,
     letterSpacing: 0.25,
@@ -115,7 +115,7 @@ const s = StyleSheet.create({
     lineHeight: 1.15,
   },
   instTitle3: {
-    fontSize: 7.8,
+    fontSize: 7.2,
     fontWeight: "bold",
     color: "#0f172a",
     letterSpacing: 0.35,
@@ -125,64 +125,64 @@ const s = StyleSheet.create({
   redPill: {
     backgroundColor: RED_PILL,
     borderRadius: 8,
-    paddingVertical: 1.5,
-    paddingHorizontal: 12,
-    marginTop: 1.5,
+    paddingVertical: 1.2,
+    paddingHorizontal: 10,
+    marginTop: 1.2,
     alignItems: "center",
     justifyContent: "center",
   },
   redPillText: {
     color: "#ffffff",
-    fontSize: 7.2,
+    fontSize: 6.8,
     fontWeight: "bold",
     letterSpacing: 0.6,
     textAlign: "center",
   },
   familyHealthCardTitle: {
-    fontSize: 7.8,
+    fontSize: 7.2,
     fontWeight: "bold",
     color: NAVY,
-    letterSpacing: 0.5,
+    letterSpacing: 0.45,
     textAlign: "center",
-    marginTop: 1.5,
+    marginTop: 1.0,
   },
   mottoQuote: {
-    fontSize: 5.2,
+    fontSize: 4.8,
     color: RED_PILL,
     fontStyle: "italic",
     textAlign: "center",
-    marginTop: 0.8,
+    marginTop: 0.6,
   },
 
-  // Front Middle / Body Area (Properly spaced down to lower half)
+  // Front Middle / Body Area (Comfortably spaced so District is never clipped)
   frontBody: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
     flex: 1,
-    marginTop: 2,
-    paddingHorizontal: 2,
+    marginTop: 1.5,
+    paddingHorizontal: 1,
   },
   leftDataCol: {
     width: "68%",
-    justifyContent: "space-around",
-    height: 72,
-    paddingBottom: 2,
+    justifyContent: "space-between",
+    height: 64,
+    paddingBottom: 1,
   },
   dataRow: {
     flexDirection: "row",
     alignItems: "baseline",
-    marginBottom: 2.5,
+    marginBottom: 2.2,
   },
   dataLabel: {
-    width: 72,
-    fontSize: 7.2,
+    width: 68,
+    fontSize: 6.6,
     fontWeight: "bold",
     color: NAVY,
   },
   dataValue: {
     flex: 1,
-    fontSize: 7.2,
+    fontSize: 6.6,
     color: BLACK_TEXT,
     fontWeight: "bold",
   },
@@ -194,8 +194,8 @@ const s = StyleSheet.create({
     justifyContent: "flex-end",
   },
   photoBox: {
-    width: 48,
-    height: 56,
+    width: 44,
+    height: 50,
     borderWidth: 0.8,
     borderColor: "#0f172a",
     borderRadius: 2,
@@ -205,41 +205,41 @@ const s = StyleSheet.create({
     justifyContent: "center",
   },
   photoImg: {
-    width: 48,
-    height: 56,
+    width: 44,
+    height: 50,
     objectFit: "cover",
   },
   directorSignBox: {
     alignItems: "center",
-    marginTop: 1.5,
+    marginTop: 1,
   },
   signatureImg: {
-    width: 46,
-    height: 12,
+    width: 44,
+    height: 11,
     objectFit: "contain",
   },
   signLine: {
-    width: 52,
+    width: 48,
     height: 0.6,
     backgroundColor: "#0f172a",
-    marginTop: 0.5,
+    marginTop: 0.4,
   },
   directorLabel: {
-    fontSize: 5.2,
+    fontSize: 4.8,
     fontWeight: "bold",
     color: "#0f172a",
     textAlign: "center",
-    marginTop: 0.8,
+    marginTop: 0.6,
   },
 
   // ==========================================
-  // BACK SIDE STYLES (EXACT DESIGNER SCALE - NO QR CODE)
+  // BACK SIDE STYLES (WITH DESK VERIFICATION QR CODE)
   // ==========================================
   backContainer: {
     flex: 1,
-    paddingHorizontal: 8,
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingHorizontal: 7,
+    paddingTop: 4,
+    paddingBottom: 4,
     justifyContent: "space-between",
   },
   backHeader: {
@@ -253,28 +253,28 @@ const s = StyleSheet.create({
     marginHorizontal: 2,
   },
   subSlogan1: {
-    fontSize: 4.4,
+    fontSize: 4.0,
     fontWeight: "bold",
     color: "#334155",
     textAlign: "center",
-    letterSpacing: 0.6,
-    marginTop: 1.0,
+    letterSpacing: 0.5,
+    marginTop: 0.8,
   },
   subSlogan2: {
-    fontSize: 4.4,
+    fontSize: 4.0,
     fontWeight: "bold",
     color: NAVY,
     textAlign: "center",
-    letterSpacing: 0.6,
-    marginTop: 0.4,
+    letterSpacing: 0.5,
+    marginTop: 0.3,
   },
   sacrificesBox: {
-    width: 56,
+    width: 54,
     alignItems: "flex-start",
     justifyContent: "center",
   },
   sacrificesText: {
-    fontSize: 5.4,
+    fontSize: 5.0,
     fontWeight: "bold",
     color: RED_PILL,
     textAlign: "left",
@@ -285,14 +285,14 @@ const s = StyleSheet.create({
   // Back Table
   blueBanner: {
     backgroundColor: BLUE_BANNER,
-    paddingVertical: 2.2,
+    paddingVertical: 1.8,
     alignItems: "center",
     borderRadius: 1,
-    marginTop: 2.5,
+    marginTop: 2,
   },
   blueBannerText: {
     color: "#ffffff",
-    fontSize: 6.5,
+    fontSize: 6.0,
     fontWeight: "bold",
     letterSpacing: 0.6,
     textAlign: "center",
@@ -308,10 +308,10 @@ const s = StyleSheet.create({
     backgroundColor: "#f8fafc",
     borderBottomWidth: 0.8,
     borderBottomColor: NAVY,
-    paddingVertical: 2.2,
+    paddingVertical: 1.8,
   },
   tableHeaderCell: {
-    fontSize: 5.8,
+    fontSize: 5.4,
     fontWeight: "bold",
     color: NAVY,
     textAlign: "center",
@@ -320,12 +320,12 @@ const s = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 0.5,
     borderBottomColor: "#cbd5e1",
-    paddingVertical: 2.2,
+    paddingVertical: 1.8,
     alignItems: "center",
   },
   tableCellName: {
     width: "40%",
-    fontSize: 5.6,
+    fontSize: 5.2,
     fontWeight: "bold",
     color: BLACK_TEXT,
     paddingLeft: 4,
@@ -334,7 +334,7 @@ const s = StyleSheet.create({
   },
   tableCellRelation: {
     width: "26%",
-    fontSize: 5.6,
+    fontSize: 5.2,
     color: "#334155",
     textAlign: "center",
     borderRightWidth: 0.5,
@@ -342,38 +342,54 @@ const s = StyleSheet.create({
   },
   tableCellCnic: {
     width: "34%",
-    fontSize: 5.4,
+    fontSize: 5.0,
     color: "#334155",
     textAlign: "center",
   },
 
-  // Back Bottom Information (Clean centered layout without QR code)
-  importantInfoBox: {
-    width: "100%",
+  // Back Bottom Information & QR Code Row
+  backBottomRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 2.5,
+    marginTop: 2,
+  },
+  importantInfoBox: {
+    width: "73%",
   },
   importantInfoTitle: {
-    fontSize: 6.2,
+    fontSize: 5.4,
     fontWeight: "bold",
     color: NAVY,
-    textAlign: "center",
-    marginBottom: 1.5,
-  },
-  bulletsContainer: {
-    width: "90%",
+    marginBottom: 0.8,
   },
   bulletPoint: {
-    fontSize: 4.8,
+    fontSize: 4.0,
     color: "#1e293b",
-    lineHeight: 1.3,
-    textAlign: "left",
+    lineHeight: 1.25,
+  },
+  qrCodeBox: {
+    width: "25%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  qrImage: {
+    width: 27,
+    height: 27,
+  },
+  qrVerifyText: {
+    fontSize: 3.5,
+    fontWeight: "bold",
+    color: NAVY,
+    marginTop: 0.8,
+    textAlign: "center",
   },
 });
 
 export function HealthCardPdf({
   card,
   family,
+  qrSrc,
   photoSrc,
   category,
 }: {
@@ -381,8 +397,6 @@ export function HealthCardPdf({
   family: any;
   qrSrc?: string;
   photoSrc?: string | null;
-  healthDeskContact?: string | null;
-  lang?: string;
   category?: "shaheed" | "ghazi";
 }) {
   const members: any[] = Array.isArray(family?.members) && family.members.length > 0 ? family.members : [];
@@ -505,7 +519,7 @@ export function HealthCardPdf({
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <Image src={signature} style={s.signatureImg} />
                   ) : (
-                    <View style={{ width: 46, height: 12 }} />
+                    <View style={{ width: 44, height: 11 }} />
                   )}
                   <View style={s.signLine} />
                   <Text style={s.directorLabel}>Hospital Director</Text>
@@ -517,7 +531,7 @@ export function HealthCardPdf({
       </Page>
 
       {/* ========================================================
-          SIDE 2: BACK (Eligible Members Table & Info - NO QR CODE)
+          SIDE 2: BACK (Eligible Members Table & Facilitation Desk QR)
          ======================================================== */}
       <Page size={[CARD_WIDTH, CARD_HEIGHT]} style={s.page}>
         <View style={s.cardFrame}>
@@ -532,18 +546,18 @@ export function HealthCardPdf({
             <View style={s.backHeader}>
               {dhqEmblem ? (
                 // eslint-disable-next-line jsx-a11y/alt-text
-                <Image src={dhqEmblem} style={{ width: 28, height: 28 }} />
+                <Image src={dhqEmblem} style={{ width: 24, height: 24 }} />
               ) : (
-                <View style={{ width: 28, height: 28 }} />
+                <View style={{ width: 24, height: 24 }} />
               )}
 
               <View style={s.backHeaderCenter}>
-                <View style={[s.redPill, { paddingVertical: 1.2, paddingHorizontal: 10, marginTop: 0 }]}>
-                  <Text style={[s.redPillText, { fontSize: 6.8 }]}>
+                <View style={[s.redPill, { paddingVertical: 1, paddingHorizontal: 9, marginTop: 0 }]}>
+                  <Text style={[s.redPillText, { fontSize: 6.2 }]}>
                     {isGhazi ? "DERAJAT GHAZIAN" : "SHUHADA-E-DERAJAT"}
                   </Text>
                 </View>
-                <Text style={[s.familyHealthCardTitle, { fontSize: 7.2, marginTop: 1.0 }]}>
+                <Text style={[s.familyHealthCardTitle, { fontSize: 6.6, marginTop: 0.8 }]}>
                   FAMILY HEALTH CARD
                 </Text>
                 <Text style={s.subSlogan1}>HEATH | SERVICE | COMPASSION</Text>
@@ -600,14 +614,25 @@ export function HealthCardPdf({
               )}
             </View>
 
-            {/* Bottom Section: Important Information (Centered bullets, exact designer layout, NO QR) */}
-            <View style={s.importantInfoBox}>
-              <Text style={s.importantInfoTitle}>IMPORTANT INFORMATION</Text>
-              <View style={s.bulletsContainer}>
+            {/* Bottom Row: Important Information & Desk Verification QR Code */}
+            <View style={s.backBottomRow}>
+              <View style={s.importantInfoBox}>
+                <Text style={s.importantInfoTitle}>IMPORTANT INFORMATION</Text>
                 <Text style={s.bulletPoint}>• Valid for eligible family members as per institutional policy.</Text>
                 <Text style={s.bulletPoint}>• Non-transferable.</Text>
                 <Text style={s.bulletPoint}>• Misuse may lead to cancellation.</Text>
                 <Text style={s.bulletPoint}>• Report loss immediately.</Text>
+              </View>
+
+              {/* QR Code placed on card back for facilitation desks */}
+              <View style={s.qrCodeBox}>
+                {qrSrc ? (
+                  // eslint-disable-next-line jsx-a11y/alt-text
+                  <Image src={qrSrc} style={s.qrImage} />
+                ) : (
+                  <View style={s.qrImage} />
+                )}
+                <Text style={s.qrVerifyText}>Scan to Verify</Text>
               </View>
             </View>
           </View>

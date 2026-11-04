@@ -5,8 +5,11 @@ export async function generateQrDataUrl(payload: string): Promise<string> {
 }
 
 export function publicVerifyUrl(qrDigitalVerificationId: string): string {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_APP_URL;
-  const base = configured?.trim() || (process.env.NODE_ENV === "production" ? "" : "http://localhost:3000");
-  if (!base) throw new Error("NEXT_PUBLIC_SITE_URL must be configured before generating production QR codes");
+  const configured =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "") ||
+    "https://mtidikorg.vercel.app";
+  const base = configured.trim() || "https://mtidikorg.vercel.app";
   return `${base.replace(/\/+$/, "")}/verify/${encodeURIComponent(qrDigitalVerificationId)}`;
 }

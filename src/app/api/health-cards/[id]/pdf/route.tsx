@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
+import QRCode from "qrcode";
 import { prisma } from "@/lib/db";
 import { requirePermission, AuthError } from "@/lib/permissions";
 import { HealthCardPdf } from "@/lib/pdf/health-card";
+import { publicVerifyUrl } from "@/lib/qr";
 
 
 export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
@@ -32,7 +34,12 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       { status: 404 }
     );
   }
-  // Optional card photo and the Health Desk contact printed on the card face.
+  // QR verification code on card back for facilitation desks
+  const qrIdentifier = card.qrDigitalVerificationId || card.cardNo;
+  const verifyUrl = publicVerifyUrl(qrIdentifier);
+  const qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 256, margin: 1 });
+
+  // Optional card photo
   const photo = await prisma.document
     .findFirst({
       where: {
@@ -49,10 +56,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       orderBy: { createdAt: "asc" },
     })
     .catch(() => null);
-  const hospital = await prisma.hospital.findFirst({ where: { id: family?.hospitalId ?? -1 }, select: { healthDeskContact: true } }).catch(() => null);
-  const healthDeskContact = hospital?.healthDeskContact ?? card.issuedBy ?? null;
 
-  const lang = req.nextUrl.searchParams.get("lang") || "en";
   const categoryParam = req.nextUrl.searchParams.get("category");
   const category = categoryParam === "ghazi" ? "ghazi" : categoryParam === "shaheed" ? "shaheed" : undefined;
 
@@ -60,8 +64,8 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
     <HealthCardPdf
       card={card}
       family={family}
+      qrSrc={qrDataUrl}
       photoSrc={photo?.secureUrl ?? null}
-      healthDeskContact={healthDeskContact}
       category={category}
     />
   );
